@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" 
+    	android:textAppearance="?android:attr/textAppearanceSmall" android:text="@string/Input" 
+    	android:id="@+id/lblInputText"></TextView>
+    <EditText android:layout_width="fill_parent" android:layout_height="wrap_content"
+    	android:id="@+id/txtInput" android:singleLine="true"/>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" 
+    	android:textAppearance="?android:attr/textAppearanceSmall" 
+    	android:text="@string/MasterPassword" android:id="@+id/lblMasterPass"></TextView>
+    <EditText android:layout_width="fill_parent" android:layout_height="wrap_content" 
+    	android:inputType="textPassword" android:id="@+id/txtMasterPass" android:singleLine="true"></EditText>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" 
+    	android:textAppearance="?android:attr/textAppearanceSmall" android:text="@string/Password" 
+    	android:id="@+id/lblPassword"></TextView>
+    <EditText android:layout_width="fill_parent" android:layout_height="wrap_content" 
+    	android:id="@+id/txtPassword" android:editable="false" android:singleLine="true"></EditText>
+    <Button android:text="@string/LblCopy" android:layout_height="wrap_content" 
+    	android:layout_width="fill_parent" android:id="@+id/btnCopy"></Button>
+</LinearLayout>

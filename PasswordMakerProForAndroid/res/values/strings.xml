@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PasswordMaker Pro For Android</string>
+    <string name="Password">Password</string>
+    <string name="MasterPassword">Master Password</string>
+    <string name="Input">Input Text</string>
+    <string name="CharacterSet">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</string>
+    <string name="LblCharSet">Character Set</string>
+    <string name="LblCopy">Copy</string>
+</resources>
