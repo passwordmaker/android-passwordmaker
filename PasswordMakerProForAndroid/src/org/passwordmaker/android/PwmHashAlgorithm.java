@@ -7,23 +7,28 @@ import org.passwordmaker.android.hashalgos.Md5HashAlgo;
 import org.passwordmaker.android.hashalgos.RipeMd160HashAlgo;
 import org.passwordmaker.android.hashalgos.Sha1HashAlgo;
 import org.passwordmaker.android.hashalgos.Sha256HashAlgo;
-import org.passwordmaker.android.hashalgos.thirdparty.RipeMd160;
 
 public class PwmHashAlgorithm {
+
+	private static final long serialVersionUID = 1L;
 
 	public static interface UnderliningHashAlgo {
 		public byte[] getHashBlob(String key, String text);
 		public int digestLength();
+		public HashAlgo getAlgo();
 	}
 	
 	public static abstract class UnderliningNormalHashAlgo implements UnderliningHashAlgo {
+		
 		protected abstract byte[] hashText(String text);
 
+		
+		
 		public byte[] getHashBlob(String key, String text) {
 			return hashText(key + text);
 		}
 	}
-	private final UnderliningNormalHashAlgo hasher;
+	private final transient UnderliningNormalHashAlgo hasher;
 	private final int digestLength;
 	protected PwmHashAlgorithm(UnderliningNormalHashAlgo hasher) {
 		this.hasher = hasher;
@@ -33,8 +38,10 @@ public class PwmHashAlgorithm {
 		return rstr2any(hasher.getHashBlob(key, text), characterSet);
 	}
 	
+	public HashAlgo getHashAlgo() {
+		return hasher.getAlgo();
+	}
 	
-
 	public static int[] convertUnsignedByteArray(byte[] input) {
 		int[] result = new int[input.length];
 		int pos = 0;

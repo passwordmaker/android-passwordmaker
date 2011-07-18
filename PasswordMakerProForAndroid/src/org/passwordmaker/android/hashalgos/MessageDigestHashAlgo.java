@@ -4,17 +4,25 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.passwordmaker.android.HashAlgo;
 import org.passwordmaker.android.PwmHashAlgorithm.UnderliningNormalHashAlgo;
 
 public class MessageDigestHashAlgo extends UnderliningNormalHashAlgo {
 
 	private final int _digestLength;
 	private final String digestName;
+	private final HashAlgo hashAlgo;
 	
-	public MessageDigestHashAlgo(String digestName) throws NoSuchAlgorithmException {
-		this.digestName = digestName;
+	public MessageDigestHashAlgo(HashAlgo hashAlgo) throws NoSuchAlgorithmException {
+		this.digestName = hashAlgo.getDigestName();
+		this.hashAlgo = hashAlgo;
 		final MessageDigest digest = MessageDigest.getInstance(digestName);
 		_digestLength = digest.getDigestLength();
+		
+	}
+	
+	public HashAlgo getAlgo() {
+		return hashAlgo;
 	}
 	
 	public int digestLength() {

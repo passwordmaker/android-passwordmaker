@@ -6,7 +6,8 @@ public enum CharacterSetSelection {
 	hex("0123456789abcdef"), 
 	num("0123456789"), 
 	alpha("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), 
-	sym("`~!@#$%^&*()_-+={}|[]\\:\";'<>?,./");
+	sym("`~!@#$%^&*()_-+={}|[]\\:\";'<>?,./"),
+	custom("custom");
 	
 	private final String characterSet;
 	
@@ -16,5 +17,12 @@ public enum CharacterSetSelection {
 
 	public String getCharacterSet() {
 		return characterSet;
+	}
+
+	public static CharacterSetSelection findSetName(String characters) {
+		for ( CharacterSetSelection s : CharacterSetSelection.values() ) {
+			if ( s.getCharacterSet().equals(characters) ) return s;
+		}
+		return custom;
 	}
 }

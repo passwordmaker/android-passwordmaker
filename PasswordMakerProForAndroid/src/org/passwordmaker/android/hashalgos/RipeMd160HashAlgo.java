@@ -2,6 +2,7 @@ package org.passwordmaker.android.hashalgos;
 
 import java.io.UnsupportedEncodingException;
 
+import org.passwordmaker.android.HashAlgo;
 import org.passwordmaker.android.PwmHashAlgorithm.UnderliningNormalHashAlgo;
 import org.passwordmaker.android.hashalgos.thirdparty.RipeMd160;
 
@@ -21,6 +22,10 @@ public class RipeMd160HashAlgo  extends UnderliningNormalHashAlgo {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public HashAlgo getAlgo() {
+		return HashAlgo.RIPEMD_160;
 	}
 
 }

@@ -1,18 +1,25 @@
 package org.passwordmaker.android;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.EnumSet;
 
 import org.passwordmaker.android.LeetConverter.LeetLevel;
 import org.passwordmaker.android.LeetConverter.UseLeet;
 
-public class PwmProfile {
+public class PwmProfile implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-	
 	public enum UrlComponents {
 		Protocol, Subdomain, Domain, PortPathAnchorQuery
 	}
 	
-	private PwmHashAlgorithm hashAlgo = PwmHashAlgorithm.get(HashAlgo.MD5);
+	
+	private String name = "Default";
+	private HashAlgo currentAlgo = HashAlgo.MD5;
+	private transient PwmHashAlgorithm hashAlgo = PwmHashAlgorithm.get(currentAlgo);
 	private UseLeet useLeet = UseLeet.NotAtAll;
 	private LeetLevel leetLevel = LeetLevel.One;
 	private EnumSet<UrlComponents> urlComponents = defaultUrlComponents();
@@ -26,6 +33,19 @@ public class PwmProfile {
 	public PwmProfile() {
 	}
 
+	public PwmProfile(String name) {
+		this.name = name;
+	}
+	
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.defaultWriteObject();
+	}
+	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		hashAlgo = PwmHashAlgorithm.get(currentAlgo);
+	}
+
 	public static EnumSet<UrlComponents> defaultUrlComponents() {
 		return EnumSet.of(UrlComponents.Domain);
 	}
@@ -36,6 +56,7 @@ public class PwmProfile {
 
 	public void setHashAlgo(PwmHashAlgorithm hashAlgo) {
 		this.hashAlgo = hashAlgo;
+		this.currentAlgo = hashAlgo.getHashAlgo();
 	}
 	
 	public UseLeet getUseLeet() {
@@ -112,5 +133,22 @@ public class PwmProfile {
 
 	public void setSuffix(String passwordSuffix) {
 		this.passwordSuffix = passwordSuffix;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public HashAlgo getCurrentAlgo() {
+		return currentAlgo;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setHashAlgo(HashAlgo algo) {
+		setHashAlgo(PwmHashAlgorithm.get(algo));
+		
 	}
 }

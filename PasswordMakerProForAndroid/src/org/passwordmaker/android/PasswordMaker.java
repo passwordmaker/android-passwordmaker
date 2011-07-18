@@ -5,8 +5,10 @@ import org.passwordmaker.android.LeetConverter.LeetLevel;
 public class PasswordMaker {
 	PwmProfile profile = new PwmProfile();
 	
-	public PasswordMaker() {
-		
+	public PasswordMaker() {}
+	
+	public void setProfile(PwmProfile selProfile) {
+		profile = selProfile;
 	}
 	
 	public PwmProfile getProfile() {
