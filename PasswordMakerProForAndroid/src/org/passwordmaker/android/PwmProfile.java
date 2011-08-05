@@ -5,6 +5,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.passwordmaker.android.LeetConverter.LeetLevel;
 import org.passwordmaker.android.LeetConverter.UseLeet;
@@ -29,6 +32,7 @@ public class PwmProfile implements Serializable {
 	private String characters = CharacterSetSelection.alphaNum.getCharacterSet();
 	private String passwordPrefix = "";
 	private String passwordSuffix = "";
+	private Set<String> pwmFavoriteInputs = new HashSet<String>();
 	
 	public PwmProfile() {
 	}
@@ -149,6 +153,18 @@ public class PwmProfile implements Serializable {
 
 	public void setHashAlgo(HashAlgo algo) {
 		setHashAlgo(PwmHashAlgorithm.get(algo));
+	}
+	
+	public Set<String> getFavorites() {
+		return pwmFavoriteInputs;
+	}
+	
+	public boolean addFavorite(String newFav) {
+		return pwmFavoriteInputs.add(newFav);
+	}
+
+	public void addFavorite(List<String> favs) {
+		pwmFavoriteInputs.addAll(favs);
 		
 	}
 }

@@ -6,9 +6,16 @@ import java.util.Map;
 import java.util.Set;
 
 public class PwmProfileList implements Map<String, PwmProfile> {
-
-	Map<String, PwmProfile> profiles = new HashMap<String, PwmProfile>();
+	private Map<String, PwmProfile> profiles = new HashMap<String, PwmProfile>();
 	
+	public PwmProfileList() {
+		
+	}
+	
+	public PwmProfileList(Map<String, PwmProfile> profileList) {
+		this.profiles = profileList;
+	}
+
 	public boolean set(PwmProfile profile) {
 		profiles.put(profile.getName(), profile);
 		return true;

@@ -1,11 +1,14 @@
 package org.passwordmaker.android.test;
 
 import org.passwordmaker.android.CharacterSetSelection;
+
 import org.passwordmaker.android.HashAlgo;
 import org.passwordmaker.android.PasswordMaker;
 import org.passwordmaker.android.PwmProfile;
 import org.passwordmaker.android.LeetConverter.LeetLevel;
 import org.passwordmaker.android.LeetConverter.UseLeet;
+
+import com.tasermonkeys.google.json.Gson;
 
 import junit.framework.TestCase;
 
@@ -22,6 +25,14 @@ public class PasswordMakerLeetTest  extends TestCase {
 		pwm.setProfile(profile);
 		String value = pwm.generatePassword("google.com", "pwmIsCool");
 		assertEquals(expected, value);
+	}
+	
+	public void testFuckHeads() {
+		PwmProfile prof = new PwmProfile("FUCK");
+		Gson gson = new Gson();
+		String fuck =  gson.toJson(prof);
+		prof = gson.fromJson(fuck, PwmProfile.class);
+		
 	}
 	
 	public void testLeet1WithSha256() {

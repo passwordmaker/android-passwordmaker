@@ -16,6 +16,7 @@
     <string name="chkProtocol">Protocol</string>
     <string name="chkSubdomain">Subdomain</string>
     <string name="chkOthers">Port, path, anchor, query parameters</string>
+    <string name="AddFavorite">Add new</string>
     <string-array name="LeetOptions">
     	<item>Not At All</item>
 		<item>Before Generating Password</item> 
@@ -59,4 +60,5 @@
 		<string name="chkDomain">Domain</string>
 		<string name="EditProfile">Edit Profile</string>
 		<string name="EditProfileCondensed">Edit</string>
+		<string name="ButtonFavorites">+</string>
 </resources>

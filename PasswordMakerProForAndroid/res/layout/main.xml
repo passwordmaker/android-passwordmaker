@@ -7,8 +7,12 @@
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" 
     	android:textAppearance="?android:attr/textAppearanceSmall" android:text="@string/Input" 
     	android:id="@+id/lblInputText"></TextView>
-    <EditText android:layout_width="fill_parent" android:layout_height="wrap_content"
-    	android:id="@+id/txtInput" android:singleLine="true"/>
+    <LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="fill_parent">
+        <EditText android:layout_weight="1" android:id="@+id/txtInput" android:layout_height="wrap_content" android:singleLine="true" android:layout_width="fill_parent">
+            <requestFocus></requestFocus>
+        </EditText>
+        <Button android:layout_height="wrap_content" android:id="@+id/btnFavorites" android:layout_width="wrap_content" android:text="@string/ButtonFavorites"></Button>
+    </LinearLayout>
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" 
     	android:textAppearance="?android:attr/textAppearanceSmall" 
     	android:text="@string/MasterPassword" android:id="@+id/lblMasterPass"></TextView>

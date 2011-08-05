@@ -1,5 +1,9 @@
 package org.passwordmaker.android;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.ClipboardManager;
 import android.text.Editable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class PasswordMakerProForAndroidActivity extends Activity {
+	private static final String REPO_KEY_PROFILES = "profiles";
+	private static final String REPO_KEY_CURRENT_PROFILES = "currentProfile";
+	private static String LOG_TAG = "PasswordMakerProForAndroidActivity";
 	PasswordMaker pwm;
 	PwmProfileList pwmProfiles = new PwmProfileList();
 	
@@ -32,14 +40,48 @@ public class PasswordMakerProForAndroidActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        try {
+			pwmProfiles = PrivateSettingsStorage.getInstance().getObject(getApplicationContext(), REPO_KEY_PROFILES, pwmProfiles);
+			Log.i(LOG_TAG, "Loaded profiles " + pwmProfiles.size());
+		} catch (IOException e) {
+			Log.e(LOG_TAG, "Error occured while attempting to load saved profiles from PrivateStore", e);
+		}
+		if ( pwmProfiles.isEmpty() ) 
+			pwmProfiles.set(new PwmProfile("Default") ) ;
+		
         pwm = new PasswordMaker();
-        pwmProfiles.set(pwm.getProfile());
+        
+		try {
+			String currentProfile = null;
+			currentProfile = PrivateSettingsStorage.getInstance().getObject(getApplicationContext(), REPO_KEY_CURRENT_PROFILES, currentProfile);
+			PwmProfile prof = pwmProfiles.get(currentProfile);
+			if ( prof != null ) 
+				pwm.setProfile(prof);
+			else
+				pwm.setProfile(pwmProfiles.get("Default"));
+		} catch (IOException e) {
+			Log.e(LOG_TAG, "Error occured while attempting to load current profile from PrivateStore", e);
+		}
+        
         TextView text = (TextView)findViewById(R.id.txtInput);
         if ( text != null ) text.setOnKeyListener(mUpdatePasswordKeyListener);
         text = (TextView)findViewById(R.id.txtMasterPass);
         if ( text != null ) text.setOnKeyListener(mUpdatePasswordKeyListener);
         Button button = (Button)findViewById(R.id.btnCopy);
         if ( button != null ) button.setOnClickListener(mCopyButtonClick);
+        button = (Button)findViewById(R.id.btnFavorites);
+        if ( button != null ) button.setOnClickListener(mFavoritesClick);
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	try {
+			PrivateSettingsStorage.getInstance().putObject(getApplicationContext(), REPO_KEY_PROFILES, pwmProfiles);
+			Log.i(LOG_TAG, "Saved Profiles to PrivateSettings: " + pwmProfiles.size());
+		} catch (IOException e) {
+			Log.e(LOG_TAG, "Error occured while attempting to store user profiles to PrivateStore", e);
+		}
     }
     
     @Override
@@ -85,6 +127,57 @@ public class PasswordMakerProForAndroidActivity extends Activity {
     	});
     	AlertDialog alert = builder.create();
     	alert.show();
+	}
+	
+	private void selectFavorite() {
+		final List<String> favs = new ArrayList<String>(pwm.getProfile().getFavorites());
+		favs.add( getString(R.string.AddFavorite) );
+    	final CharSequence[] items = favs.toArray(new CharSequence[0]);
+
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setTitle("Pick a Favorite");
+    	builder.setItems(items, new DialogInterface.OnClickListener() {
+    	    public void onClick(DialogInterface dialog, int item) {
+    	    	if ( item >= 0 && item < items.length - 1 ) {
+    	    		TextView inputText = (TextView)findViewById(R.id.txtInput);
+    	    		inputText.setText(items[item]);
+    	    		updatePassword();
+    	    	} else if ( item == items.length - 1 ) {
+    	    		// ADD Favorite
+    	    		newFavorite();
+    	    	}
+    	    } 
+    	});
+    	AlertDialog alert = builder.create();
+    	alert.show();
+	}
+	
+	private void newFavorite() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final EditText editView = new EditText(this);
+		editView.setLines(1);
+		editView.setMinimumWidth(200);
+		builder.setView(editView);
+		builder.setPositiveButton(R.string.AddFavorite, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				pwm.getProfile().addFavorite(editView.getText().toString());
+	    		TextView inputText = (TextView)findViewById(R.id.txtInput);
+	    		inputText.setText(editView.getText());
+	    		updatePassword();
+			}
+		});
+		builder.setNegativeButton(R.string.Cancel, null);
+		final AlertDialog alert = builder.create();
+		editView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+				
+			}
+        });
+		builder.setCancelable(true);
+		alert.show();
 	}
 	
 	private void edit_profile(PwmProfile profile) {
@@ -182,6 +275,16 @@ public class PasswordMakerProForAndroidActivity extends Activity {
     		final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE); 
     		TextView text = (TextView)findViewById(R.id.txtPassword);
     		clipboard.setText(text.getText());
+        }
+    };
+    
+    private OnClickListener mFavoritesClick = new OnClickListener() {
+    	
+    	public void onClick(View v) {
+    		if ( pwm.getProfile().getFavorites().isEmpty() )
+    			newFavorite();
+    		else
+    			selectFavorite();
         }
     };
 }
