@@ -32,7 +32,7 @@ public class PrivateSettingsStorage {
 			String jsonStr = serializer.toJson(obj);
 			fos.write(jsonStr.getBytes("UTF-8"));
 		} finally {
-			IOUtils.closeQuietly(fos);
+			StreamUtils.closeNoThrow(fos);
 		}
 	}
 
@@ -48,7 +48,7 @@ public class PrivateSettingsStorage {
 			Reader reader = new InputStreamReader(fis, "UTF-8");
 			return (T) serializer.fromJson(reader, defaultValue.getClass());
 		} finally {
-			IOUtils.closeQuietly(fis);
+			StreamUtils.closeNoThrow(fis);
 		}
 	}
 
