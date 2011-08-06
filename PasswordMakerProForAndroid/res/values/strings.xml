@@ -61,4 +61,6 @@
 		<string name="EditProfile">Edit Profile</string>
 		<string name="EditProfileCondensed">Edit</string>
 		<string name="ButtonFavorites">+</string>
+		<string name="chkPasswordHash">Store Password Hash</string>
+		<string name="lblPasswordHash">Store Password Hash</string>
 </resources>

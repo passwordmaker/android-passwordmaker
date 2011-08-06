@@ -7,12 +7,24 @@ public class PasswordMaker {
 	
 	public PasswordMaker() {}
 	
+	public PasswordMaker(PwmProfile profile) {
+		this.profile = profile;
+	}
+	
 	public void setProfile(PwmProfile selProfile) {
 		profile = selProfile;
 	}
 	
 	public PwmProfile getProfile() {
 		return profile;
+	}
+	
+	public boolean matchesPasswordHash(String masterPassword) {
+		if ( ! profile.hasPasswordHash() ) {
+			return true;
+		}
+		String testPassHash = generatePassword(profile.getPasswordSalt(), masterPassword);
+		return testPassHash.equals(profile.getCurrentPasswordHash());
 	}
 	
 	public String generatePassword(String inputText, String masterPassword) {

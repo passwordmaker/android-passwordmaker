@@ -43,6 +43,8 @@ public class PasswordMakerProForAndroidActivity extends Activity {
         try {
 			pwmProfiles = PrivateSettingsStorage.getInstance().getObject(getApplicationContext(), REPO_KEY_PROFILES, pwmProfiles);
 			Log.i(LOG_TAG, "Loaded profiles " + pwmProfiles.size());
+			PwmProfile tmpProfile = pwmProfiles.get("Copy");
+			Log.d("PWMPFA", "PWDHash:" + tmpProfile.toString()); 
 		} catch (IOException e) {
 			Log.e(LOG_TAG, "Error occured while attempting to load saved profiles from PrivateStore", e);
 		}
@@ -143,7 +145,6 @@ public class PasswordMakerProForAndroidActivity extends Activity {
     	    		inputText.setText(items[item]);
     	    		updatePassword();
     	    	} else if ( item == items.length - 1 ) {
-    	    		// ADD Favorite
     	    		newFavorite();
     	    	}
     	    } 
@@ -248,17 +249,19 @@ public class PasswordMakerProForAndroidActivity extends Activity {
     	});
     	AlertDialog alert = builder.create();
     	alert.show();
-    	
 	}
-
 
 	public final void updatePassword() {
     	TextView text = (TextView)findViewById(R.id.txtPassword);
     	TextView inputText = (TextView)findViewById(R.id.txtInput);
     	TextView masterPass = (TextView)findViewById(R.id.txtMasterPass);
-    	
-    	String output = pwm.generatePassword(inputText.getText().toString(), masterPass.getText().toString());
-    	text.setText(output);
+    	final String masterPassword = masterPass.getText().toString();
+		if ( pwm.matchesPasswordHash(masterPassword) ) { 
+			String output = pwm.generatePassword(inputText.getText().toString(), masterPassword);
+			text.setText(output);
+		} else {
+			text.setText("Password Hash Mismatch");
+		}
     }
     
     private OnKeyListener mUpdatePasswordKeyListener = new OnKeyListener() {
@@ -268,7 +271,6 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 		}
 	};
     
-	
     private OnClickListener mCopyButtonClick = new OnClickListener() {
     	
     	public void onClick(View v) {

@@ -32,6 +32,9 @@
 		    <EditText android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/txtPrefix"></EditText>
 		    <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblSuffix" android:text="@string/LblSuffix"></TextView>
 		    <EditText android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/txtSuffix"></EditText>
+            <CheckBox android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/chkStorePasswordHash" android:text="@string/chkPasswordHash"></CheckBox>
+            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/lblPasswordHash" android:text="@string/lblPasswordHash" android:visibility="gone"></TextView>
+            <EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:inputType="textPassword" android:id="@+id/txtMasterPasswordForHash" android:visibility="gone"></EditText>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

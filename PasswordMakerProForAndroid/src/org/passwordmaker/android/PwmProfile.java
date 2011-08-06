@@ -12,6 +12,9 @@ import java.util.Set;
 import org.passwordmaker.android.LeetConverter.LeetLevel;
 import org.passwordmaker.android.LeetConverter.UseLeet;
 
+import com.tasermonkeys.google.json.Gson;
+import com.tasermonkeys.google.json.GsonBuilder;
+
 public class PwmProfile implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -33,6 +36,9 @@ public class PwmProfile implements Serializable {
 	private String passwordPrefix = "";
 	private String passwordSuffix = "";
 	private Set<String> pwmFavoriteInputs = new HashSet<String>();
+	private boolean storePasswordHash = false;
+	private String currentPasswordHash = null;
+	private String passwordSalt = null;
 	
 	public PwmProfile() {
 	}
@@ -165,6 +171,49 @@ public class PwmProfile implements Serializable {
 
 	public void addFavorite(List<String> favs) {
 		pwmFavoriteInputs.addAll(favs);
-		
 	}
+	
+	public String getCurrentPasswordHash() {
+		return currentPasswordHash;
+	}
+
+	public void setCurrentPasswordHash(String currentPasswordHash, String salt) {
+		this.currentPasswordHash = currentPasswordHash;
+		this.passwordSalt = salt;
+		setStorePasswordHash(true);
+	}
+	
+	public String getPasswordSalt() {
+		return this.passwordSalt;
+	}
+	
+	public boolean hasPasswordHash() {
+		return shouldStorePasswordHash() && this.passwordSalt != null && this.passwordSalt.length() > 0 && this.currentPasswordHash != null && this.currentPasswordHash.length() > 0;
+	}
+	
+	public boolean shouldStorePasswordHash() {
+		return storePasswordHash;
+	}
+
+	public void setStorePasswordHash(boolean storePasswordHash) {
+		this.storePasswordHash = storePasswordHash;
+		if ( !storePasswordHash ) {
+			this.passwordSalt = null;
+			this.currentPasswordHash = null;
+		}
+	}
+
+	public void disablePasswordHash() {
+		setStorePasswordHash(false);
+	}
+	
+	@Override
+	public String toString() {
+		GsonBuilder builder = PwmGsonBuilder.makeBuilder();
+		builder.setPrettyPrinting();
+		Gson prettyPrinter = builder.create();
+		return prettyPrinter.toJson(this);
+	}
+
+
 }

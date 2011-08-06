@@ -1,5 +1,7 @@
 package org.passwordmaker.android;
 
+import java.util.UUID;
+
 import org.passwordmaker.android.LeetConverter.LeetLevel;
 import org.passwordmaker.android.LeetConverter.UseLeet;
 import org.passwordmaker.android.PwmProfile.UrlComponents;
@@ -17,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -24,6 +27,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 
 public class PasswordMakerEditProfile extends Activity {
+	private PasswordMaker pwm = new PasswordMaker();
 	private PwmProfile profile;
 	private EditText txtName;
 	private CheckBox chkDomain;
@@ -39,6 +43,10 @@ public class PasswordMakerEditProfile extends Activity {
 	private Spinner charSet;
 	private EditText prefix;
 	private EditText suffix;
+	private CheckBox chkPasswordHash;
+	private TextView lblPasswordHash;
+	private EditText txtPasswordHash;
+	
 	
 	private EditText focusedText = null;
 	
@@ -246,6 +254,34 @@ public class PasswordMakerEditProfile extends Activity {
 					focusedText = suffix;
 			}
 		});
+		lblPasswordHash = (TextView)findViewById(R.id.lblPasswordHash);
+		chkPasswordHash = (CheckBox)findViewById(R.id.chkStorePasswordHash);
+		chkPasswordHash.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if ( ! isChecked ) {
+					profile.disablePasswordHash();
+					lblPasswordHash.setVisibility(View.GONE);
+					txtPasswordHash.setVisibility(View.GONE);
+				} else {
+					lblPasswordHash.setVisibility(View.VISIBLE);
+					txtPasswordHash.setVisibility(View.VISIBLE);					
+				}
+			}
+		});
+		txtPasswordHash = (EditText)findViewById(R.id.txtMasterPasswordForHash);
+		txtPasswordHash.setOnFocusChangeListener(new OnFocusChangeListener() {
+			public void onFocusChange(View v, boolean hasFocus) {
+				if ( ! hasFocus ) {
+					// only set it if its different than before to keep the same salt
+					final String masterPassword = txtPasswordHash.getText().toString();
+					if (  ! profile.hasPasswordHash() || ! pwm.matchesPasswordHash(masterPassword)) {
+						final String salt = UUID.randomUUID().toString();
+						profile.setCurrentPasswordHash( pwm.generatePassword(salt, masterPassword), salt);
+					}
+				} else
+					focusedText = txtPasswordHash;
+			}
+		});
 	}
 
 	private void setDefaultValues() {
@@ -264,6 +300,7 @@ public class PasswordMakerEditProfile extends Activity {
 	    charSet.setSelection(CharacterSetSelection.findSetName(profile.getCharacters()).ordinal());
 	    prefix.setText(profile.getPrefix());
 	    suffix.setText(profile.getSuffix());
+	    chkPasswordHash.setChecked(profile.hasPasswordHash());
 	}
 	
 	@Override
@@ -273,6 +310,7 @@ public class PasswordMakerEditProfile extends Activity {
 	    // get the profile
 	    profile = (PwmProfile) getIntent().getExtras().getSerializable(EXTRA_PROFILE);
 	    assert profile != null;
+	    pwm.setProfile(profile);
 	    setupMemberVars();
 	    setupCharacterSet();
 	    setDefaultValues();
