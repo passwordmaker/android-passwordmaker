@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tasermonkeys.google.json.Gson;
 
@@ -31,14 +30,9 @@ public class PrivateSettingsStorage {
 				Context.MODE_PRIVATE);
 		try {
 			String jsonStr = serializer.toJson(obj);
-			Log.d("PrivateSettingsStorage", "JsonData-Store: " + jsonStr);
 			fos.write(jsonStr.getBytes("UTF-8"));
 		} finally {
-			try {
-				if (fos != null)
-					fos.close();
-			} catch (Exception e) {/* Suppress errors from closing */
-			}
+			IOUtils.closeQuietly(fos);
 		}
 	}
 
@@ -50,18 +44,11 @@ public class PrivateSettingsStorage {
 		if (!f.exists())
 			return defaultValue;
 		InputStream fis = context.openFileInput(filename);
-		String fool = IOUtils.toString(fis);
-		fis = IOUtils.toInputStream(fool);
-		Log.d("PrivateSettingsStorage", "JsonData-Get: " + fool);
 		try {
 			Reader reader = new InputStreamReader(fis, "UTF-8");
 			return (T) serializer.fromJson(reader, defaultValue.getClass());
 		} finally {
-			try {
-				if (fis != null)
-					fis.close();
-			} catch (Exception e) {/* Suppress errors from closing */
-			}
+			IOUtils.closeQuietly(fis);
 		}
 	}
 

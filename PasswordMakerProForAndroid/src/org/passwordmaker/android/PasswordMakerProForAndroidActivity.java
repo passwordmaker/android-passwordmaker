@@ -42,9 +42,6 @@ public class PasswordMakerProForAndroidActivity extends Activity {
         setContentView(R.layout.main);
         try {
 			pwmProfiles = PrivateSettingsStorage.getInstance().getObject(getApplicationContext(), REPO_KEY_PROFILES, pwmProfiles);
-			Log.i(LOG_TAG, "Loaded profiles " + pwmProfiles.size());
-			PwmProfile tmpProfile = pwmProfiles.get("Copy");
-			Log.d("PWMPFA", "PWDHash:" + tmpProfile.toString()); 
 		} catch (IOException e) {
 			Log.e(LOG_TAG, "Error occured while attempting to load saved profiles from PrivateStore", e);
 		}
@@ -80,7 +77,6 @@ public class PasswordMakerProForAndroidActivity extends Activity {
     	super.onPause();
     	try {
 			PrivateSettingsStorage.getInstance().putObject(getApplicationContext(), REPO_KEY_PROFILES, pwmProfiles);
-			Log.i(LOG_TAG, "Saved Profiles to PrivateSettings: " + pwmProfiles.size());
 		} catch (IOException e) {
 			Log.e(LOG_TAG, "Error occured while attempting to store user profiles to PrivateStore", e);
 		}
@@ -189,8 +185,6 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 	}
 	
 	private void finish_edit_profile(PwmProfile profile) {
-		System.out.println( profile.getName() + ": Len of pass: " +  profile.getLengthOfPassword() );
-		
 		pwmProfiles.set(profile);
 		if (pwm.getProfile().getName().equals(profile.getName())) {
 			pwm.setProfile(profile);

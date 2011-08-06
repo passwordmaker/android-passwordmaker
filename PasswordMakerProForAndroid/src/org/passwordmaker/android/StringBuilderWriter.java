@@ -31,6 +31,7 @@ import java.io.Writer;
  * @version $Revision$ $Date$
  * @since Commons IO 2.0
  */
+@SuppressWarnings("serial")
 public class StringBuilderWriter extends Writer implements Serializable {
 
     private final StringBuilder builder;

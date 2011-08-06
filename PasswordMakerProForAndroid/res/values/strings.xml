@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PasswordMaker Pro For Android</string>
+    <string name="app_name">PasswordMaker Pro</string>
     <string name="Password">Password</string>
     <string name="MasterPassword">Master Password</string>
     <string name="Input">Input Text</string>
