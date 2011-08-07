@@ -63,4 +63,6 @@
 		<string name="ButtonFavorites">+</string>
 		<string name="chkPasswordHash">Store Password Hash</string>
 		<string name="lblPasswordHash">Store Password Hash</string>
+		<string name="SaveInputs">Save Input</string>
+		<string name="SaveInputsForMinutes">Save Inputs for (Minutes)</string>
 </resources>

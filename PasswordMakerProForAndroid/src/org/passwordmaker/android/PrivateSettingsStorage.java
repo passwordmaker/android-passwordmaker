@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tasermonkeys.google.json.Gson;
@@ -43,8 +44,12 @@ public class PrivateSettingsStorage {
 		return instance;
 	}
 
-	public void putObject(Context context, String key, Object obj)
+	public void putObject(Activity context, String key, Object obj)
 			throws IOException {
+		if ( obj == null ) {
+			deleteObject(context, key);
+			return;
+		}
 		FileOutputStream fos = context.openFileOutput(key + ".pss",
 				Context.MODE_PRIVATE);
 		try {
@@ -54,13 +59,21 @@ public class PrivateSettingsStorage {
 			StreamUtils.closeNoThrow(fos);
 		}
 	}
+	
+	public void deleteObject(Activity context, String key) {
+		String filename = key + ".pss";
+		File f = new File(context.getFilesDir(), filename);
+		if (!f.exists()) 
+			return;
+		f.delete();
+	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T getObject(Context context, String key, T defaultValue)
+	public <T> T getObject(Activity context, String key, T defaultValue)
 			throws IOException {
 		String filename = key + ".pss";
 		File f = new File(context.getFilesDir(), filename);
-		if (!f.exists())
+		if (!f.exists()) 
 			return defaultValue;
 		InputStream fis = context.openFileInput(filename);
 		try {

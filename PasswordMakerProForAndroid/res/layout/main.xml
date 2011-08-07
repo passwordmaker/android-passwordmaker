@@ -25,4 +25,7 @@
     	android:id="@+id/txtPassword" android:editable="false" android:singleLine="true"></EditText>
     <Button android:text="@string/LblCopy" android:layout_height="wrap_content" 
     	android:layout_width="fill_parent" android:id="@+id/btnCopy"></Button>
+    <CheckBox android:id="@+id/chkSaveInputs" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/SaveInputs" android:checked="true"></CheckBox>
+    <TextView android:layout_height="wrap_content" android:id="@+id/lblSaveForLength" android:layout_width="wrap_content" android:text="@string/SaveInputsForMinutes"></TextView>
+    <EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:inputType="number" android:id="@+id/txtSaveInputTime"></EditText>
 </LinearLayout>
