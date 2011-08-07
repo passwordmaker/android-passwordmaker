@@ -37,6 +37,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -83,8 +84,10 @@ public class PasswordMakerProForAndroidActivity extends Activity {
         
         TextView text = (TextView)findViewById(R.id.txtInput);
         if ( text != null ) text.setOnKeyListener(mUpdatePasswordKeyListener);
+        if ( text != null ) text.setOnFocusChangeListener(mUpdatePasswordFocusListener);
         text = (TextView)findViewById(R.id.txtMasterPass);
         if ( text != null ) text.setOnKeyListener(mUpdatePasswordKeyListener);
+        if ( text != null ) text.setOnFocusChangeListener(mUpdatePasswordFocusListener);
         Button button = (Button)findViewById(R.id.btnCopy);
         if ( button != null ) button.setOnClickListener(mCopyButtonClick);
         button = (Button)findViewById(R.id.btnFavorites);
@@ -277,6 +280,14 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 		}
     }
     
+	private OnFocusChangeListener mUpdatePasswordFocusListener = new OnFocusChangeListener() {
+		public void onFocusChange(View v, boolean hasFocus) {
+			if ( ! hasFocus )
+				updatePassword();
+			
+		}
+	};
+	
     private OnKeyListener mUpdatePasswordKeyListener = new OnKeyListener() {
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
 			updatePassword();
@@ -287,6 +298,7 @@ public class PasswordMakerProForAndroidActivity extends Activity {
     private OnClickListener mCopyButtonClick = new OnClickListener() {
     	
     	public void onClick(View v) {
+    		updatePassword();
     		final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE); 
     		TextView text = (TextView)findViewById(R.id.txtPassword);
     		clipboard.setText(text.getText());

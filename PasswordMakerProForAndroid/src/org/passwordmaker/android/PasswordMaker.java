@@ -19,9 +19,15 @@
 
 package org.passwordmaker.android;
 
+import java.util.EnumSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.passwordmaker.android.LeetConverter.LeetLevel;
+import org.passwordmaker.android.PwmProfile.UrlComponents;
 
 public class PasswordMaker {
+	private static Pattern urlRegex = Pattern.compile("([^:\\/\\/]*:\\/\\/)?([^:\\/]*)([^#]*)");
 	PwmProfile profile = new PwmProfile();
 	
 	public PasswordMaker() {}
@@ -44,6 +50,55 @@ public class PasswordMaker {
 		}
 		String testPassHash = generatePassword(profile.getPasswordSalt(), masterPassword);
 		return testPassHash.equals(profile.getCurrentPasswordHash());
+	}
+	
+	public String getModifiedInputText(String inputText) {
+		EnumSet<UrlComponents> uriComponents = profile.getUrlComponents();
+		if (uriComponents.isEmpty())
+			return inputText;
+		// var temp = location.href.match("([^://]*://)([^/]*)(.*)");
+		Matcher matcher = urlRegex.matcher(inputText);
+		if (!matcher.matches())
+			return inputText;
+		String protocol = matcher.group(1);
+		String domainText = matcher.group(2);
+		String portPath = matcher.group(3);
+		if ( protocol == null ) protocol = "";
+		if ( domainText == null ) domainText = "";
+		if ( portPath == null ) portPath = "";
+		
+		StringBuilder retVal = new StringBuilder(inputText.length());
+		if (uriComponents.contains(UrlComponents.Protocol)
+				&& protocol.length() > 0) {
+			retVal.append(protocol);
+		}
+		if (domainText != null) {
+			final String subDomain;
+			int dnDot = domainText.lastIndexOf('.');
+			dnDot = domainText.lastIndexOf('.', dnDot - 1);
+			if (dnDot != -1) {
+				subDomain = domainText.substring(0, dnDot);
+				domainText = domainText.substring(dnDot + 1);
+			} else {
+				subDomain = "";
+			}
+			final boolean hasSubDomain = uriComponents
+					.contains(UrlComponents.Subdomain) && dnDot != -1;
+			if (hasSubDomain) {
+				retVal.append(subDomain);
+			}
+			if (uriComponents.contains(UrlComponents.Domain)) {
+				if (hasSubDomain)
+					retVal.append('.');
+				retVal.append(domainText);
+			}
+		}
+		if (uriComponents.contains(UrlComponents.PortPathAnchorQuery)
+				&& portPath.length() > 0) {
+			retVal.append(portPath);
+		}
+		return retVal.toString();
+		
 	}
 	
 	public String generatePassword(String inputText, String masterPassword) {
