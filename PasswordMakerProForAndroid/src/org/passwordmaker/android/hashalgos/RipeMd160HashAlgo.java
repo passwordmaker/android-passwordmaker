@@ -32,19 +32,26 @@ public class RipeMd160HashAlgo  extends UnderliningNormalHashAlgo {
 	}
 
 	@Override
-	protected byte[] hashText(String text) {
+	public byte[] hashText(String text) {
 		try {
-			RipeMd160 digest = new RipeMd160();
-			digest.update(text.getBytes("UTF8"));
-			return digest.digest();
+			return hashText(text.getBytes("UTF8"));
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 
 	public HashAlgo getAlgo() {
 		return HashAlgo.RIPEMD_160;
 	}
+	
+	public int blockSize() {
+		return 64;
+	}
 
+	@Override
+	public byte[] hashText(byte[] text) {
+		RipeMd160 digest = new RipeMd160();
+		digest.update(text);
+		return digest.digest();
+	}
 }

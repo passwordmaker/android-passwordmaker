@@ -28,6 +28,10 @@ public class Sha1HashAlgo extends MessageDigestHashAlgo {
 	public Sha1HashAlgo() throws NoSuchAlgorithmException {
 		super(HashAlgo.SHA_1);
 	}
+	
+	public int blockSize() {
+		return 64;
+	}
 
 
 }

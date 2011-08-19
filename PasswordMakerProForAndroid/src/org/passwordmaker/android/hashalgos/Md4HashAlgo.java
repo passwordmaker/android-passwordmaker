@@ -33,6 +33,10 @@ public class Md4HashAlgo extends UnderliningNormalHashAlgo {
 		
 	}
 	
+	public int blockSize() {
+		return 64;
+	}
+	
 	public HashAlgo getAlgo() {
 		return HashAlgo.MD5;
 	}
@@ -42,16 +46,20 @@ public class Md4HashAlgo extends UnderliningNormalHashAlgo {
 		return Md4.HASH_SIZE;
 	}
 
-	@Override
-	protected byte[] hashText(String text) {
+	public byte[] hashText(String text) {
 		try {
-			Md4 digest = new Md4();
-			digest.update(text.getBytes("UTF8"));
-			return digest.digest();
+			return hashText(text.getBytes("UTF8"));
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return null;
+	}
+
+	
+	@Override
+	public byte[] hashText(byte[] text) {
+		Md4 digest = new Md4();
+		digest.update(text);
+		return digest.digest();
 	}
 
 

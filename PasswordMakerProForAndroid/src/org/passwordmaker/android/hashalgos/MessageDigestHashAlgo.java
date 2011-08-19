@@ -26,7 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import org.passwordmaker.android.HashAlgo;
 import org.passwordmaker.android.PwmHashAlgorithm.UnderliningNormalHashAlgo;
 
-public class MessageDigestHashAlgo extends UnderliningNormalHashAlgo {
+public abstract class MessageDigestHashAlgo extends UnderliningNormalHashAlgo {
 
 	private final int _digestLength;
 	private final String digestName;
@@ -37,7 +37,6 @@ public class MessageDigestHashAlgo extends UnderliningNormalHashAlgo {
 		this.hashAlgo = hashAlgo;
 		final MessageDigest digest = MessageDigest.getInstance(digestName);
 		_digestLength = digest.getDigestLength();
-		
 	}
 	
 	public HashAlgo getAlgo() {
@@ -49,17 +48,14 @@ public class MessageDigestHashAlgo extends UnderliningNormalHashAlgo {
 	}
 
 	@Override
-	protected byte[] hashText(String text) {
+	public byte[] hashText(byte[] text) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance(digestName);
-			digest.update(text.getBytes("UTF8"));
+			digest.update(text);
 			return digest.digest();
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 
 }

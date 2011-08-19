@@ -29,5 +29,9 @@ public class Sha256HashAlgo extends MessageDigestHashAlgo {
 		super(HashAlgo.SHA_256);
 	}
 
+	public int blockSize() {
+		return 64;
+	}
+
 
 }

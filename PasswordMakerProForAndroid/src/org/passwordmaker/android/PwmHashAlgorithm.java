@@ -19,9 +19,10 @@
 
 package org.passwordmaker.android;
 
+import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import org.passwordmaker.android.hashalgos.Md4HashAlgo;
+import org.passwordmaker.android.hashalgos.HmacHashAlgo;
 import org.passwordmaker.android.hashalgos.Md5HashAlgo;
 import org.passwordmaker.android.hashalgos.RipeMd160HashAlgo;
 import org.passwordmaker.android.hashalgos.Sha1HashAlgo;
@@ -29,17 +30,24 @@ import org.passwordmaker.android.hashalgos.Sha256HashAlgo;
 
 public class PwmHashAlgorithm {
 
-	private static final long serialVersionUID = 1L;
-
 	public static interface UnderliningHashAlgo {
 		public byte[] getHashBlob(String key, String text);
 		public int digestLength();
+		public int blockSize();
 		public HashAlgo getAlgo();
 	}
 	
 	public static abstract class UnderliningNormalHashAlgo implements UnderliningHashAlgo {
 		
-		protected abstract byte[] hashText(String text);
+		public abstract byte[] hashText(byte[] text);
+		
+		public byte[] hashText(String text) {
+			try {
+				return hashText(text.getBytes("UTF8"));
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(e);
+			}
+		}
 
 		
 		
@@ -47,9 +55,11 @@ public class PwmHashAlgorithm {
 			return hashText(key + text);
 		}
 	}
-	private final transient UnderliningNormalHashAlgo hasher;
+	
+	
+	private final transient UnderliningHashAlgo hasher;
 	private final int digestLength;
-	protected PwmHashAlgorithm(UnderliningNormalHashAlgo hasher) {
+	protected PwmHashAlgorithm(UnderliningHashAlgo hasher) {
 		this.hasher = hasher;
 		this.digestLength = hasher.digestLength();
 	}
@@ -142,18 +152,33 @@ public class PwmHashAlgorithm {
 	}
 	
 	public static PwmHashAlgorithm get(HashAlgo algo) {
+		return new PwmHashAlgorithm(getUnderliningHasher(algo));
+	}
+	
+	public static UnderliningHashAlgo getUnderliningHasher(HashAlgo algo) {
 		try {
-			switch (algo) {
+			UnderliningNormalHashAlgo normalHash = null;
+			switch (algo.getUnderlining()) {
 			case MD5:
-				return new PwmHashAlgorithm( new Md5HashAlgo() );
+				normalHash = new Md5HashAlgo() ;
+				break;
 			case SHA_256:
-				return new PwmHashAlgorithm( new Sha256HashAlgo() );
+				normalHash = new Sha256HashAlgo() ;
+				break;
 			case SHA_1:
-				return new PwmHashAlgorithm( new Sha1HashAlgo() );
+				normalHash = new Sha1HashAlgo() ;
+				break;
 			case MD4:
-				return new PwmHashAlgorithm( new Md4HashAlgo() ) ;
+				normalHash = new Sha1HashAlgo() ;
+				break;
 			case RIPEMD_160:
-				return new PwmHashAlgorithm( new RipeMd160HashAlgo() );
+				normalHash = new RipeMd160HashAlgo() ;
+				break;
+			}
+			if ( ! algo.isHMac() ) {
+				return normalHash ;
+			} else {
+				return new HmacHashAlgo(algo, normalHash);
 			}
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();

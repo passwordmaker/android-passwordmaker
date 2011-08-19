@@ -29,5 +29,8 @@ public class Md5HashAlgo extends MessageDigestHashAlgo {
 		super(HashAlgo.MD5);
 	}
 
+	public int blockSize() {
+		return 64;
+	}
 
 }
