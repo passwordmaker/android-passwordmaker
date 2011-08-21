@@ -16,5 +16,8 @@
         <activity android:name=".PasswordMakerEditProfile"
         		  android:label="@string/ChangeProfile">
        	</activity>
+       	<activity android:name=".PasswordMakerEditFavorites"
+        		  android:label="@string/EditFavorites">
+       	</activity>
     </application>
 </manifest>

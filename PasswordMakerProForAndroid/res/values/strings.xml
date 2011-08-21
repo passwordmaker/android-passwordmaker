@@ -10,6 +10,7 @@
     <string name="NewProfile">New Profile</string>
     <string name="NewProfileCondensed">New</string>
     <string name="ChangeProfile">Change Profile</string>
+    <string name="EditFavorites">Edit Favorites</string>
     <string name="ChangeProfileCondensed">Change</string>
     <string name="AddProfile">Create</string>
     <string name="Cancel">Cancel</string>
@@ -65,4 +66,6 @@
 		<string name="lblPasswordHash">Store Password Hash</string>
 		<string name="SaveInputs">Save Input</string>
 		<string name="SaveInputsForMinutes">Save Inputs for (Minutes)</string>
+		<string name="EditFavAdd">Add</string>
+		<string name="EditFavRem">Remove</string>
 </resources>

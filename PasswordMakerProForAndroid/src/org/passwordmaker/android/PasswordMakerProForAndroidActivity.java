@@ -65,6 +65,7 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 
 	public static final String EXTRA_PROFILE = PasswordMakerEditProfile.EXTRA_PROFILE;
 	private static final int EDIT_PROFILE = 0x04;
+	private static final int EDIT_FAVORITE  = 0x08;
 
 	private CheckBox chkSaveInputs;
 	private TextView lblInputTimeout;
@@ -248,19 +249,23 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 		final List<String> favs = new ArrayList<String>(pwm.getProfile()
 				.getFavorites());
 		favs.add(getString(R.string.AddFavorite));
+		favs.add(getString(R.string.EditFavorites));
 		final CharSequence[] items = favs.toArray(new CharSequence[0]);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Pick a Favorite");
 		builder.setItems(items, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int item) {
-				if (item >= 0 && item < items.length - 1) {
+				if (item >= 0 && item < items.length - 2) {
 					TextView inputText = (TextView) findViewById(R.id.txtInput);
 					inputText.setText(items[item]);
 					updatePassword();
-				} else if (item == items.length - 1) {
+				} else if (item == items.length - 2) {
 					newFavorite();
+				} else if (item == items.length - 1) {
+					showFavorites();
 				}
+				
 			}
 		});
 		AlertDialog alert = builder.create();
@@ -299,6 +304,12 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 		alert.show();
 	}
 
+	private void showFavorites() {
+		Intent intent = new Intent(this, PasswordMakerEditFavorites.class);
+		intent.putExtra(PasswordMakerEditFavorites.EXTRA_PROFILE, pwm.profile);
+		startActivityForResult(intent, EDIT_FAVORITE);
+	}
+	
 	private void edit_profile(PwmProfile profile) {
 		Intent intent = new Intent(this, PasswordMakerEditProfile.class);
 		intent.putExtra(EXTRA_PROFILE, profile);
@@ -318,11 +329,19 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
-		case EDIT_PROFILE:
+		case EDIT_PROFILE: {
 			PwmProfile changedProfile = (PwmProfile) data
 					.getSerializableExtra(EXTRA_PROFILE);
 			finish_edit_profile(changedProfile);
 			break;
+		}
+		case EDIT_FAVORITE: {
+			PwmProfile changedProfile = (PwmProfile) data
+					.getSerializableExtra(EXTRA_PROFILE);
+			pwm.setProfile(changedProfile);
+			pwmProfiles.set(changedProfile);
+			break;
+		}
 		}
 	}
 

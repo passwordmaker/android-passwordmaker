@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -191,6 +192,13 @@ public class PwmProfile implements Serializable {
 	public void addFavorite(List<String> favs) {
 		pwmFavoriteInputs.addAll(favs);
 	}
+	
+
+	public void setProfiles(Collection<String> favorites) {
+		pwmFavoriteInputs.clear();
+		pwmFavoriteInputs.addAll(favorites);
+	}
+
 	
 	public String getCurrentPasswordHash() {
 		return currentPasswordHash;
