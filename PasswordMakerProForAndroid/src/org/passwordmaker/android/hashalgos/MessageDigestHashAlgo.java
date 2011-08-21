@@ -19,7 +19,6 @@
 
 package org.passwordmaker.android.hashalgos;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
