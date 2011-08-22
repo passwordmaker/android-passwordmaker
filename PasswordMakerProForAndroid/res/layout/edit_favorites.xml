@@ -4,8 +4,12 @@
   android:orientation="vertical"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent" android:id="@+id/mainFavoritesEdit">
-    <ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/scrollView1"  android:layout_marginBottom="50dip">
-        <TableLayout android:id="@+id/tblFavoritesEdit" android:layout_height="wrap_content" android:layout_width="fill_parent"></TableLayout>
+    <ScrollView android:layout_width="fill_parent" 
+    android:layout_height="fill_parent" android:id="@+id/scrollView1" 
+     android:layout_marginBottom="50dip">
+        <TableLayout android:id="@+id/tblFavoritesEdit" 
+        android:layout_height="wrap_content"
+         android:layout_width="fill_parent"></TableLayout>
     </ScrollView>
     
     <RelativeLayout 

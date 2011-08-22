@@ -18,7 +18,7 @@ public class HmacHashAlgo implements UnderliningHashAlgo {
 
 	@Override
 	public int digestLength() {
-		return this.underliningHash.blockSize();
+		return this.underliningHash.digestLength();
 	}
 
 	@Override
@@ -41,6 +41,7 @@ public class HmacHashAlgo implements UnderliningHashAlgo {
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
+		// Here is a bug this should compare tmp above not keyBytes as its not dependent on size... above will crap out if this condition would have held true
 		if (keyBytes.length > blockSize()) {
 			keyBytes = underliningHash.hashText(keyBytes);
 		}

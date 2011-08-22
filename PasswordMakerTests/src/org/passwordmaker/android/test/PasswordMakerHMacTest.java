@@ -2,9 +2,12 @@ package org.passwordmaker.android.test;
 
 import java.io.UnsupportedEncodingException;
 
+import org.passwordmaker.android.CharacterSetSelection;
 import org.passwordmaker.android.HashAlgo;
+import org.passwordmaker.android.PasswordMaker;
 import org.passwordmaker.android.PwmHashAlgorithm;
 import org.passwordmaker.android.PwmHashAlgorithm.UnderliningHashAlgo;
+import org.passwordmaker.android.PwmProfile;
 
 import junit.framework.TestCase;
 
@@ -60,4 +63,40 @@ HMAC_SHA512("key", "The quick brown fox jumps over the lazy dog") = 0x b42af0905
 		assertEquals( "f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8", getHashString(HashAlgo.HMAC_SHA_256, sampleKey, sampleText));
 	}
 	
+	/**
+	 * Bug report of failing on HMAC profile.  I can reproduce it with making a profile with:
+	 * CharSet = AlphaNum, hashAlgo = HMAC_SHA_256
+	 * master password was empty at the time of the crash, but any password screws up.
+	 * 
+	 * This tests the underlining hash implementation. 
+	 * 
+	 * Python implementation of HMAC was used as reference with sha256 as underlining hash:
+	 * >>> h = hmac.new("HelloWorld", "google.com", hashlib.sha256)
+     * >>> h.hexdigest()
+     * '150ea7bcf5cbf705a431edb95d9acdabe088dc59fb43ed00c712f3b3acb35111'
+	 * @throws UnsupportedEncodingException
+	 */
+	public void testTextSha256HelloWorld() throws UnsupportedEncodingException {
+		assertEquals( "150ea7bcf5cbf705a431edb95d9acdabe088dc59fb43ed00c712f3b3acb35111", getHashString(HashAlgo.HMAC_SHA_256, "HelloWorld", "google.com"));
+	}
+	
+	/**
+	 * Bug report of failing on HMAC profile.  I can reproduce it with making a profile with:
+	 * CharSet = AlphaNum, hashAlgo = HMAC_SHA_256
+	 * master password was empty at the time of the crash, but any password screws up.
+	 * 
+	 * This tests the layer above the underlining hash implementation. (Plus the hash implementation indirectly)
+	 * 
+	 * Results: Prior to bug fix, the above (testTextSha256HelloWorld) passes and this test fails with the exception that matches the bug report.
+	 * 
+	 */ 
+	
+	public void testTextSha256Profile() throws UnsupportedEncodingException {
+		PwmProfile profile = new PwmProfile("HelloWorld");
+		profile.setCharacters(CharacterSetSelection.alphaNum);
+		profile.setHashAlgo(HashAlgo.HMAC_SHA_256);
+		PasswordMaker pwm = new PasswordMaker();
+		pwm.setProfile(profile);
+		assertEquals("E9kUY2f2", pwm.generatePassword("google.com", "HelloWorld"));
+	}
 }
