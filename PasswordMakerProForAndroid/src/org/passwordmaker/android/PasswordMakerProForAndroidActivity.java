@@ -88,6 +88,7 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 					"Error occured while attempting to load saved profiles from PrivateStore",
 					e);
 		}
+		if ( pwmProfiles == null ) pwmProfiles = new PwmProfileList();
 		if (pwmProfiles.isEmpty())
 			pwmProfiles.set(new PwmProfile("Default"));
 

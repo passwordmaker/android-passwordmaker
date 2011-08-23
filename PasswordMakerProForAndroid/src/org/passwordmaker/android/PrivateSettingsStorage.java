@@ -28,11 +28,12 @@ import java.io.Reader;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import com.tasermonkeys.google.json.Gson;
 
 public class PrivateSettingsStorage {
-
+	private static String LOG_TAG = "PrivateSettingsStorage";
 	private static PrivateSettingsStorage instance = new PrivateSettingsStorage();
 	private Gson serializer;
 	
@@ -78,7 +79,13 @@ public class PrivateSettingsStorage {
 		InputStream fis = context.openFileInput(filename);
 		try {
 			Reader reader = new InputStreamReader(fis, "UTF-8");
-			return (T) serializer.fromJson(reader, defaultValue.getClass());
+			T retVal = (T) serializer.fromJson(reader, defaultValue.getClass());
+			if ( retVal == null ) {
+				Log.e(LOG_TAG, "Json serializer return null on key " + key);
+				return defaultValue;
+				
+			}
+			return retVal;
 		} finally {
 			StreamUtils.closeNoThrow(fis);
 		}
