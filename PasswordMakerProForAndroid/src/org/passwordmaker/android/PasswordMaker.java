@@ -108,7 +108,8 @@ public class PasswordMaker {
 		final int maxLen = profile.getLengthOfPassword();
 		int count = 0;
 		final LeetLevel leetLevel = profile.getLeetLevel();
-		String data = getData(inputText);
+		String data = getData(getModifiedInputText(inputText));
+		
 		if ( profile.getUseLeet().useBefore() ) {
 			masterPassword = LeetConverter.convert(leetLevel, masterPassword);
 			data = LeetConverter.convert(leetLevel, data);
