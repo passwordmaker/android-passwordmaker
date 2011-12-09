@@ -71,6 +71,12 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 	private TextView lblInputTimeout;
 	private EditText txtInputTimeout;
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		loadDefaultValueForFields();
+	}
+	
 	/** Called when the activity is first created. **/
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -80,7 +86,7 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 		chkSaveInputs.setOnCheckedChangeListener(onSaveInputCheckbox);
 		txtInputTimeout = (EditText) findViewById(R.id.txtSaveInputTime);
 		lblInputTimeout = (TextView) findViewById(R.id.lblSaveForLength);
-		try {
+		try { 
 			pwmProfiles = PrivateSettingsStorage.getInstance().getObject(this,
 					REPO_KEY_PROFILES, pwmProfiles);
 		} catch (IOException e) {
@@ -175,21 +181,23 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 				if (time > cal.getTimeInMillis()) {
 					final String savedPass = getPreferences(MODE_PRIVATE)
 							.getString(REPO_KEY_SAVED_INPUT_PASSWORD, "");
-					final String savedInputText = getPreferences(MODE_PRIVATE)
-							.getString(REPO_KEY_SAVED_INPUT_INPUTTEXT, "");
+					final String savedInputText = getDefaultInputText(true);
 					setInputPassword(savedPass);
 					setInputText(savedInputText);
 					updatePassword();
-				} else {
-					// expired clear from preferences
-					final Editor prefs = getPreferences(Activity.MODE_PRIVATE)
-							.edit();
-					prefs.remove(REPO_KEY_SAVED_INPUT_UNTIL);
-					prefs.remove(REPO_KEY_SAVED_INPUT_PASSWORD);
-					prefs.remove(REPO_KEY_SAVED_INPUT_INPUTTEXT);
-					prefs.commit();
-				}
+					return;
+				} 
 			}
+			// expired clear from preferences
+			final Editor prefs = getPreferences(Activity.MODE_PRIVATE)
+					.edit();
+			prefs.remove(REPO_KEY_SAVED_INPUT_UNTIL);
+			prefs.remove(REPO_KEY_SAVED_INPUT_PASSWORD);
+			prefs.remove(REPO_KEY_SAVED_INPUT_INPUTTEXT);
+			prefs.commit();
+			final String savedInputText = getDefaultInputText(false);
+			setInputText(savedInputText);
+			updatePassword();
 		} catch (Exception e) {
 			Log.e(LOG_TAG, "Could not load default values", e);
 			final Editor prefs = getPreferences(Activity.MODE_PRIVATE).edit();
@@ -201,6 +209,27 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 		}
 	}
 
+	private String getDefaultInputText(boolean readFromSettings) {
+		Intent intent = getIntent();
+		final String webPageUrl;
+		if ( intent != null ) {
+			if ( intent.getAction().equals("android.intent.action.SEND") ) {
+				webPageUrl = intent.getStringExtra(Intent.EXTRA_TEXT);
+			} else {
+				if ( readFromSettings )
+					webPageUrl = getPreferences(MODE_PRIVATE).getString(REPO_KEY_SAVED_INPUT_INPUTTEXT, "");
+				else
+					webPageUrl = "";
+			}
+		} else {
+			if ( readFromSettings )
+				webPageUrl = getPreferences(MODE_PRIVATE).getString(REPO_KEY_SAVED_INPUT_INPUTTEXT, "");
+			else
+				webPageUrl = "";
+		}
+		return webPageUrl;
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -420,6 +449,7 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 	}
 
 	private void setInputText(String value) {
+		Log.i(LOG_TAG, "Setting input text to \"" + value + "\"");
 		TextView inputText = (TextView) findViewById(R.id.txtInput);
 		inputText.setText(value);
 	}
