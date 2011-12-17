@@ -30,6 +30,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
@@ -41,11 +42,10 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 
 public class PasswordMakerEditProfile extends Activity {
+	private static final String LOG_TAG = "PasswordMakerEditProfile";
 	private PasswordMaker pwm = new PasswordMaker();
 	private PwmProfile profile;
 	private EditText txtName;
@@ -54,7 +54,7 @@ public class PasswordMakerEditProfile extends Activity {
 	private CheckBox chkSubdomain;
 	private CheckBox chkOthers;
 	private Spinner useLeet;
-	private SeekBar leetLevel;
+	private Spinner leetLevel;
 	private Spinner hashAlgo;
 	private EditText passLength;
 	private EditText username;
@@ -203,18 +203,13 @@ public class PasswordMakerEditProfile extends Activity {
 
 			public void onNothingSelected(AdapterView<?> arg0) {}
 		});
-		leetLevel = (SeekBar)findViewById(R.id.seekLeetLevel);
-		leetLevel.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				LeetLevel lvl = LeetLevel.values()[seekBar.getProgress()];
+		leetLevel = (Spinner)findViewById(R.id.spinLeetLevel);
+		leetLevel.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				LeetLevel lvl = LeetLevel.values()[parent.getSelectedItemPosition()];
 				profile.setLeetLevel(lvl);
-				
 			}
-			
-			public void onStartTrackingTouch(SeekBar seekBar) {}
-			
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {}
+			public void onNothingSelected(AdapterView<?> arg0) {}
 		});
 		hashAlgo = (Spinner)findViewById(R.id.selectHashAlgos);
 		hashAlgo.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -230,7 +225,17 @@ public class PasswordMakerEditProfile extends Activity {
 			public void onFocusChange(View v, boolean hasFocus) {
 				System.out.println("Password length: " + Boolean.toString(hasFocus) + ": " + passLength.getText().toString());
 				if ( ! hasFocus ) {
-					profile.setLengthOfPassword(Short.parseShort(passLength.getText().toString()));
+					if ( passLength.getText().length() == 0 ) {
+						passLength.setText(Short.toString(profile.getLengthOfPassword()));
+					} else {
+						try {
+							profile.setLengthOfPassword(Short.parseShort(passLength.getText().toString()));
+						} catch (NumberFormatException e) {
+							Log.e(LOG_TAG, "Can not set length of password, \"" + passLength.getText().toString() + "\" " +
+									"using existing length of " + profile.getLengthOfPassword() + " Error: " + e.getMessage());
+							passLength.setText(Short.toString(profile.getLengthOfPassword()));
+						}
+					}
 				} else
 					focusedText = passLength;
 			}
@@ -310,8 +315,7 @@ public class PasswordMakerEditProfile extends Activity {
 	    chkSubdomain.setChecked(profile.getUrlComponents().contains(UrlComponents.Subdomain));
 	    chkOthers.setChecked(profile.getUrlComponents().contains(UrlComponents.PortPathAnchorQuery));
 	    useLeet.setSelection(profile.getUseLeet().ordinal());
-	    leetLevel.setMax(LeetLevel.values().length-1);
-	    leetLevel.setProgress(profile.getLeetLevel().ordinal());
+	    leetLevel.setSelection(profile.getLeetLevel().ordinal());
 	    hashAlgo.setSelection(profile.getCurrentAlgo().ordinal());
 	    passLength.setText(Short.toString(profile.getLengthOfPassword()));
 	    username.setText(profile.getUsername());
