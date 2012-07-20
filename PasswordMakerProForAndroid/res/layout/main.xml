@@ -4,9 +4,18 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" 
-    	android:textAppearance="?android:attr/textAppearanceSmall" android:text="@string/Input" 
-    	android:id="@+id/lblInputText"></TextView>
+    <LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="fill_parent">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        	android:textAppearance="?android:attr/textAppearanceSmall"
+        	android:text="@string/LblProfile" android:id="@+id/lblProfileName"></TextView>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        	android:textAppearance="?android:attr/textAppearanceSmall"
+        	android:text="" android:id="@+id/lblCurrentProfile"
+        	android:layout_marginLeft="10dip" android:textStyle="bold"></TextView>
+    </LinearLayout>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+    	android:textAppearance="?android:attr/textAppearanceSmall"
+    	android:text="@string/Input" android:id="@+id/lblInputText"></TextView>
     <LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="fill_parent">
         <EditText android:layout_weight="1" android:id="@+id/txtInput" android:layout_height="wrap_content" android:singleLine="true" android:layout_width="fill_parent">
             <requestFocus></requestFocus>
@@ -18,6 +27,13 @@
     	android:text="@string/MasterPassword" android:id="@+id/lblMasterPass"></TextView>
     <EditText android:layout_width="fill_parent" android:layout_height="wrap_content" 
     	android:inputType="textPassword" android:id="@+id/txtMasterPass" android:singleLine="true"></EditText>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" 
+    	android:textAppearance="?android:attr/textAppearanceSmall" 
+    	android:text="@string/MasterPwdVerification" android:id="@+id/lblMasterPwdVerification"></TextView>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+    	android:textAppearance="?android:attr/textAppearanceSmall"
+    	android:text="" android:id="@+id/lblVerificationCode"
+    	android:textStyle="bold"></TextView>
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" 
     	android:textAppearance="?android:attr/textAppearanceSmall" android:text="@string/Password" 
     	android:id="@+id/lblPassword"></TextView>

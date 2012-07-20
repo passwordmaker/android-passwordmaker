@@ -3,6 +3,7 @@
     <string name="app_name">PasswordMaker Pro</string>
     <string name="Password">Password</string>
     <string name="MasterPassword">Master Password</string>
+    <string name="MasterPwdVerification">Master Password Verification Code</string>
     <string name="Input">Input Text</string>
     <string name="CharacterSet">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</string>
     <string name="LblCharSet">Character Set</string>
@@ -62,6 +63,7 @@
 	</string-array>
 		<string name="LblPrefix">Prefix</string>
 		<string name="LblSuffix">Suffix</string>
+		<string name="LblProfile">Profile:</string>
 		<string name="LblProfileName">Name</string>
 		<string name="LblUseUrlParts">URL Parts to use</string>
 		<string name="LblLeetOptions">Use leet</string>

@@ -147,6 +147,31 @@ public class PasswordMaker {
 		return strPass;
 	}
 
+	public String generateVerificationCode(String masterPassword) {
+		final PwmHashAlgorithm hasher = PwmHashAlgorithm.get(HashAlgo.SHA_256);
+		StringBuilder password = new StringBuilder();
+		final String charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		final int maxLen = 3;
+		int count = 0;
+				
+		while ( password.length() < maxLen ) {
+			final String buildPass;
+			if ( count == 0 ) {
+				buildPass = hasher.hash(masterPassword, "", charSet);
+			} else {
+				buildPass = hasher.hash(masterPassword + "\n" + Integer.toString(count), "", charSet);
+			}
+			password.append(buildPass);
+			count++;
+		}
+		String strPass = password.toString();
+		
+		if ( strPass.length() > maxLen ) {
+			strPass = strPass.substring(0, maxLen);
+		}
+		return strPass;
+	}
+
 	private String getData(String inputText) {
 		String username = profile.getUsername();
 		String modifier = profile.getModifier();

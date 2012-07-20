@@ -105,9 +105,9 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 				REPO_KEY_CURRENT_PROFILES, currentProfile);
 		PwmProfile prof = pwmProfiles.get(currentProfile);
 		if (prof != null)
-			pwm.setProfile(prof);
+			setCurrentProfile(prof);
 		else
-			pwm.setProfile(pwmProfiles.get("Default"));
+			setCurrentProfile(pwmProfiles.get("Default"));
 
 		TextView text = (TextView) findViewById(R.id.txtInput);
 		if (text != null)
@@ -218,14 +218,26 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 			} else {
 				if ( readFromSettings )
 					webPageUrl = getPreferences(MODE_PRIVATE).getString(REPO_KEY_SAVED_INPUT_INPUTTEXT, "");
-				else
-					webPageUrl = "";
+				else {
+					final List<String> favs = new ArrayList<String>(pwm.getProfile()
+							.getFavorites());
+					if (favs.size() == 1)
+						webPageUrl = favs.get(0);
+					else
+						webPageUrl = "";
+				}
 			}
 		} else {
 			if ( readFromSettings )
 				webPageUrl = getPreferences(MODE_PRIVATE).getString(REPO_KEY_SAVED_INPUT_INPUTTEXT, "");
-			else
-				webPageUrl = "";
+			else {
+				final List<String> favs = new ArrayList<String>(pwm.getProfile()
+						.getFavorites());
+				if (favs.size() == 1)
+					webPageUrl = favs.get(0);
+				else
+					webPageUrl = "";
+			}
 		}
 		return webPageUrl;
 	}
@@ -350,8 +362,17 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 	private void finish_edit_profile(PwmProfile profile) {
 		pwmProfiles.set(profile);
 		if (pwm.getProfile().getName().equals(profile.getName())) {
-			pwm.setProfile(profile);
+			setCurrentProfile(profile);
+			setDefaultInputText();
 			updatePassword();
+		}
+	}
+
+	private void setDefaultInputText() {
+		final List<String> favs = new ArrayList<String>(pwm.getProfile()
+				.getFavorites());
+		if (favs.size() == 1) {
+			setInputText(favs.get(0));
 		}
 	}
 
@@ -368,7 +389,7 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 		case EDIT_FAVORITE: {
 			PwmProfile changedProfile = (PwmProfile) data
 					.getSerializableExtra(EXTRA_PROFILE);
-			pwm.setProfile(changedProfile);
+			setCurrentProfile(changedProfile);
 			pwmProfiles.set(changedProfile);
 			break;
 		}
@@ -413,7 +434,8 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 				Toast.makeText(getApplicationContext(), items[item],
 						Toast.LENGTH_SHORT).show();
 				PwmProfile selProfile = pwmProfiles.get(items[item]);
-				pwm.setProfile(selProfile);
+				setCurrentProfile(selProfile);
+				setDefaultInputText();
 				updatePassword();
 			}
 		});
@@ -421,7 +443,14 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 		alert.show();
 	}
 
+	protected void setCurrentProfile(PwmProfile prof) {
+		pwm.setProfile(prof);
+		TextView text = (TextView) findViewById(R.id.lblCurrentProfile);
+		text.setText(prof.getName());
+	}
+
 	public final void updatePassword() {
+		updateVerificationCode();
 		TextView text = (TextView) findViewById(R.id.txtPassword);
 		final String inputText = getInputText();
 		final String masterPassword = getInputPassword();
@@ -432,6 +461,11 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 			text.setText("Password Hash Mismatch");
 		}
 	}
+	
+	public final void updateVerificationCode() {
+		final String masterPassword = getInputPassword();
+		setVerificationCode(pwm.generateVerificationCode(masterPassword));
+	}
 
 	private String getInputPassword() {
 		TextView masterPass = (TextView) findViewById(R.id.txtMasterPass);
@@ -441,6 +475,7 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 	private void setInputPassword(String value) {
 		TextView masterPass = (TextView) findViewById(R.id.txtMasterPass);
 		masterPass.setText(value);
+		updateVerificationCode();
 	}
 
 	private String getInputText() {
@@ -452,6 +487,11 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 		Log.i(LOG_TAG, "Setting input text to \"" + value + "\"");
 		TextView inputText = (TextView) findViewById(R.id.txtInput);
 		inputText.setText(value);
+	}
+	
+	private void setVerificationCode(String code) {
+		TextView verificationText = (TextView) findViewById(R.id.lblVerificationCode);
+		verificationText.setText(code);
 	}
 
 	private OnFocusChangeListener mUpdatePasswordFocusListener = new OnFocusChangeListener() {
