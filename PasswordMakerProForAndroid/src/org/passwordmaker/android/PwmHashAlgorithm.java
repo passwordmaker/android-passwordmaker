@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
 import org.passwordmaker.android.hashalgos.HmacHashAlgo;
+import org.passwordmaker.android.hashalgos.Md4HashAlgo;
 import org.passwordmaker.android.hashalgos.Md5HashAlgo;
 import org.passwordmaker.android.hashalgos.RipeMd160HashAlgo;
 import org.passwordmaker.android.hashalgos.Sha1HashAlgo;
@@ -169,7 +170,7 @@ public class PwmHashAlgorithm {
 				normalHash = new Sha1HashAlgo() ;
 				break;
 			case MD4:
-				normalHash = new Sha1HashAlgo() ;
+				normalHash = new Md4HashAlgo() ;
 				break;
 			case RIPEMD_160:
 				normalHash = new RipeMd160HashAlgo() ;
@@ -181,8 +182,9 @@ public class PwmHashAlgorithm {
 				return new HmacHashAlgo(algo, normalHash);
 			}
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			// I bet some android device does not support one of these
+			// Algos
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 }
