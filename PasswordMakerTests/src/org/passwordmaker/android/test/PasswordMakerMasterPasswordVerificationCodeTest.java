@@ -45,7 +45,7 @@ public class PasswordMakerMasterPasswordVerificationCodeTest extends TestCase {
 
 	public void testEmptyMasterPassword() {
 		_setupPwm();
-		assertEquals("gNV", pwm.generateVerificationCode(""));
+            assertEquals("gNV", pwm.generateVerificationCode(""));
 	}
 
 	public void testVeryShortMasterPassword() {
@@ -57,6 +57,22 @@ public class PasswordMakerMasterPasswordVerificationCodeTest extends TestCase {
 		_setupPwm();
 		assertEquals("RHd", pwm.generateVerificationCode("happybirthday"));
 	}
+
+    /** This unit test shows that configuring a password maker profile with the same settings that
+     *  the {@link PasswordMaker#generateVerificationCode} uses will generate the same output.
+     */
+    public void testPwmWithSameProfileSettings() {
+        pwm = new PasswordMaker();
+        PwmProfile profile = pwm.getProfile();
+        profile.setCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+        profile.setHashAlgo(HashAlgo.SHA_256);
+        profile.setLengthOfPassword((short) 3);
+        profile.setModifier("");
+        profile.setPrefix("");
+        profile.setSuffix("");
+        profile.setUseLeet(UseLeet.NotAtAll);
+        assertEquals("KPA", pwm.generatePassword("happy", ""));
+    }
 	
 	public void testProfileDoesntMatter() {
 		_setupPwm();

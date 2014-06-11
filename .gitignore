@@ -1,7 +1,10 @@
 gen
 bin
+out
 .classpath
 .settings
 .project
 .metadata
 .DS_Store
+.idea
+*.iml
