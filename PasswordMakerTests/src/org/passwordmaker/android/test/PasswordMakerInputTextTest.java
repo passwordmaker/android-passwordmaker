@@ -62,8 +62,41 @@ public class PasswordMakerInputTextTest  extends TestCase {
         assertEquals("google.co.jp", pwm.getModifiedInputText("google.co.jp"));
         assertEquals("mysite.tx.us", pwm.getModifiedInputText("www.mysite.tx.us"));
         assertEquals("mysite.tx.us", pwm.getModifiedInputText("mysite.tx.us"));
+        assertEquals("google.dnepropetrovsk.ua", pwm.getModifiedInputText("www.google.dnepropetrovsk.ua"));
+        assertEquals("google.dnepropetrovsk.ua", pwm.getModifiedInputText("google.dnepropetrovsk.ua"));
+    }
+
+    public void testUseDomainPlusSubDomainForCountryCodeTLDs() {
+        final PwmProfile profile = _setupPwm();
+        profile.getUrlComponents().add(UrlComponents.Domain);
+        profile.getUrlComponents().add(UrlComponents.Subdomain);
+        assertEquals("google.co.uk", pwm.getModifiedInputText("google.co.uk"));
+        assertEquals("www.google.co.uk", pwm.getModifiedInputText("www.google.co.uk"));
+        assertEquals("sub.domain.www.google.co.uk", pwm.getModifiedInputText("sub.domain.www.google.co.uk"));
+        assertEquals("www.google.act.edu.au", pwm.getModifiedInputText("www.google.act.edu.au"));
+        assertEquals("google.act.edu.au", pwm.getModifiedInputText("google.act.edu.au"));
+        assertEquals("www.google.co.jp", pwm.getModifiedInputText("www.google.co.jp"));
+        assertEquals("google.co.jp", pwm.getModifiedInputText("google.co.jp"));
+        assertEquals("www.mysite.tx.us", pwm.getModifiedInputText("www.mysite.tx.us"));
+        assertEquals("mysite.tx.us", pwm.getModifiedInputText("mysite.tx.us"));
         assertEquals("www.google.dnepropetrovsk.ua", pwm.getModifiedInputText("www.google.dnepropetrovsk.ua"));
-        assertEquals("www.google.tx.us", pwm.getModifiedInputText("google.dnepropetrovsk.ua"));
+        assertEquals("google.dnepropetrovsk.ua", pwm.getModifiedInputText("google.dnepropetrovsk.ua"));
+    }
+
+    public void testJustUseSubDomainForCountryCodeTLDs() {
+        final PwmProfile profile = _setupPwm();
+        profile.getUrlComponents().add(UrlComponents.Subdomain);
+        assertEquals("", pwm.getModifiedInputText("google.co.uk"));
+        assertEquals("www", pwm.getModifiedInputText("www.google.co.uk"));
+        assertEquals("sub.domain.www", pwm.getModifiedInputText("sub.domain.www.google.co.uk"));
+        assertEquals("www", pwm.getModifiedInputText("www.google.act.edu.au"));
+        assertEquals("", pwm.getModifiedInputText("google.act.edu.au"));
+        assertEquals("www", pwm.getModifiedInputText("www.google.co.jp"));
+        assertEquals("", pwm.getModifiedInputText("google.co.jp"));
+        assertEquals("www", pwm.getModifiedInputText("www.mysite.tx.us"));
+        assertEquals("", pwm.getModifiedInputText("mysite.tx.us"));
+        assertEquals("www", pwm.getModifiedInputText("www.google.dnepropetrovsk.ua"));
+        assertEquals("", pwm.getModifiedInputText("google.dnepropetrovsk.ua"));
     }
 	
 	public void testDomainPlusSubDomain() {
