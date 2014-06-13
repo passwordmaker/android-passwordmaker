@@ -81,10 +81,14 @@ public class PwmProfile implements Serializable {
 	}
 	
 	public PwmHashAlgorithm getHashAlgo() {
-		return hashAlgo;
+		if ( hashAlgo == null ) {
+            hashAlgo = PwmHashAlgorithm.get(currentAlgo);
+        }
+        return hashAlgo;
 	}
 
 	public void setHashAlgo(PwmHashAlgorithm hashAlgo) {
+        if ( hashAlgo == null ) throw new NullPointerException("Hash algorithm is null");
 		this.hashAlgo = hashAlgo;
 		this.currentAlgo = hashAlgo.getHashAlgo();
 	}
@@ -233,14 +237,27 @@ public class PwmProfile implements Serializable {
 	public void disablePasswordHash() {
 		setStorePasswordHash(false);
 	}
-	
-	@Override
-	public String toString() {
-		GsonBuilder builder = PwmGsonBuilder.makeBuilder();
-		builder.setPrettyPrinting();
-		Gson prettyPrinter = builder.create();
-		return prettyPrinter.toJson(this);
-	}
 
 
+    @Override
+    public String toString() {
+        return "PwmProfile{" +
+                "name='" + name + '\'' +
+                ", currentAlgo=" + currentAlgo +
+                ", hashAlgo=" + hashAlgo +
+                ", useLeet=" + useLeet +
+                ", leetLevel=" + leetLevel +
+                ", urlComponents=" + urlComponents +
+                ", lengthOfPassword=" + lengthOfPassword +
+                ", username='" + username + '\'' +
+                ", modifier='" + modifier + '\'' +
+                ", characters='" + characters + '\'' +
+                ", passwordPrefix='" + passwordPrefix + '\'' +
+                ", passwordSuffix='" + passwordSuffix + '\'' +
+                ", pwmFavoriteInputs=" + pwmFavoriteInputs +
+                ", storePasswordHash=" + storePasswordHash +
+                ", currentPasswordHash='" + currentPasswordHash + '\'' +
+                ", passwordSalt='" + passwordSalt + '\'' +
+                '}';
+    }
 }
