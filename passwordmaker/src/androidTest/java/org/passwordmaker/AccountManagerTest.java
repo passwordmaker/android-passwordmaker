@@ -3,10 +3,9 @@ package org.passwordmaker;
 import android.util.Log;
 import junit.framework.TestCase;
 import org.daveware.passwordmaker.Account;
-import org.daveware.passwordmaker.AlgorithmType;
 import org.daveware.passwordmaker.PasswordMaker;
 import org.daveware.passwordmaker.SecureCharArray;
-import org.passwordmaker.testPasswordMaker.testpasswordmaker.passwordmaker.AccountManager;
+import org.passwordmaker.android.AccountManager;
 
 import static org.passwordmaker.TestUtils.saToString;
 

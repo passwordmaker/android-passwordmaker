@@ -1,4 +1,4 @@
-package org.passwordmaker.testPasswordMaker.testpasswordmaker.passwordmaker;
+package org.passwordmaker.android;
 
 import android.util.Log;
 import org.daveware.passwordmaker.*;

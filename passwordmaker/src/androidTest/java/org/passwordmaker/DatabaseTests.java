@@ -2,7 +2,7 @@ package org.passwordmaker;
 
 import junit.framework.TestCase;
 import org.daveware.passwordmaker.*;
-import org.passwordmaker.testPasswordMaker.testpasswordmaker.passwordmaker.AndroidRDFDatabaseWriter;
+import org.passwordmaker.android.AndroidRDFDatabaseWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

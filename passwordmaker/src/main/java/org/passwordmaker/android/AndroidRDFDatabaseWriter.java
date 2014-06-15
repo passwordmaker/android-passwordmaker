@@ -1,9 +1,9 @@
-package org.passwordmaker.testPasswordMaker.testpasswordmaker.passwordmaker;
+package org.passwordmaker.android;
 
 import org.daveware.passwordmaker.RDFDatabaseWriter;
 import org.daveware.passwordmaker.xmlwrappers.XmlIOException;
 import org.daveware.passwordmaker.xmlwrappers.XmlStreamWriter;
-import org.passwordmaker.testPasswordMaker.testpasswordmaker.passwordmaker.xmlwrappers.AndroidXmlStreamWriter;
+import org.passwordmaker.android.xmlwrappers.AndroidXmlStreamWriter;
 
 import java.io.Writer;
 

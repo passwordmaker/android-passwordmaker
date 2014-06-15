@@ -1,4 +1,4 @@
-package org.passwordmaker.testPasswordMaker.testpasswordmaker.passwordmaker.xmlwrappers;
+package org.passwordmaker.android.xmlwrappers;
 
 import org.daveware.passwordmaker.xmlwrappers.XmlIOException;
 import org.daveware.passwordmaker.xmlwrappers.XmlStreamWriter;
