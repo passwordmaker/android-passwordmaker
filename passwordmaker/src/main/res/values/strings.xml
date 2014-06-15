@@ -4,7 +4,6 @@
     <string name="app_name">PasswordMaker Pro</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
     <string name="Password">Password</string>
     <string name="MasterPassword">Master Password</string>
     <string name="MasterPwdVerification">Master Password Verification Code</string>
@@ -23,6 +22,7 @@
     <string name="chkSubdomain">Subdomain</string>
     <string name="chkOthers">Port, path, anchor, query parameters</string>
     <string name="AddFavorite">Add new</string>
+
     <string-array name="LeetOptions">
         <item>Not At All</item>
         <item>Before Generating Password</item>
@@ -55,7 +55,9 @@
         <item>Level 8</item>
         <item>Level 9</item>
     </string-array>
+
     <string name="PasswordLength">Password Length</string>
+
     <string-array name="NamedCharSets">
         <item>Alpha Number Symbols</item>
         <item>Alpha Num</item>
@@ -65,6 +67,7 @@
         <item>Symbols</item>
         <item>Custom (Enter your own)</item>
     </string-array>
+
     <string name="LblPrefix">Prefix</string>
     <string name="LblSuffix">Suffix</string>
     <string name="LblProfile">Profile:</string>
@@ -86,6 +89,8 @@
     <string name="EditFavAdd">Add</string>
     <string name="EditFavRem">Remove</string>
     <string name="lblHashAlgo">Hash Algo</string>
-
+    <string name="password_input">Password Input</string>
+    <string name="action_profiles">Profiles</string>
+    <string name="action_favorites">Favorites</string>
 
 </resources>

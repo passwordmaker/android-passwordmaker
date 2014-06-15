@@ -17,7 +17,7 @@ android {
     buildToolsVersion "19.1.0"
 
     defaultConfig {
-        minSdkVersion 9
+        minSdkVersion 15  //2014-06-15: 84.3% of android users are using Sdk Version 15+.  So lets shoot for that.
         targetSdkVersion 19
         versionCode 20000
         versionName "2.0.0"
@@ -36,7 +36,6 @@ dependencies {
     // You must install or update the Support Repository through the SDK manager to use this dependency.
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.madgag.spongycastle:core:1.50.0.0'
-    compile 'com.madgag.spongycastle:prov:1.50.0.0'
     compile 'org.passwordmaker:passwordmaker-je-lib:1.0-SNAPSHOT'
     androidTestCompile 'junit:junit:4.8.1'
 }

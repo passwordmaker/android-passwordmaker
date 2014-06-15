@@ -2,8 +2,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="org.passwordmaker.android.MainActivity" >
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    <item android:id="@+id/action_password_input"
+        android:title="@string/password_input"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_profiles"
+          android:title="@string/action_profiles"
+          android:orderInCategory="101"
+          app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_favorites"
+          android:title="@string/action_favorites"
+          android:orderInCategory="102"
+          app:showAsAction="ifRoom" />
 </menu>

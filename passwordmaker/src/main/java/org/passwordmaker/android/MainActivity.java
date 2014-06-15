@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import org.daveware.passwordmaker.Account;
+import org.daveware.passwordmaker.SecureCharArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,10 +106,26 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_password_input) {
+            return true;
+        }
+        if (id == R.id.action_profiles) {
+            return true;
+        }
+        if (id == R.id.action_favorites) {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void updateSelectedProfileText() {
+        Account account = accountManager.getAccountForInputText(getInputText());
+        TextView text = (TextView) findViewById(R.id.lblCurrentProfile);
+        String value = account.getName();;
+        if ( accountManager.isAutoSelectingAccount() ) {
+            value += " (AutoSelected)";
+        }
+        text.setText(value);
     }
 
     public void setCurrentProfile(String profileId) {
@@ -154,6 +171,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
     private void updatePassword() {
         updateVerificationCode();
+        updateSelectedProfileText();
         TextView text = (TextView) findViewById(R.id.txtPassword);
         final String inputText = getInputText();
         final String masterPassword = getInputPassword();
@@ -165,8 +183,23 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         }
     }
 
-    private void updateVerificationCode() {
+    public void updateVerificationCode() {
+        final String masterPassword = getInputPassword();
+        try {
+            setVerificationCode(accountManager.getPwm().generateVerificationCode(new SecureCharArray(masterPassword)));
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error generating verification code", e);
+            setVerificationCode("ERROR");
+        }
+    }
 
+    private void setVerificationCode(SecureCharArray code) {
+        setVerificationCode(new String(code.getData()));
+    }
+
+    private void setVerificationCode(String code) {
+        TextView verificationText = (TextView) findViewById(R.id.lblVerificationCode);
+        verificationText.setText(code);
     }
 
     private void newFavorite() {
