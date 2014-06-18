@@ -13,6 +13,7 @@ import org.daveware.passwordmaker.Account;
 import org.daveware.passwordmaker.AccountManager;
 import org.daveware.passwordmaker.AccountManagerListener;
 import org.daveware.passwordmaker.SecureCharArray;
+import org.passwordmaker.android.adapters.SubstringArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,8 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private TextView lblInputTimeout;
     private EditText txtInputTimeout;
 
+    private ArrayAdapter<String> favoritesAdapter;
+
     private void loadOldProfiles() {
 
     }
@@ -60,6 +63,9 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         lblInputTimeout = (TextView) findViewById(R.id.lblSaveForLength);
         loadOldProfiles();
         loadAccountDatabase();
+        favoritesAdapter = new SubstringArrayAdapter(this, android.R.layout.simple_list_item_1,
+                PwmApplication.getInstance().getAccountManager().getFavoriteUrls());
+
 
         String currentProfile = getPreferences(MODE_PRIVATE).getString(
                 REPO_KEY_CURRENT_PROFILES, null);
@@ -69,12 +75,14 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             System.out.println("While loading settings: " + e.getMessage());
         }
 
-        TextView text = (TextView) findViewById(R.id.txtInput);
-        if (text != null)
-            text.setOnKeyListener(mUpdatePasswordKeyListener);
-        if (text != null)
-            text.setOnFocusChangeListener(mUpdatePasswordFocusListener);
-        text = (TextView) findViewById(R.id.txtMasterPass);
+        AutoCompleteTextView inputText = (AutoCompleteTextView) findViewById(R.id.txtInput);
+        if (inputText != null) {
+            inputText.setOnKeyListener(mUpdatePasswordKeyListener);
+            inputText.setOnFocusChangeListener(mUpdatePasswordFocusListener);
+            inputText.setAdapter(favoritesAdapter);
+            inputText.setThreshold(1);
+        }
+        TextView text = (TextView) findViewById(R.id.txtMasterPass);
         if (text != null)
             text.setOnKeyListener(mUpdatePasswordKeyListener);
         if (text != null)
@@ -82,11 +90,14 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         Button button = (Button) findViewById(R.id.btnCopy);
         if (button != null)
             button.setOnClickListener(mCopyButtonClick);
-        button = (Button) findViewById(R.id.btnFavorites);
-        if (button != null)
-            button.setOnClickListener(mFavoritesClick);
 
         loadDefaultValueForFields();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        favoritesAdapter.notifyDataSetChanged();
     }
 
     private void loadDefaultValueForFields() {
@@ -103,6 +114,8 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     }
 
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -116,14 +129,12 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_password_input) {
-            return true;
-        }
         if (id == R.id.action_profiles) {
             showProfiles();
             return true;
         }
         if (id == R.id.action_favorites) {
+            showFavorites();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -272,9 +283,8 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     }
 
     private void showFavorites() {
-//        Intent intent = new Intent(this, PasswordMakerEditFavorites.class);
-//        intent.putExtra(PasswordMakerEditFavorites.EXTRA_PROFILE, pwm.profile);
-//        startActivityForResult(intent, EDIT_FAVORITE);
+        Intent intent = new Intent(this, EditFavoritesActivity.class);
+        startActivityForResult(intent, EDIT_FAVORITE);
     }
 
     private View.OnKeyListener mUpdatePasswordKeyListener = new View.OnKeyListener() {

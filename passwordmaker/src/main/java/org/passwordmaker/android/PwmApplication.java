@@ -1,6 +1,10 @@
 package org.passwordmaker.android;
 
+import android.widget.ArrayAdapter;
 import org.daveware.passwordmaker.AccountManager;
+import org.passwordmaker.AccountManagerSamples;
+
+import java.util.ArrayList;
 
 /**
  * The page http://developer.android.com/reference/android/app/Application.html
@@ -30,6 +34,7 @@ public class PwmApplication {
     private static PwmApplication sInstance;
     private AccountManager accountManager;
 
+
     public static PwmApplication getInstance() {
         // Lazy load the singleton on first use.
         if ( sInstance == null ) {
@@ -40,6 +45,7 @@ public class PwmApplication {
 
     private PwmApplication() {
         accountManager = new AccountManager();
+        AccountManagerSamples.addSamples(accountManager);
     }
 
     public AccountManager getAccountManager() {

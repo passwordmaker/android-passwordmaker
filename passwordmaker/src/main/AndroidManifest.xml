@@ -5,7 +5,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/full_app_name"
         android:theme="@style/AppTheme" >
         <activity
             android:name="org.passwordmaker.android.MainActivity"
@@ -31,6 +31,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.passwordmaker.android.AccountListActivity" />
+        </activity>
+        <activity
+            android:name=".EditFavoritesActivity"
+            android:label="@string/title_activity_edit_favorites"
+            android:parentActivityName="org.passwordmaker.android.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
         </activity>
     </application>
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="full_app_name">PasswordMaker Pro</string>
     <string name="app_name">PWMP</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="Password">Password</string>
     <string name="MasterPassword">Master Password</string>
@@ -92,5 +92,8 @@
     <string name="action_favorites">Favorites</string>
     <string name="title_account_list">Accounts</string>
     <string name="title_account_detail">Account Detail</string>
+    <string name="title_activity_edit_favorites">Edit Favorites</string>
+    <string name="action_favs_add">Add</string>
+    <string name="action_favs_rem">Remove</string>
 
 </resources>

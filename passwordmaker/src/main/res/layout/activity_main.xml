@@ -16,13 +16,13 @@
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:textAppearance="?android:attr/textAppearanceSmall"
               android:text="@string/Input" android:id="@+id/lblInputText"/>
-    <LinearLayout android:id="@+id/linearLayout2" android:layout_height="wrap_content" android:layout_width="fill_parent">
-        <EditText android:layout_weight="1" android:id="@+id/txtInput" android:layout_height="wrap_content" android:singleLine="true" android:layout_width="0dp"
-                  android:inputType="textUri">
-            <requestFocus/>
-        </EditText>
-        <Button android:layout_height="wrap_content" android:id="@+id/btnFavorites" android:layout_width="wrap_content" android:text="@string/ButtonFavorites"/>
-    </LinearLayout>
+    <AutoCompleteTextView android:id="@+id/txtInput"
+                          android:layout_height="wrap_content"
+                          android:singleLine="true"
+                          android:layout_width="fill_parent"
+                          android:inputType="textUri">
+        <requestFocus/>
+    </AutoCompleteTextView>
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:textAppearance="?android:attr/textAppearanceSmall"
               android:text="@string/MasterPassword" android:id="@+id/lblMasterPass"/>
