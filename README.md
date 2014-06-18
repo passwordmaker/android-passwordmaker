@@ -24,6 +24,7 @@ Compiling
 ==========
 * You will ofcourse need to download the (Android SDK)[http://developer.android.com/sdk/index.html#download]
 * Download and install an IDE like (IntelliJ)[http://www.jetbrains.com/idea/] with its plugin for Android.
+* Until (passwordmaker-je-lib)[https://github.com/tasermonkey/passwordmaker-je-lib] makes it into maven central, check it out and do a mvn install on it first.
 
 I now set this up using the gradle build process.  I use the Intellij IDE which makes the process really easy.  Just
 install the Intellij Android plugin and import this project after cloning this repository.  Use the import from external

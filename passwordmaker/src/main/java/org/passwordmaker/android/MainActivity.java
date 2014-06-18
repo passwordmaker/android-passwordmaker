@@ -2,6 +2,7 @@ package org.passwordmaker.android;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
@@ -9,6 +10,8 @@ import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import org.daveware.passwordmaker.Account;
+import org.daveware.passwordmaker.AccountManager;
+import org.daveware.passwordmaker.AccountManagerListener;
 import org.daveware.passwordmaker.SecureCharArray;
 
 import java.util.ArrayList;
@@ -26,12 +29,13 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private static final String REPO_KEY_SAVED_INPUT_INPUTTEXT = "savedInputInputText";
 
     private static String LOG_TAG = "PasswordMakerProForAndroidActivity";
-    private AccountManager accountManager = new AccountManager();
+    private AccountManager accountManager;
 
 
     public static final String EXTRA_PROFILE = "";//= PasswordMakerEditProfile.EXTRA_PROFILE;
     private static final int EDIT_PROFILE = 0x04;
     private static final int EDIT_FAVORITE  = 0x08;
+    private static final int LIST_ACCOUNTS = 0x10;
 
     private CheckBox chkSaveInputs;
     private TextView lblInputTimeout;
@@ -44,6 +48,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        accountManager = PwmApplication.getInstance().getAccountManager();
         setContentView(R.layout.activity_main);
 
         // this must be done before we do any loading of settings to make sure we get events
@@ -92,6 +97,11 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
     }
 
+    public void showProfiles() {
+        Intent intent = new Intent(this, AccountListActivity.class);
+        startActivityForResult(intent, LIST_ACCOUNTS);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,6 +120,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             return true;
         }
         if (id == R.id.action_profiles) {
+            showProfiles();
             return true;
         }
         if (id == R.id.action_favorites) {

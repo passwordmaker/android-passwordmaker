@@ -16,6 +16,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="org.passwordmaker.android.AccountListActivity"
+            android:label="@string/title_account_list"
+            android:parentActivityName="org.passwordmaker.android.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
+        <activity
+            android:name="org.passwordmaker.android.AccountDetailActivity"
+            android:label="@string/title_account_detail"
+            android:parentActivityName="org.passwordmaker.android.AccountListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.passwordmaker.android.AccountListActivity" />
+        </activity>
     </application>
 
 </manifest>
