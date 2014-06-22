@@ -33,12 +33,28 @@
                 android:value="org.passwordmaker.android.AccountListActivity" />
         </activity>
         <activity
-            android:name=".EditFavoritesActivity"
+            android:name="org.passwordmaker.android.EditFavoritesActivity"
             android:label="@string/title_activity_edit_favorites"
             android:parentActivityName="org.passwordmaker.android.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
+        </activity>
+        <activity
+            android:name="org.passwordmaker.android.PatternDataListActivity"
+            android:label="@string/title_patterndata_list"
+            android:parentActivityName="org.passwordmaker.android.AccountDetailActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="AccountDetailActivity" />
+        </activity>
+        <activity
+            android:name="org.passwordmaker.android.PatternDataDetailActivity"
+            android:label="@string/title_patterndata_detail"
+            android:parentActivityName="org.passwordmaker.android.PatternDataListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.passwordmaker.android.PatternDataListActivity" />
         </activity>
     </application>
 

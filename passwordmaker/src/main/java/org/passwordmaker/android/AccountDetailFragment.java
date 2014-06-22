@@ -1,6 +1,7 @@
 package org.passwordmaker.android;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,9 +47,6 @@ public class AccountDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         AccountManager accountManager = PwmApplication.getInstance().getAccountManager();
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
             mItem = accountManager.getPwmProfiles().findAccountById(getArguments().getString(ARG_ITEM_ID));
         }
     }
@@ -138,6 +136,7 @@ public class AccountDetailFragment extends Fragment {
         private Spinner spinnerCharacterSet;
         private EditText txtPrefix;
         private EditText txtSuffix;
+        private Button showPatterns;
 
         public ViewGetter(@NotNull View rootView) {
             this.rootView = rootView;
@@ -158,6 +157,7 @@ public class AccountDetailFragment extends Fragment {
             spinnerCharacterSet = (Spinner)rootView.findViewById(R.id.selectCharacterSet);
             txtPrefix = (EditText)rootView.findViewById(R.id.txtPrefix);
             txtSuffix = (EditText)rootView.findViewById(R.id.txtSuffix);
+            showPatterns = (Button)rootView.findViewById(R.id.btnShowPatterns);
         }
 
         public void fill(Account mItem) {
@@ -294,6 +294,16 @@ public class AccountDetailFragment extends Fragment {
                         mItem.setSuffix(txtSuffix.getText().toString());
                     else
                         lastFocusedView = txtSuffix;
+                }
+            });
+            showPatterns.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // In single-pane mode, simply start the detail activity
+                    // for the selected item ID.
+                    Intent patternList = new Intent(getActivity(), PatternDataListActivity.class);
+                    patternList.putExtra(PatternDataListFragment.ARG_ACCOUNT_ID, mItem.getId());
+                    startActivity(patternList);
                 }
             });
         }

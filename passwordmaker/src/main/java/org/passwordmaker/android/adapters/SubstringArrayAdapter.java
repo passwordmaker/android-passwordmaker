@@ -9,6 +9,12 @@ import com.google.common.collect.Collections2;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class would not be thread safe.  Even though ArrayAdapter is.  But due to the fact they don't share some of its
+ * internals, I can't without basically rewriting the entire ArrayAdapter make this thread safe.  And since my use case
+ * does not require it, it is not.
+ */
+
 public class SubstringArrayAdapter extends ArrayAdapter<String> {
     private List<String> objects;
     private final List<String> original_objects;
@@ -19,6 +25,7 @@ public class SubstringArrayAdapter extends ArrayAdapter<String> {
         this.original_objects = this.objects = objects;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public SubstringArrayAdapter(Context context, int resource, int textViewResourceId, List<String> objects) {
         super(context, resource, textViewResourceId, objects);
         this.original_objects = this.objects = objects;

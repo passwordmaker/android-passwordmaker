@@ -33,5 +33,7 @@
         <EditText android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/txtPrefix" android:inputType="textNoSuggestions"/>
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblSuffix" android:text="@string/LblSuffix"/>
         <EditText android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/txtSuffix" android:inputType="textNoSuggestions"/>
+
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/btnShowPatterns" android:id="@+id/btnShowPatterns"/>
     </LinearLayout>
 </ScrollView>

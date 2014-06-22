@@ -16,6 +16,7 @@
     <string name="ChangeProfile">Change Profile</string>
     <string name="EditFavorites">Edit Favorites</string>
     <string name="ChangeProfileCondensed">Change</string>
+    <string name="Save">Save</string>
     <string name="AddProfile">Create</string>
     <string name="Cancel">Cancel</string>
     <string name="chkProtocol">Protocol</string>
@@ -95,5 +96,17 @@
     <string name="title_activity_edit_favorites">Edit Favorites</string>
     <string name="action_favs_add">Add</string>
     <string name="action_favs_rem">Remove</string>
+    <string name="title_activity_account_pattern">Account Pattern</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="confirm_delete">Confirm Delete</string>
+    <string name="delete_button">Delete</string>
+    <string name="title_patterndata_list">PatternData</string>
+    <string name="title_patterndata_detail">PatternData Detail</string>
+    <string name="lblPatternDesc">Description</string>
+    <string name="patternWildCard">Wildcard</string>
+    <string name="patternRegex">Regular Expression</string>
+    <string name="lblPatternExpression">Expression</string>
+    <string name="chkPatternEnabled">Enabled</string>
+    <string name="btnShowPatterns">Show Patterns</string>
 
 </resources>

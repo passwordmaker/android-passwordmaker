@@ -38,6 +38,7 @@ public class AccountListFragment extends ListFragment {
      */
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
     public static final String STATE_ACCOUNT_STACK = "activated_account_stack";
+    @SuppressWarnings("UnusedDeclaration")
     private static final String LOG_TAG = "ALF";
     /**
      * The fragment's current callback object, which is notified of list item
@@ -50,6 +51,8 @@ public class AccountListFragment extends ListFragment {
      */
     private int mActivatedPosition = ListView.INVALID_POSITION;
     private AccountManager accountManager;
+
+    private Account loadedAccount;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -113,9 +116,18 @@ public class AccountListFragment extends ListFragment {
 
     private void loadIncomingAccount() {
         Intent intent = getActivity().getIntent();
+        String accountId = intent.getStringExtra(AccountDetailFragment.ARG_ITEM_ID);
         ArrayList<String> accStack = intent.getStringArrayListExtra(AccountListFragment.STATE_ACCOUNT_STACK);
         if ( accStack == null || accStack.isEmpty()) {
             accountStack.clearToRoot();
+            if ( accountId != null && !accountId.isEmpty() ) {
+                List<Account> pathToAccount = accountManager.getPwmProfiles().findPathToAccountById(accountId);
+                // this is saved so that we can notify the main list that we should display the details of the selected
+                // account right when they set the callback
+                loadedAccount = pathToAccount.remove(pathToAccount.size() - 1);
+                accountStack.replace(pathToAccount);
+
+            }
         } else {
             accountStack.loadFromIds(accStack);
         }
@@ -132,6 +144,12 @@ public class AccountListFragment extends ListFragment {
         }
 
         mCallbacks = (Callbacks) activity;
+        if ( loadedAccount != null ) {
+            Account acc = loadedAccount;
+            loadedAccount = null;
+            mCallbacks.onItemSelected(acc);
+        }
+
     }
 
     @Override
@@ -217,6 +235,12 @@ public class AccountListFragment extends ListFragment {
             pushCurrentAccount(null);
         }
 
+        public void replace(Collection<Account> accounts) {
+            clearToRoot();
+            // can't use add all since it will be in reverse order
+            for ( Account a : accounts ) accountStack.push(a);
+        }
+
         // I think this might belong in the fragment
         public void pushCurrentAccount(@Nullable Account account) {
             if ( account == null ) {
@@ -227,6 +251,7 @@ public class AccountListFragment extends ListFragment {
                 accountStack.push(account);
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public Account popAccount() {
             // always ensure there is at least the root on the stack
             if ( accountStack.isEmpty() )
