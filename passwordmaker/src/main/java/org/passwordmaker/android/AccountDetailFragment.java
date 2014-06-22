@@ -6,19 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.*;
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableMap;
-import org.daveware.passwordmaker.Account;
-import org.daveware.passwordmaker.AccountManager;
-import org.daveware.passwordmaker.AlgorithmType;
-import org.daveware.passwordmaker.CharacterSets;
+import org.daveware.passwordmaker.*;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Map;
+import static org.daveware.passwordmaker.Account.UrlComponents;
 
 /**
  * A fragment representing a single Account detail screen.
@@ -33,12 +26,12 @@ public class AccountDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
-    public static final String ARG_PARENT_ID = "parent_id";
 
     /**
      * The dummy content this fragment is presenting.
      */
     private Account mItem;
+    private View lastFocusedView;
 
 
     /**
@@ -65,13 +58,21 @@ public class AccountDetailFragment extends Fragment {
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_account_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
         if (mItem != null) {
             ViewGetter viewGetter = new ViewGetter(rootView);
+            viewGetter.setMembers();
             viewGetter.fill(mItem);
+            viewGetter.setChangeListeners();
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if ( lastFocusedView != null )
+            lastFocusedView.getOnFocusChangeListener().onFocusChange(lastFocusedView, false);
     }
 
     // This function must batch the strings.xml array: HashAlgos
@@ -96,6 +97,10 @@ public class AccountDetailFragment extends Fragment {
         return typeToNum.inverse().get(ordinal);
     }
 
+    private LeetType getLeetType(int ordinal) {
+        return LeetType.TYPES[ordinal];
+    }
+
     // This function must batch the strings.xml array: NamedCharSets
     private static ImmutableBiMap<String, Integer> charSetToNum = ImmutableBiMap.<String, Integer>builder()
             .put(CharacterSets.BASE_93_SET, 0)
@@ -112,87 +117,185 @@ public class AccountDetailFragment extends Fragment {
         return result;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     private String getCharSet(int ordinal) {
         return charSetToNum.inverse().get(ordinal);
     }
 
     public class ViewGetter {
         private View rootView;
-        public ViewGetter(View rootView) {
+        private EditText txtName;
+        private CheckBox chkProtocol;
+        private CheckBox chkSubDomain;
+        private CheckBox chkDomain;
+        private CheckBox chkOthers;
+        private Spinner selectHashAlgos;
+        private Spinner selectLeet;
+        private Spinner selectLeetLevel;
+        private EditText passwordLength;
+        private EditText txtUsername;
+        private EditText txtModifer;
+        private Spinner spinnerCharacterSet;
+        private EditText txtPrefix;
+        private EditText txtSuffix;
+
+        public ViewGetter(@NotNull View rootView) {
             this.rootView = rootView;
         }
 
+        public void setMembers() {
+            txtName = (EditText)rootView.findViewById(R.id.txtName);
+            chkProtocol = (CheckBox)rootView.findViewById(R.id.chkProtocol);
+            chkSubDomain = (CheckBox)rootView.findViewById(R.id.chksubdomain);
+            chkDomain = (CheckBox)rootView.findViewById(R.id.chkDomain);
+            chkOthers = (CheckBox)rootView.findViewById(R.id.chkOthers);
+            selectHashAlgos = (Spinner)rootView.findViewById(R.id.selectHashAlgos);
+            selectLeet = (Spinner)rootView.findViewById(R.id.selectLeet);
+            selectLeetLevel = (Spinner)rootView.findViewById(R.id.spinLeetLevel);
+            passwordLength = (EditText)rootView.findViewById(R.id.txtPasswordLen);
+            txtUsername = (EditText)rootView.findViewById(R.id.txtUsername);
+            txtModifer = (EditText)rootView.findViewById(R.id.txtModifier);
+            spinnerCharacterSet = (Spinner)rootView.findViewById(R.id.selectCharacterSet);
+            txtPrefix = (EditText)rootView.findViewById(R.id.txtPrefix);
+            txtSuffix = (EditText)rootView.findViewById(R.id.txtSuffix);
+        }
+
         public void fill(Account mItem) {
-            getTxtName().setText(mItem.getName());
-            getChkProtocol().setChecked(mItem.getUrlComponents().contains(Account.UrlComponents.Protocol));
-            getChkSubDomain().setChecked(mItem.getUrlComponents().contains(Account.UrlComponents.Subdomain));
-            getChkDomain().setChecked(mItem.getUrlComponents().contains(Account.UrlComponents.Domain));
-            getChkOthers().setChecked(mItem.getUrlComponents().contains(Account.UrlComponents.PortPathAnchorQuery));
-            getSelectHashAlgos().setSelection(getAlgoOrdinal(mItem.getAlgorithm(), mItem.isHmac()));
-            getSelectLeet().setSelection(mItem.getLeetType().getOrdinal());
-            getSelectLeetLevel().setSelection(mItem.getLeetLevel().getOrdinal());
-            getPasswordLength().setText(Integer.toString(mItem.getLength()));
-            getUsername().setText(mItem.getUsername());
-            getModifier().setText(mItem.getModifier());
-            getSelectCharacterSet().setSelection(getCharSetOrdinal(mItem.getCharacterSet()));
-            getPrefix().setText(mItem.getPrefix());
-            getSuffix().setText(mItem.getSuffix());
+            txtName.setText(mItem.getName());
+            chkProtocol.setChecked(mItem.getUrlComponents().contains(UrlComponents.Protocol));
+            chkSubDomain.setChecked(mItem.getUrlComponents().contains(UrlComponents.Subdomain));
+            chkDomain.setChecked(mItem.getUrlComponents().contains(UrlComponents.Domain));
+            chkOthers.setChecked(mItem.getUrlComponents().contains(UrlComponents.PortPathAnchorQuery));
+            selectHashAlgos.setSelection(getAlgoOrdinal(mItem.getAlgorithm(), mItem.isHmac()));
+            selectLeet.setSelection(mItem.getLeetType().getOrdinal());
+            selectLeetLevel.setSelection(mItem.getLeetLevel().getOrdinal());
+            passwordLength.setText(Integer.toString(mItem.getLength()));
+            txtUsername.setText(mItem.getUsername());
+            txtModifer.setText(mItem.getModifier());
+            spinnerCharacterSet.setSelection(getCharSetOrdinal(mItem.getCharacterSet()));
+            txtPrefix.setText(mItem.getPrefix());
+            txtSuffix.setText(mItem.getSuffix());
         }
 
-        public EditText getTxtName() {
-            return (EditText)rootView.findViewById(R.id.txtName);
-        }
+        public void setChangeListeners() {
+            txtName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus)
+                        mItem.setName(txtName.getText().toString());
+                    else
+                        lastFocusedView = txtName;
+                }
+            });
+            chkProtocol.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if ( isChecked )
+                        mItem.getUrlComponents().add(UrlComponents.Protocol);
+                    else
+                        mItem.getUrlComponents().remove(UrlComponents.Protocol);
 
-        public CheckBox getChkProtocol() {
-            return (CheckBox)rootView.findViewById(R.id.chkProtocol);
-        }
+                }
+            });
+            chkSubDomain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if ( isChecked )
+                        mItem.getUrlComponents().add(UrlComponents.Subdomain);
+                    else
+                        mItem.getUrlComponents().remove(UrlComponents.Subdomain);
 
-        public CheckBox getChkSubDomain() {
-            return (CheckBox)rootView.findViewById(R.id.chksubdomain);
-        }
+                }
+            });
+            chkOthers.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if ( isChecked )
+                        mItem.getUrlComponents().add(UrlComponents.PortPathAnchorQuery);
+                    else
+                        mItem.getUrlComponents().remove(UrlComponents.PortPathAnchorQuery);
 
-        public CheckBox getChkDomain() {
-            return (CheckBox)rootView.findViewById(R.id.chkDomain);
-        }
+                }
+            });
+            chkDomain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if ( isChecked )
+                        mItem.getUrlComponents().add(UrlComponents.Domain);
+                    else
+                        mItem.getUrlComponents().remove(UrlComponents.Domain);
 
-        public CheckBox getChkOthers() {
-            return (CheckBox)rootView.findViewById(R.id.chkOthers);
-        }
+                }
+            });
+            selectLeet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    LeetType sel = getLeetType(parent.getSelectedItemPosition());
+                    mItem.setLeetType(sel);
+                }
 
-        public Spinner getSelectHashAlgos() {
-            return (Spinner)rootView.findViewById(R.id.selectHashAlgos);
-        }
+                public void onNothingSelected(AdapterView<?> arg0) {}
+            });
+            selectLeetLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    LeetLevel lvl = LeetLevel.fromInt(parent.getSelectedItemPosition());
+                    mItem.setLeetLevel(lvl);
+                }
+                public void onNothingSelected(AdapterView<?> arg0) {}
+            });
+            selectHashAlgos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    AlgorithmType algorithmType = getAlgoType(parent.getSelectedItemPosition());
+                    mItem.setAlgorithm(algorithmType);
+                }
 
-        public Spinner getSelectLeet() {
-            return (Spinner)rootView.findViewById(R.id.selectLeet);
-        }
-
-        public Spinner getSelectLeetLevel() {
-            return (Spinner)rootView.findViewById(R.id.spinLeetLevel);
-        }
-
-        public EditText getPasswordLength() {
-            return (EditText)rootView.findViewById(R.id.txtPasswordLen);
-        }
-
-        public EditText getUsername() {
-            return (EditText)rootView.findViewById(R.id.txtUsername);
-        }
-
-        public EditText getModifier() {
-            return (EditText)rootView.findViewById(R.id.txtModifier);
-        }
-
-        public Spinner getSelectCharacterSet() {
-            return (Spinner)rootView.findViewById(R.id.selectCharacterSet);
-        }
-
-        public EditText getPrefix() {
-            return (EditText)rootView.findViewById(R.id.txtPrefix);
-        }
-
-        public EditText getSuffix() {
-            return (EditText)rootView.findViewById(R.id.txtSuffix);
+                public void onNothingSelected(AdapterView<?> arg0) {}
+            });
+            passwordLength.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if ( ! hasFocus ) {
+                        if ( passwordLength.getText().length() == 0 ) {
+                            passwordLength.setText(Integer.toString(mItem.getLength()));
+                        } else {
+                            try {
+                                mItem.setLength(Integer.parseInt(passwordLength.getText().toString()));
+                            } catch (NumberFormatException e) {
+                                Log.e(LOG_TAG, "Can not set length of password, \"" + passwordLength.getText().toString() + "\" " +
+                                        "using existing length of " + mItem.getLength() + " Error: " + e.getMessage());
+                                passwordLength.setText(Integer.toString(mItem.getLength()));
+                            }
+                        }
+                    } else
+                        lastFocusedView = passwordLength;
+                }
+            });
+            txtUsername.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if ( ! hasFocus )
+                        mItem.setUsername(txtUsername.getText().toString());
+                    else
+                        lastFocusedView = txtUsername;
+                }
+            });
+            txtModifer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if ( ! hasFocus )
+                        mItem.setModifier(txtModifer.getText().toString());
+                    else
+                        lastFocusedView = txtModifer;
+                }
+            });
+            // this listener is setup elsewhere
+            txtPrefix.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if ( ! hasFocus )
+                        mItem.setPrefix(txtPrefix.getText().toString());
+                    else
+                        lastFocusedView = txtPrefix;
+                }
+            });
+            txtSuffix.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if ( ! hasFocus )
+                        mItem.setSuffix(txtSuffix.getText().toString());
+                    else
+                        lastFocusedView = txtSuffix;
+                }
+            });
         }
     }
 }
