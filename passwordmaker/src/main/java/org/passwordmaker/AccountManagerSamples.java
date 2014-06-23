@@ -6,6 +6,10 @@ import org.daveware.passwordmaker.*;
 public class AccountManagerSamples {
 
     public static void addSamples(AccountManager accountManager) {
+
+    }
+
+    public static void addSamples1(AccountManager accountManager) {
         Database pwmProfiles = accountManager.getPwmProfiles();
         try {
             Account folder = new Account("Personal", true);

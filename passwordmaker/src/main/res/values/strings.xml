@@ -108,5 +108,12 @@
     <string name="lblPatternExpression">Expression</string>
     <string name="chkPatternEnabled">Enabled</string>
     <string name="btnShowPatterns">Show Patterns</string>
+    <string name="title_activity_import_export_rdf">ImportExportRdf</string>
+    <string name="BtnRdfImport">Import</string>
+    <string name="BtnRdfExport">Export</string>
+    <string name="lblImportInstructions">The import process is destructive.  It will replace any account already in Passwordmaker.  To import first copy the RDF document to your clipboard.  Then click the Import button below.
+      To Export, click the export button. It will then copy the RDF document to the clipboard.
+    </string>
+    <string name="action_import_export">Import/Export</string>
 
 </resources>

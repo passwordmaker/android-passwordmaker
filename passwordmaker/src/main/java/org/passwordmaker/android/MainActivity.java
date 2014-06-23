@@ -1,13 +1,14 @@
 package org.passwordmaker.android;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
 import android.util.Log;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.*;
 import org.daveware.passwordmaker.Account;
 import org.daveware.passwordmaker.AccountManager;
@@ -15,37 +16,24 @@ import org.daveware.passwordmaker.AccountManagerListener;
 import org.daveware.passwordmaker.SecureCharArray;
 import org.passwordmaker.android.adapters.SubstringArrayAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class MainActivity extends ActionBarActivity implements AccountManagerListener {
 
-    private static final String REPO_KEY_PROFILES = "profiles";
     private static final String REPO_KEY_CURRENT_PROFILES = "currentProfile";
-    private static final String REPO_KEY_SAVED_INPUTS = "savedInputs";
-    private static final String REPO_KEY_SAVED_LENGTH = "savedLength";
-    private static final String REPO_KEY_SAVED_INPUT_UNTIL = "savedInputUnilt";
-    private static final String REPO_KEY_SAVED_INPUT_PASSWORD = "savedInputPass";
-    private static final String REPO_KEY_SAVED_INPUT_INPUTTEXT = "savedInputInputText";
 
     private static String LOG_TAG = "PasswordMakerProForAndroidActivity";
     private AccountManager accountManager;
 
+    private static final int EDIT_FAVORITE  = 0x01;
+    private static final int LIST_ACCOUNTS = 0x02;
 
-    public static final String EXTRA_PROFILE = "";//= PasswordMakerEditProfile.EXTRA_PROFILE;
-    private static final int EDIT_PROFILE = 0x04;
-    private static final int EDIT_FAVORITE  = 0x08;
-    private static final int LIST_ACCOUNTS = 0x10;
-
-    private CheckBox chkSaveInputs;
     private TextView lblInputTimeout;
     private EditText txtInputTimeout;
 
     private ArrayAdapter<String> favoritesAdapter;
 
     private void loadOldProfiles() {
-
+        // load up the old profiles from the older version of the application
     }
 
     @Override
@@ -57,7 +45,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         // this must be done before we do any loading of settings to make sure we get events
         accountManager.addListener(this);
 
-        chkSaveInputs = (CheckBox) findViewById(R.id.chkSaveInputs);
+        CheckBox chkSaveInputs = (CheckBox) findViewById(R.id.chkSaveInputs);
         chkSaveInputs.setOnCheckedChangeListener(onSaveInputCheckbox);
         txtInputTimeout = (EditText) findViewById(R.id.txtSaveInputTime);
         lblInputTimeout = (TextView) findViewById(R.id.lblSaveForLength);
@@ -113,9 +101,6 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         startActivityForResult(intent, LIST_ACCOUNTS);
     }
 
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -137,6 +122,11 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             showFavorites();
             return true;
         }
+        if (id == R.id.action_import_export) {
+            showImportExport();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -224,67 +214,14 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         verificationText.setText(code);
     }
 
-    private void newFavorite() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final EditText editView = new EditText(this);
-        editView.setLines(1);
-        editView.setMinimumWidth(200);
-        builder.setView(editView);
-        builder.setPositiveButton(R.string.AddFavorite,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        accountManager.addFavoriteUrl(
-                                editView.getText().toString());
-                        TextView inputText = (TextView) findViewById(R.id.txtInput);
-                        inputText.setText(editView.getText());
-                        updatePassword();
-                    }
-                });
-        builder.setNegativeButton(R.string.Cancel, null);
-        final AlertDialog alert = builder.create();
-        editView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    alert.getWindow()
-                            .setSoftInputMode(
-                                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                }
-
-            }
-        });
-        builder.setCancelable(true);
-        alert.show();
-    }
-
-    private void selectFavorite() {
-        final List<String> favs = new ArrayList<String>(accountManager.getFavoriteUrls());
-        favs.add(getString(R.string.AddFavorite));
-        favs.add(getString(R.string.EditFavorites));
-        final CharSequence[] items = favs.toArray(new CharSequence[favs.size()]);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Pick a Favorite");
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
-                if (item >= 0 && item < items.length - 2) {
-                    TextView inputText = (TextView) findViewById(R.id.txtInput);
-                    inputText.setText(items[item]);
-                    updatePassword();
-                } else if (item == items.length - 2) {
-                    newFavorite();
-                } else if (item == items.length - 1) {
-                    showFavorites();
-                }
-
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
     private void showFavorites() {
         Intent intent = new Intent(this, EditFavoritesActivity.class);
         startActivityForResult(intent, EDIT_FAVORITE);
+    }
+
+    private void showImportExport() {
+        Intent intent = new Intent(this, ImportExportRdf.class);
+        startActivity(intent);
     }
 
     private View.OnKeyListener mUpdatePasswordKeyListener = new View.OnKeyListener() {
@@ -303,16 +240,6 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             TextView text = (TextView) findViewById(R.id.txtPassword);
             clipboard.setText(text.getText());
-        }
-    };
-
-    private View.OnClickListener mFavoritesClick = new View.OnClickListener() {
-
-        public void onClick(View v) {
-            if (accountManager.getFavoriteUrls().isEmpty())
-                newFavorite();
-            else
-                selectFavorite();
         }
     };
 
