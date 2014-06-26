@@ -37,13 +37,9 @@ public class ImportExportRdf extends Activity {
 
     @SuppressWarnings("deprecation")
     private void onExportClick() {
-        Database db = PwmApplication.getInstance().getAccountManager().getPwmProfiles();
-        AndroidRDFDatabaseWriter writer = new AndroidRDFDatabaseWriter();
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
-            writer.write(os, db);
+            String str = PwmApplication.getInstance().serializeSettings();
             final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-            String str = os.toString();
             clipboard.setText(str);
             Toast.makeText(this, "Exported profiles to clipboard", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
@@ -61,9 +57,10 @@ public class ImportExportRdf extends Activity {
         }
         try {
             String str = clipboard.getText().toString();
-            RDFDatabaseReader reader = new RDFDatabaseReader();
-            ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes());
-            PwmApplication.getInstance().getAccountManager().getPwmProfiles().swapAccounts(reader.read(is));
+            Database db = PwmApplication.getInstance().deserializeSettings(str);
+            PwmApplication.getInstance().getAccountManager().getPwmProfiles().swapAccounts(db);
+            PwmApplication.getInstance().loadFavoritesFromGlobalSettings();
+            Toast.makeText(this, "Successfully imported RDF from clipboard", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error importing database", e);
             Toast.makeText(this, "Error importing RDF from clipboard", Toast.LENGTH_SHORT).show();

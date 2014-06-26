@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import org.daveware.passwordmaker.AccountPatternData;
 
@@ -69,9 +70,19 @@ public class PatternDataListActivity extends Activity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.pattern_data_list, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == android.R.id.home) {
+        if (id == R.id.action_pattern_add) {
+            getListFragment().createNewPattern();
+            return true;
+        } else if (id == android.R.id.home) {
             nagivateUp();
             return true;
         }

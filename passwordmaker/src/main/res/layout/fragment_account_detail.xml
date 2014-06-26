@@ -8,13 +8,17 @@
                   android:inputType="textNoSuggestions">
             <requestFocus/>
         </EditText>
-        <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/lblUrlParts" android:text="@string/LblUseUrlParts"/>
-        <LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="fill_parent">
-            <CheckBox android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/chkProtocol" android:id="@+id/chkProtocol"/>
-            <CheckBox android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/chkSubdomain" android:id="@+id/chksubdomain"/>
-            <CheckBox android:id="@+id/chkDomain" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/chkDomain"/>
+        <LinearLayout android:id="@+id/frameUrlParts" android:layout_height="wrap_content" android:layout_width="fill_parent" android:orientation="vertical">
+            <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/lblUrlParts" android:text="@string/LblUseUrlParts"/>
+            <LinearLayout android:id="@+id/frameUrlPartsInner" android:layout_height="wrap_content" android:layout_width="fill_parent">
+                <CheckBox android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/chkProtocol" android:id="@+id/chkProtocol"/>
+                <CheckBox android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/chkSubdomain" android:id="@+id/chksubdomain"/>
+                <CheckBox android:id="@+id/chkDomain" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/chkDomain"/>
+            </LinearLayout>
+            <CheckBox android:layout_height="wrap_content" android:layout_width="fill_parent" android:text="@string/chkOthers" android:id="@+id/chkOthers"/>
         </LinearLayout>
-        <CheckBox android:layout_height="wrap_content" android:layout_width="fill_parent" android:text="@string/chkOthers" android:id="@+id/chkOthers"/>
+        <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/lblUseUrl" android:text="@string/LblUseUrl"/>
+        <EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/txtUseUrl" android:inputType="textNoSuggestions|textUri"/>
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/lblLeetOptions" android:text="@string/LblLeetOptions"/>
         <Spinner android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/selectLeet" android:entries="@array/LeetOptions"/>
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/lblLeetLevel" android:text="@string/LblLeetLevel"/>

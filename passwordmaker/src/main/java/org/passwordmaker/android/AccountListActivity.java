@@ -2,11 +2,17 @@ package org.passwordmaker.android;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import org.daveware.passwordmaker.Account;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,9 +73,19 @@ public class AccountListActivity extends Activity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.account_list, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == android.R.id.home) {
+        if (id == R.id.action_account_add) {
+            addNewAccount();
+            return true;
+        } else if (id == android.R.id.home) {
             // This ID represents the Home or Up button. In the case of this
             // activity, the Up button is shown. Use NavUtils to allow users
             // to navigate up one level in the application structure. For
@@ -81,6 +97,39 @@ public class AccountListActivity extends Activity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addNewAccount(String accountName) {
+        getAccountListFragment().createNewAccount(accountName);
+    }
+
+    private void addNewAccount() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final EditText editView = new EditText(this);
+        editView.setLines(1);
+        editView.setMinimumWidth(200);
+        builder.setView(editView);
+        builder.setPositiveButton(R.string.AddProfile,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newProfile = editView.getText().toString();
+                        addNewAccount(newProfile);
+                    }
+                });
+        builder.setNegativeButton(R.string.Cancel, null);
+        final AlertDialog alert = builder.create();
+        editView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    alert.getWindow()
+                            .setSoftInputMode(
+                                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+
+            }
+        });
+        builder.setCancelable(true);
+        alert.show();
     }
 
     /**

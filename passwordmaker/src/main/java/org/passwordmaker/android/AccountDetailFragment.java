@@ -137,6 +137,9 @@ public class AccountDetailFragment extends Fragment {
         private EditText txtPrefix;
         private EditText txtSuffix;
         private Button showPatterns;
+        private TextView lblUseUrl;
+        private EditText txtUseUrl;
+        private ViewGroup frameUrlParts;
 
         public ViewGetter(@NotNull View rootView) {
             this.rootView = rootView;
@@ -148,6 +151,8 @@ public class AccountDetailFragment extends Fragment {
             chkSubDomain = (CheckBox)rootView.findViewById(R.id.chksubdomain);
             chkDomain = (CheckBox)rootView.findViewById(R.id.chkDomain);
             chkOthers = (CheckBox)rootView.findViewById(R.id.chkOthers);
+            txtUseUrl = (EditText)rootView.findViewById(R.id.txtUseUrl);
+            lblUseUrl = (TextView)rootView.findViewById(R.id.lblUseUrl);
             selectHashAlgos = (Spinner)rootView.findViewById(R.id.selectHashAlgos);
             selectLeet = (Spinner)rootView.findViewById(R.id.selectLeet);
             selectLeetLevel = (Spinner)rootView.findViewById(R.id.spinLeetLevel);
@@ -158,6 +163,8 @@ public class AccountDetailFragment extends Fragment {
             txtPrefix = (EditText)rootView.findViewById(R.id.txtPrefix);
             txtSuffix = (EditText)rootView.findViewById(R.id.txtSuffix);
             showPatterns = (Button)rootView.findViewById(R.id.btnShowPatterns);
+            frameUrlParts = (ViewGroup)rootView.findViewById(R.id.frameUrlParts);
+
         }
 
         public void fill(Account mItem) {
@@ -175,6 +182,18 @@ public class AccountDetailFragment extends Fragment {
             spinnerCharacterSet.setSelection(getCharSetOrdinal(mItem.getCharacterSet()));
             txtPrefix.setText(mItem.getPrefix());
             txtSuffix.setText(mItem.getSuffix());
+            txtUseUrl.setText(mItem.getUrl());
+
+            if ( mItem.isDefault() ) {
+                frameUrlParts.setVisibility(View.VISIBLE);
+                txtUseUrl.setVisibility(View.GONE);
+                lblUseUrl.setVisibility(View.GONE);
+            } else {
+                frameUrlParts.setVisibility(View.GONE);
+                txtUseUrl.setVisibility(View.VISIBLE);
+                lblUseUrl.setVisibility(View.VISIBLE);
+            }
+
         }
 
         public void setChangeListeners() {
@@ -188,38 +207,46 @@ public class AccountDetailFragment extends Fragment {
             });
             chkProtocol.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if ( isChecked )
-                        mItem.getUrlComponents().add(UrlComponents.Protocol);
+                    if (isChecked)
+                        mItem.addUrlComponent(UrlComponents.Protocol);
                     else
-                        mItem.getUrlComponents().remove(UrlComponents.Protocol);
+                        mItem.removeUrlComponent(UrlComponents.Protocol);
 
                 }
             });
             chkSubDomain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if ( isChecked )
-                        mItem.getUrlComponents().add(UrlComponents.Subdomain);
+                        mItem.addUrlComponent(UrlComponents.Subdomain);
                     else
-                        mItem.getUrlComponents().remove(UrlComponents.Subdomain);
+                        mItem.removeUrlComponent(UrlComponents.Subdomain);
 
                 }
             });
             chkOthers.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if ( isChecked )
-                        mItem.getUrlComponents().add(UrlComponents.PortPathAnchorQuery);
+                        mItem.addUrlComponent(UrlComponents.PortPathAnchorQuery);
                     else
-                        mItem.getUrlComponents().remove(UrlComponents.PortPathAnchorQuery);
+                        mItem.removeUrlComponent(UrlComponents.PortPathAnchorQuery);
 
                 }
             });
             chkDomain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if ( isChecked )
-                        mItem.getUrlComponents().add(UrlComponents.Domain);
+                        mItem.addUrlComponent(UrlComponents.Domain);
                     else
-                        mItem.getUrlComponents().remove(UrlComponents.Domain);
+                        mItem.removeUrlComponent(UrlComponents.Domain);
 
+                }
+            });
+            txtUseUrl.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus)
+                        mItem.setUrl(txtUseUrl.getText().toString());
+                    else
+                        lastFocusedView = txtUseUrl;
                 }
             });
             selectLeet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

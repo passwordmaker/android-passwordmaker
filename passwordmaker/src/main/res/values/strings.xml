@@ -115,5 +115,8 @@
       To Export, click the export button. It will then copy the RDF document to the clipboard.
     </string>
     <string name="action_import_export">Import/Export</string>
+    <string name="action_account_add">add</string>
+    <string name="action_pattern_add">Add</string>
+    <string name="LblUseUrl">Use Url</string>
 
 </resources>

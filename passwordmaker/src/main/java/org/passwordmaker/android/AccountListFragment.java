@@ -224,6 +224,17 @@ public class AccountListFragment extends ListFragment {
         accounts.notifyDataSetChanged();
     }
 
+    public void createNewAccount(String accountName) {
+        try {
+            Account account = new Account(accountName, false);
+            accountManager.getPwmProfiles().addAccount(accountStack.getCurrentAccount(), account);
+            getCurrentAccountList().notifyDataSetChanged();
+            mCallbacks.onItemSelected(account);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private class AccountStack {
         private LinkedList<Account> accountStack = new LinkedList<Account>();
 

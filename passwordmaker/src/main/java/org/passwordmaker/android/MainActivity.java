@@ -16,6 +16,10 @@ import org.daveware.passwordmaker.AccountManagerListener;
 import org.daveware.passwordmaker.SecureCharArray;
 import org.passwordmaker.android.adapters.SubstringArrayAdapter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class MainActivity extends ActionBarActivity implements AccountManagerListener {
 
@@ -31,6 +35,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private EditText txtInputTimeout;
 
     private ArrayAdapter<String> favoritesAdapter;
+    private ArrayList<String> favoritesList = new ArrayList<String>();
 
     private void loadOldProfiles() {
         // load up the old profiles from the older version of the application
@@ -51,8 +56,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         lblInputTimeout = (TextView) findViewById(R.id.lblSaveForLength);
         loadOldProfiles();
         loadAccountDatabase();
-        favoritesAdapter = new SubstringArrayAdapter(this, android.R.layout.simple_list_item_1,
-                PwmApplication.getInstance().getAccountManager().getFavoriteUrls());
+        createFavoritesList();
 
 
         String currentProfile = getPreferences(MODE_PRIVATE).getString(
@@ -81,6 +85,18 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
         loadDefaultValueForFields();
     }
+    private void refreshList() {
+        Set<String> allthings = new HashSet<String>();
+        allthings.addAll(PwmApplication.getInstance().getAccountManager().getFavoriteUrls());
+        allthings.addAll(PwmApplication.getInstance().getAllAccountsUrls());
+        favoritesList.clear();
+        favoritesList.addAll(allthings);
+        favoritesAdapter.notifyDataSetChanged();
+    }
+    private void createFavoritesList() {
+        favoritesAdapter = new SubstringArrayAdapter(this, android.R.layout.simple_list_item_1, favoritesList);
+        refreshList();
+    }
 
     @Override
     protected void onResume() {
@@ -88,12 +104,18 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         favoritesAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PwmApplication.getInstance().saveSettings(this);
+    }
+
     private void loadDefaultValueForFields() {
 
     }
 
     private void loadAccountDatabase() {
-
+        PwmApplication.getInstance().loadSettingsOnce(this);
     }
 
     public void showProfiles() {
@@ -133,7 +155,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     public void updateSelectedProfileText() {
         Account account = accountManager.getAccountForInputText(getInputText());
         TextView text = (TextView) findViewById(R.id.lblCurrentProfile);
-        String value = account.getName();;
+        String value = account.getName();
         if ( accountManager.isAutoSelectingAccount() ) {
             value += " (AutoSelected)";
         }

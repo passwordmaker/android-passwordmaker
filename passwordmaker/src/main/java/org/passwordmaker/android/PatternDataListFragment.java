@@ -129,7 +129,7 @@ public class PatternDataListFragment extends ListFragment
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
-
+        mActivatedPosition = position;
         mCallbacks.onItemSelected(position, getPatternAdapter().getItem(position));
     }
 
@@ -149,6 +149,13 @@ public class PatternDataListFragment extends ListFragment
         touchListener = new SwipeDismissListViewTouchListener(listView, this);
         listView.setOnTouchListener(touchListener);
         listView.setOnScrollListener(touchListener.makeScrollListener());
+    }
+
+    public void createNewPattern() {
+        getPatternAdapter().add(new AccountPatternData());
+        int position = getPatternAdapter().getCount()-1;
+        setActivatedPosition(position);
+        mCallbacks.onItemSelected(position, getPatternAdapter().getItem(position));
     }
 
 
@@ -173,18 +180,19 @@ public class PatternDataListFragment extends ListFragment
 
     @Override
     public boolean canDismiss(int position) {
-        confirmDelete(position);
-        // since confirm delete is asynchronous, we always return false, then if confirmed, we manually call dismiss
-        return false;
+        return true;
     }
 
     @Override
     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-        // We can not confirm here, as the animation will happen right after this callback is called
+        if ( reverseSortedPositions.length != 1 ) return;
+        int position = reverseSortedPositions[0];
+        confirmDelete(position);
+    }
+
+    public void reallyDelete(final int position) {
         ArrayAdapter<AccountPatternData> patterns = getPatternAdapter();
-        for (int position : reverseSortedPositions) {
-            patterns.remove(patterns.getItem(position));
-        }
+        patterns.remove(patterns.getItem(position));
         patterns.notifyDataSetChanged();
     }
 
@@ -199,7 +207,7 @@ public class PatternDataListFragment extends ListFragment
         builder.setPositiveButton(R.string.delete_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                touchListener.dismiss(position);
+                reallyDelete(position);
             }
         });
         builder.setNegativeButton(R.string.Cancel, null);
