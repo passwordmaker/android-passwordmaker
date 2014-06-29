@@ -32,6 +32,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.text.ClipboardManager;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -72,7 +73,7 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 	private TextView lblInputTimeout;
 	private EditText txtInputTimeout;
 
-	@Override
+    @Override
 	protected void onResume() {
 		super.onResume();
 		loadDefaultValueForFields();
@@ -111,15 +112,15 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 			setCurrentProfile(pwmProfiles.get("Default"));
 
 		TextView text = (TextView) findViewById(R.id.txtInput);
-		if (text != null)
-			text.setOnKeyListener(mUpdatePasswordKeyListener);
-		if (text != null)
-			text.setOnFocusChangeListener(mUpdatePasswordFocusListener);
+		if (text != null) {
+            text.setOnFocusChangeListener(mUpdatePasswordFocusListener);
+            text.addTextChangedListener(mUpdatePasswordTextChangeListener);
+        }
 		text = (TextView) findViewById(R.id.txtMasterPass);
-		if (text != null)
-			text.setOnKeyListener(mUpdatePasswordKeyListener);
-		if (text != null)
-			text.setOnFocusChangeListener(mUpdatePasswordFocusListener);
+		if (text != null) {
+            text.setOnFocusChangeListener(mUpdatePasswordFocusListener);
+            text.addTextChangedListener(mUpdatePasswordTextChangeListener);
+        }
 		Button button = (Button) findViewById(R.id.btnCopy);
 		if (button != null)
 			button.setOnClickListener(mCopyButtonClick);
@@ -467,6 +468,8 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 		final String masterPassword = getInputPassword();
         if ( masterPassword.length() >= MIN_PASSWORD_LENGTH ) {
             setVerificationCode(pwm.generateVerificationCode(masterPassword));
+        } else {
+            setVerificationCode("");
         }
 	}
 
@@ -511,6 +514,23 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 			return false;
 		}
 	};
+
+    private TextWatcher mUpdatePasswordTextChangeListener = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            updatePassword();
+        }
+    };
 
 	private OnClickListener mCopyButtonClick = new OnClickListener() {
 
