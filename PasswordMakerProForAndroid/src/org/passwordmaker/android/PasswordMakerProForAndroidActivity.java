@@ -58,8 +58,9 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 	private static final String REPO_KEY_SAVED_INPUT_UNTIL = "savedInputUnilt";
 	private static final String REPO_KEY_SAVED_INPUT_PASSWORD = "savedInputPass";
 	private static final String REPO_KEY_SAVED_INPUT_INPUTTEXT = "savedInputInputText";
+    private static final int MIN_PASSWORD_LENGTH = 8;
 
-	private static String LOG_TAG = "PasswordMakerProForAndroidActivity";
+    private static String LOG_TAG = "PasswordMakerProForAndroidActivity";
 	PasswordMaker pwm;
 	PwmProfileList pwmProfiles = new PwmProfileList();
 
@@ -464,7 +465,9 @@ public class PasswordMakerProForAndroidActivity extends Activity {
 	
 	public final void updateVerificationCode() {
 		final String masterPassword = getInputPassword();
-		setVerificationCode(pwm.generateVerificationCode(masterPassword));
+        if ( masterPassword.length() >= MIN_PASSWORD_LENGTH ) {
+            setVerificationCode(pwm.generateVerificationCode(masterPassword));
+        }
 	}
 
 	private String getInputPassword() {
