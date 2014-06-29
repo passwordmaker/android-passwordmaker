@@ -41,4 +41,23 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
 
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Convert Buggy Javascript Algo"
+            android:id="@+id/chkConvertBadAlgo"
+            android:layout_above="@+id/frameImportExport"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:checked="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:layout_above="@+id/chkConvertBadAlgo"
+            android:text="@string/lblConvertBuggyAlgo"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
 </RelativeLayout>

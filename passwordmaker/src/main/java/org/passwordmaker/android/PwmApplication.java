@@ -2,14 +2,13 @@ package org.passwordmaker.android;
 
 import android.content.Context;
 import android.util.Log;
-import org.daveware.passwordmaker.Account;
-import org.daveware.passwordmaker.AccountManager;
-import org.daveware.passwordmaker.Database;
-import org.daveware.passwordmaker.RDFDatabaseReader;
+import org.daveware.passwordmaker.*;
 import org.passwordmaker.AccountManagerSamples;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -97,7 +96,7 @@ public class PwmApplication {
         Database db = null;
         try {
             fis = context.openFileInput(PROFILE_DB_FILE);
-            db = deserializeSettings(fis);
+            db = deserializeSettings(fis, false);
         } catch (FileNotFoundException e) {
             Log.e(LOG_TAG, "Unable to read profile", e);
         } finally {
@@ -129,19 +128,30 @@ public class PwmApplication {
         }
     }
 
-    public Database deserializeSettings(InputStream is) {
+    public Database deserializeSettings(InputStream is, boolean convertBuggyAlgo, List<IncompatibleException> errors) {
         RDFDatabaseReader reader = new RDFDatabaseReader();
-
+        if ( convertBuggyAlgo ) reader.setBuggyAlgoUseAction(DatabaseReader.BuggyAlgoAction.CONVERT);
         try {
             return reader.read(is);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            errors.addAll(reader.getIncompatibleAccounts());
         }
     }
 
-    public Database deserializeSettings(String serialized) {
+    public Database deserializeSettings(InputStream is, boolean convertBuggyAlgo) {
+        return deserializeSettings(is, convertBuggyAlgo, new ArrayList<IncompatibleException>());
+    }
+
+    public Database deserializeSettings(String serialized, boolean convertBuggyAlgo, List<IncompatibleException> errors) {
         ByteArrayInputStream is = new ByteArrayInputStream(serialized.getBytes());
-        return deserializeSettings(is);
+        return deserializeSettings(is, convertBuggyAlgo, errors);
+    }
+
+    public Database deserializeSettings(String serialized, boolean convertBuggyAlgo) {
+        ByteArrayInputStream is = new ByteArrayInputStream(serialized.getBytes());
+        return deserializeSettings(is, convertBuggyAlgo);
     }
 
     public void updateFavoritesGlobalSettings() {

@@ -118,5 +118,6 @@
     <string name="action_account_add">add</string>
     <string name="action_pattern_add">Add</string>
     <string name="LblUseUrl">Use Url</string>
+    <string name="lblConvertBuggyAlgo">The javascript/firefox versions contains \'MD5 Version 0.6\', and \'HMAC-SHA-256 V 1.5.1\' which are both buggy implementations of the hash algos.  The JVM does not support this, and the developer for the android version is too lazy to implement it himself.  You can try to \'convert\' to the nearest algo type, but it may not generate the same password always.</string>
 
 </resources>
