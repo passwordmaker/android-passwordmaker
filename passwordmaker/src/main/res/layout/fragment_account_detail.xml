@@ -33,6 +33,16 @@
         <EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/txtModifier" android:inputType="textNoSuggestions"/>
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblCharacterSet" android:text="@string/LblCharSet"/>
         <Spinner android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/selectCharacterSet" android:entries="@array/NamedCharSets"/>
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtCustomCharacterSet"
+                android:textIsSelectable="true"
+                android:inputType="text"
+                android:editable="false"
+                android:capitalize="none"/>
+
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblPrefix" android:text="@string/LblPrefix"/>
         <EditText android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/txtPrefix" android:inputType="textNoSuggestions"/>
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblSuffix" android:text="@string/LblSuffix"/>

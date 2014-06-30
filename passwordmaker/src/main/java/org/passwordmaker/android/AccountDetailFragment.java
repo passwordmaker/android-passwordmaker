@@ -99,6 +99,7 @@ public class AccountDetailFragment extends Fragment {
         return LeetType.TYPES[ordinal];
     }
 
+    public static final int CUSTOM_CHARSET_POSITION = 6;
     // This function must batch the strings.xml array: NamedCharSets
     private static ImmutableBiMap<String, Integer> charSetToNum = ImmutableBiMap.<String, Integer>builder()
             .put(CharacterSets.BASE_93_SET, 0)
@@ -107,7 +108,7 @@ public class AccountDetailFragment extends Fragment {
             .put(CharacterSets.NUMERIC, 3)
             .put(CharacterSets.ALPHA, 4)
             .put(CharacterSets.SPECIAL_CHARS, 5)
-            .put("Custom (Enter your own)", 6).build();
+            .put("Custom (Enter your own)", CUSTOM_CHARSET_POSITION).build();
 
     private static int getCharSetOrdinal(String charSet) {
         Integer result = charSetToNum.get(charSet);
@@ -134,6 +135,7 @@ public class AccountDetailFragment extends Fragment {
         private EditText txtUsername;
         private EditText txtModifer;
         private Spinner spinnerCharacterSet;
+        private EditText txtCustomCharacterSet;
         private EditText txtPrefix;
         private EditText txtSuffix;
         private Button showPatterns;
@@ -164,6 +166,7 @@ public class AccountDetailFragment extends Fragment {
             txtSuffix = (EditText)rootView.findViewById(R.id.txtSuffix);
             showPatterns = (Button)rootView.findViewById(R.id.btnShowPatterns);
             frameUrlParts = (ViewGroup)rootView.findViewById(R.id.frameUrlParts);
+            txtCustomCharacterSet = (EditText)rootView.findViewById(R.id.txtCustomCharacterSet);
 
         }
 
@@ -183,6 +186,14 @@ public class AccountDetailFragment extends Fragment {
             txtPrefix.setText(mItem.getPrefix());
             txtSuffix.setText(mItem.getSuffix());
             txtUseUrl.setText(mItem.getUrl());
+
+            if ( spinnerCharacterSet.getSelectedItemPosition() == CUSTOM_CHARSET_POSITION ) {
+                txtCustomCharacterSet.setVisibility(View.VISIBLE);
+                txtCustomCharacterSet.setText(mItem.getCharacterSet());
+            } else {
+                txtCustomCharacterSet.setVisibility(View.GONE);
+                txtCustomCharacterSet.setText(mItem.getCharacterSet());
+            }
 
             if ( mItem.isDefault() ) {
                 frameUrlParts.setVisibility(View.VISIBLE);
@@ -255,7 +266,8 @@ public class AccountDetailFragment extends Fragment {
                     mItem.setLeetType(sel);
                 }
 
-                public void onNothingSelected(AdapterView<?> arg0) {}
+                public void onNothingSelected(AdapterView<?> arg0) {
+                }
             });
             selectLeetLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -266,11 +278,39 @@ public class AccountDetailFragment extends Fragment {
             });
             selectHashAlgos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    AlgorithmType algorithmType = getAlgoType(parent.getSelectedItemPosition());
+
+                    AlgorithmType algorithmType = getAlgoType(position);
+                    Log.e(LOG_TAG, String.format("HashAlgo at index selected: %d with name: %s",
+                            position, algorithmType.toString()));
                     mItem.setAlgorithm(algorithmType);
                 }
 
                 public void onNothingSelected(AdapterView<?> arg0) {}
+            });
+            spinnerCharacterSet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if ( position == CUSTOM_CHARSET_POSITION ) {
+                        txtCustomCharacterSet.setVisibility(View.VISIBLE);
+                    } else {
+                        String charSet = getCharSet(position);
+                        mItem.setCharacterSet(charSet);
+                        txtCustomCharacterSet.setVisibility(View.GONE);
+                        txtCustomCharacterSet.setText(charSet);
+                    }
+                }
+
+                public void onNothingSelected(AdapterView<?> arg0) {
+                }
+            });
+            txtCustomCharacterSet.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if ( !hasFocus ) {
+                        mItem.setCharacterSet(txtCustomCharacterSet.getText().toString());
+                    } else {
+                        lastFocusedView = txtCustomCharacterSet;
+                    }
+                }
             });
             passwordLength.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 public void onFocusChange(View v, boolean hasFocus) {
