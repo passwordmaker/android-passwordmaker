@@ -16,8 +16,6 @@ import android.widget.EditText;
 import org.daveware.passwordmaker.Account;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 
 /**
  * An activity representing a list of Accounts. This activity
@@ -85,6 +83,9 @@ public class AccountListActivity extends Activity
         if (id == R.id.action_account_add) {
             addNewAccount();
             return true;
+        } else if ( id == R.id.action_account_folder_add ) {
+            addNewFolder();
+            return true;
         } else if (id == android.R.id.home) {
             // This ID represents the Home or Up button. In the case of this
             // activity, the Up button is shown. Use NavUtils to allow users
@@ -114,6 +115,39 @@ public class AccountListActivity extends Activity
                     public void onClick(DialogInterface dialog, int which) {
                         String newProfile = editView.getText().toString();
                         addNewAccount(newProfile);
+                    }
+                });
+        builder.setNegativeButton(R.string.Cancel, null);
+        final AlertDialog alert = builder.create();
+        editView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    alert.getWindow()
+                            .setSoftInputMode(
+                                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+
+            }
+        });
+        builder.setCancelable(true);
+        alert.show();
+    }
+
+    private void addNewFolder(String folderName) {
+        getAccountListFragment().createNewFolder(folderName);
+    }
+
+    private void addNewFolder() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final EditText editView = new EditText(this);
+        editView.setLines(1);
+        editView.setMinimumWidth(200);
+        builder.setView(editView);
+        builder.setPositiveButton(R.string.AddProfile,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newFolder = editView.getText().toString();
+                        addNewFolder(newFolder);
                     }
                 });
         builder.setNegativeButton(R.string.Cancel, null);

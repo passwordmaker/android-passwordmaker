@@ -16,5 +16,5 @@
           android:title="@string/action_import_export"
           android:orderInCategory="103"
           app:showAsAction="ifRoom"
-          android:icon="@android:drawable/ic_menu_upload"/>
+          android:icon="@drawable/ic_action_content_import_export"/>
 </menu>

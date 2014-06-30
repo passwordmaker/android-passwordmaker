@@ -167,12 +167,16 @@ public class AccountListFragment extends ListFragment {
         // fragment is attached to one) that an item has been selected.
         Account selected = getCurrentAccountList().getItem(position);
         if ( selected.hasChildren() ) {
-            accountStack.pushCurrentAccount(selected);
-            refreshList(selected);
-            mCallbacks.onFolderSelected(selected);
+            goIntoFolder(selected);
         } else {
             mCallbacks.onItemSelected(selected);
         }
+    }
+
+    public void goIntoFolder(Account folder) {
+        accountStack.pushCurrentAccount(folder);
+        refreshList(folder);
+        mCallbacks.onFolderSelected(folder);
     }
 
     @Override
@@ -230,6 +234,18 @@ public class AccountListFragment extends ListFragment {
             accountManager.getPwmProfiles().addAccount(accountStack.getCurrentAccount(), account);
             getCurrentAccountList().notifyDataSetChanged();
             mCallbacks.onItemSelected(account);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void createNewFolder(String folderName) {
+        try {
+            Account account = new Account(folderName, true);
+            accountManager.getPwmProfiles().addAccount(accountStack.getCurrentAccount(), account);
+            getCurrentAccountList().notifyDataSetChanged();
+            goIntoFolder(account);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
