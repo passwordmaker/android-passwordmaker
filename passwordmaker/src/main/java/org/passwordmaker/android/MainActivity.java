@@ -270,6 +270,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             TextView text = (TextView) findViewById(R.id.txtPassword);
             clipboard.setText(text.getText());
+            Toast.makeText(MainActivity.this, "Copied password to the clipboard", Toast.LENGTH_SHORT).show();
         }
     };
 
