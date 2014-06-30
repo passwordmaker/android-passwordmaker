@@ -1,6 +1,8 @@
 package org.passwordmaker.android;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
@@ -17,11 +19,18 @@ import org.daveware.passwordmaker.SecureCharArray;
 import org.passwordmaker.android.adapters.SubstringArrayAdapter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
 
 public class MainActivity extends ActionBarActivity implements AccountManagerListener {
+
+    private static final String REPO_KEY_SAVED_INPUTS = "savedInputs";
+    private static final String REPO_KEY_SAVED_LENGTH = "savedLength";
+    private static final String REPO_KEY_SAVED_INPUT_UNTIL = "savedInputUnilt";
+    private static final String REPO_KEY_SAVED_INPUT_PASSWORD = "savedInputPass";
+    private static final String REPO_KEY_SAVED_INPUT_INPUTTEXT = "savedInputInputText";
 
     private static final String REPO_KEY_CURRENT_PROFILES = "currentProfile";
     private static final int MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE = 8;
@@ -34,6 +43,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
     private TextView lblInputTimeout;
     private EditText txtInputTimeout;
+    private CheckBox chkSaveInputs;
 
     private ArrayAdapter<String> favoritesAdapter;
     private ArrayList<String> favoritesList = new ArrayList<String>();
@@ -51,7 +61,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         // this must be done before we do any loading of settings to make sure we get events
         accountManager.addListener(this);
 
-        CheckBox chkSaveInputs = (CheckBox) findViewById(R.id.chkSaveInputs);
+        chkSaveInputs = (CheckBox) findViewById(R.id.chkSaveInputs);
         chkSaveInputs.setOnCheckedChangeListener(onSaveInputCheckbox);
         txtInputTimeout = (EditText) findViewById(R.id.txtSaveInputTime);
         lblInputTimeout = (TextView) findViewById(R.id.lblSaveForLength);
@@ -102,17 +112,107 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     @Override
     protected void onResume() {
         super.onResume();
+        loadDefaultValueForFields();
         favoritesAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        saveDefaultValuesForFields();
         PwmApplication.getInstance().saveSettings(this);
     }
 
-    private void loadDefaultValueForFields() {
+    private void saveDefaultValuesForFields() {
+        final SharedPreferences.Editor prefs = getPreferences(Activity.MODE_PRIVATE).edit();
+        try {
+            prefs.putBoolean(REPO_KEY_SAVED_INPUTS, chkSaveInputs.isChecked());
+            if (chkSaveInputs.isChecked()) {
+                String strMin = txtInputTimeout.getText().toString();
+                final int minutes = (strMin == null || strMin.length() < 0) ? 5
+                        : Integer.parseInt(strMin);
+                final Calendar cal = Calendar.getInstance();
+                long curTime = cal.getTimeInMillis();
+                cal.add(Calendar.MINUTE, minutes);
+                final long time = cal.getTimeInMillis();
+                Log.i(LOG_TAG, "Current time:" + Long.toString(curTime) + ", Expire Time: " + Long.toString(time));
+                prefs.putInt(REPO_KEY_SAVED_LENGTH, minutes);
+                prefs.putLong(REPO_KEY_SAVED_INPUT_UNTIL, time);
+                prefs.putString(REPO_KEY_SAVED_INPUT_PASSWORD,
+                        getInputPassword());
+                prefs.putString(REPO_KEY_SAVED_INPUT_INPUTTEXT, getInputText());
+            } else {
+                prefs.remove(REPO_KEY_SAVED_INPUT_UNTIL);
+                prefs.remove(REPO_KEY_SAVED_INPUT_PASSWORD);
+                prefs.remove(REPO_KEY_SAVED_INPUT_INPUTTEXT);
+            }
+        } finally {
+            prefs.commit();
+        }
+    }
 
+    private void loadDefaultValueForFields() {
+        try {
+            final int minutes = getPreferences(MODE_PRIVATE).getInt(
+                    REPO_KEY_SAVED_LENGTH, 5);
+            txtInputTimeout.setText(Integer.toString(minutes));
+            chkSaveInputs.setChecked(getPreferences(MODE_PRIVATE).getBoolean(
+                    REPO_KEY_SAVED_INPUTS, false));
+            final long time = getPreferences(MODE_PRIVATE).getLong(
+                    REPO_KEY_SAVED_INPUT_UNTIL, -1);
+            if (time != -1 && chkSaveInputs.isChecked()) {
+                Calendar cal = Calendar.getInstance();
+                if (time > cal.getTimeInMillis()) {
+                    final String savedPass = getPreferences(MODE_PRIVATE)
+                            .getString(REPO_KEY_SAVED_INPUT_PASSWORD, "");
+                    final String savedInputText = getDefaultInputText(true);
+                    setInputPassword(savedPass, false);
+                    setInputText(savedInputText);
+                    updatePassword(false);
+                    return;
+                }
+            }
+            // expired clear from preferences
+            final SharedPreferences.Editor prefs = getPreferences(Activity.MODE_PRIVATE)
+                    .edit();
+            prefs.remove(REPO_KEY_SAVED_INPUT_UNTIL);
+            prefs.remove(REPO_KEY_SAVED_INPUT_PASSWORD);
+            prefs.remove(REPO_KEY_SAVED_INPUT_INPUTTEXT);
+            prefs.commit();
+            final String savedInputText = getDefaultInputText(false);
+            setInputText(savedInputText);
+            updatePassword(false);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Could not load default values", e);
+            final SharedPreferences.Editor prefs = getPreferences(Activity.MODE_PRIVATE).edit();
+            prefs.remove(REPO_KEY_SAVED_LENGTH);
+            prefs.remove(REPO_KEY_SAVED_INPUT_UNTIL);
+            prefs.remove(REPO_KEY_SAVED_INPUT_PASSWORD);
+            prefs.remove(REPO_KEY_SAVED_INPUT_INPUTTEXT);
+            prefs.commit();
+        }
+    }
+
+    private String getDefaultInputText(boolean readFromSettings) {
+        Intent intent = getIntent();
+        final String webPageUrl;
+        if ( intent != null ) {
+            if ( intent.getAction().equals("android.intent.action.SEND") ) {
+                webPageUrl = intent.getStringExtra(Intent.EXTRA_TEXT);
+            } else {
+                if ( readFromSettings )
+                    webPageUrl = getPreferences(MODE_PRIVATE).getString(REPO_KEY_SAVED_INPUT_INPUTTEXT, "");
+                else
+                    webPageUrl = "";
+            }
+        } else {
+            if ( readFromSettings )
+                webPageUrl = getPreferences(MODE_PRIVATE).getString(REPO_KEY_SAVED_INPUT_INPUTTEXT, "");
+            else {
+                webPageUrl = "";
+            }
+        }
+        return webPageUrl;
     }
 
     private void loadAccountDatabase() {
@@ -281,6 +381,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             final int visibility = isChecked ? View.VISIBLE : View.GONE;
             txtInputTimeout.setVisibility(visibility);
             lblInputTimeout.setVisibility(visibility);
+            saveDefaultValuesForFields();
         }
 
     };
