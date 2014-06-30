@@ -11,7 +11,7 @@
           android:title="@string/action_favorites"
           android:orderInCategory="102"
           app:showAsAction="ifRoom"
-          android:icon="@android:drawable/ic_menu_myplaces"/>
+          android:icon="@drawable/ic_action_collections_labels"/>
     <item android:id="@+id/action_import_export"
           android:title="@string/action_import_export"
           android:orderInCategory="103"
