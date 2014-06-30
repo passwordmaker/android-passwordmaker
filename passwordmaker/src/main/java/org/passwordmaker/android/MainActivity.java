@@ -24,6 +24,7 @@ import java.util.Set;
 public class MainActivity extends ActionBarActivity implements AccountManagerListener {
 
     private static final String REPO_KEY_CURRENT_PROFILES = "currentProfile";
+    private static final int MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE = 8;
 
     private static String LOG_TAG = "PasswordMakerProForAndroidActivity";
     private AccountManager accountManager;
@@ -162,6 +163,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         text.setText(value);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setCurrentProfile(String profileId) {
         accountManager.selectAccountById(profileId);
     }
@@ -171,10 +173,11 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         return masterPass.getText().toString();
     }
 
-    private void setInputPassword(String value) {
+    @SuppressWarnings("UnusedDeclaration")
+    private void setInputPassword(String value, boolean requireMinLengthForVerificationCode) {
         TextView masterPass = (TextView) findViewById(R.id.txtMasterPass);
         masterPass.setText(value);
-        updateVerificationCode();
+        updateVerificationCode(requireMinLengthForVerificationCode);
     }
 
     private String getInputText() {
@@ -182,6 +185,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         return inputText.getText().toString();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     private void setInputText(String value) {
         Log.i(LOG_TAG, "Setting input text to \"" + value + "\"");
         TextView inputText = (TextView) findViewById(R.id.txtInput);
@@ -198,13 +202,13 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private View.OnFocusChangeListener mUpdatePasswordFocusListener = new View.OnFocusChangeListener() {
         public void onFocusChange(View v, boolean hasFocus) {
             if (!hasFocus)
-                updatePassword();
+                updatePassword(false);
 
         }
     };
 
-    private void updatePassword() {
-        updateVerificationCode();
+    private void updatePassword(boolean requireMinLength) {
+        updateVerificationCode(requireMinLength);
         updateSelectedProfileText();
         TextView text = (TextView) findViewById(R.id.txtPassword);
         final String inputText = getInputText();
@@ -217,10 +221,14 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         }
     }
 
-    public void updateVerificationCode() {
+    public void updateVerificationCode(boolean requireMin) {
         final String masterPassword = getInputPassword();
         try {
-            setVerificationCode(accountManager.getPwm().generateVerificationCode(new SecureCharArray(masterPassword)));
+            if ( !requireMin || masterPassword.length() >= MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE) {
+                setVerificationCode(accountManager.getPwm().generateVerificationCode(new SecureCharArray(masterPassword)));
+            } else {
+                setVerificationCode("");
+            }
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error generating verification code", e);
             setVerificationCode("ERROR");
@@ -248,7 +256,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
     private View.OnKeyListener mUpdatePasswordKeyListener = new View.OnKeyListener() {
         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            updatePassword();
+            updatePassword(true);
             return false;
         }
     };
@@ -258,7 +266,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         // This is suppressed because I still want to support older android phones
         @SuppressWarnings("deprecation")
         public void onClick(View v) {
-            updatePassword();
+            updatePassword(false);
             final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             TextView text = (TextView) findViewById(R.id.txtPassword);
             clipboard.setText(text.getText());
