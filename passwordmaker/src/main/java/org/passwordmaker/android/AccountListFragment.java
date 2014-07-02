@@ -231,6 +231,12 @@ public class AccountListFragment extends ListFragment {
     public void createNewAccount(String accountName) {
         try {
             Account account = new Account(accountName, false);
+            account.copySettings(accountManager.getDefaultAccount());
+            account.setName(accountName);
+            account.setIsFolder(false);
+            account.clearUrlComponents();
+            account.setUrl(accountName);
+            account.getPatterns().clear();
             accountManager.getPwmProfiles().addAccount(accountStack.getCurrentAccount(), account);
             getCurrentAccountList().notifyDataSetChanged();
             mCallbacks.onItemSelected(account);
