@@ -113,6 +113,7 @@ public class PwmApplication {
             Log.i(LOG_TAG, "Loaded application settings");
             accountManager.getPwmProfiles().swapAccounts(db);
             loadFavoritesFromGlobalSettings();
+            loadMasterPasswordHashFromGlobalSettings();
         }
     }
 
@@ -121,6 +122,7 @@ public class PwmApplication {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             updateFavoritesGlobalSettings();
+            updateMasterPasswordHash();
             writer.write(os, accountManager.getPwmProfiles());
             return os.toString();
         } catch (Exception e) {
@@ -149,6 +151,7 @@ public class PwmApplication {
         return deserializeSettings(is, convertBuggyAlgo, errors);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public Database deserializeSettings(String serialized, boolean convertBuggyAlgo) {
         ByteArrayInputStream is = new ByteArrayInputStream(serialized.getBytes());
         return deserializeSettings(is, convertBuggyAlgo);
@@ -162,6 +165,35 @@ public class PwmApplication {
     public void loadFavoritesFromGlobalSettings() {
         String encodedUrls = accountManager.getPwmProfiles().getGlobalSetting(AndroidGlobalSettings.FAVORITES);
         accountManager.decodeFavoritesUrls(encodedUrls, true);
+    }
+
+    public void updateMasterPasswordHash() {
+        SecureCharArray pwdSCA = accountManager.getCurrentPasswordHash();
+        String pwdHash = pwdSCA != null ? new String(accountManager.getCurrentPasswordHash().getData()) : "";
+        String pwdSalt = accountManager.getPasswordSalt();
+        boolean pwdStore = accountManager.shouldStorePasswordHash();
+        if ( pwdStore && pwdHash.length() > 0 && pwdSalt.length() > 0) {
+            accountManager.getPwmProfiles().setGlobalSetting(AndroidGlobalSettings.MASTER_PASSWORD_HASH, pwdHash);
+            accountManager.getPwmProfiles().setGlobalSetting(AndroidGlobalSettings.MASTER_PASSWORD_SALT, pwdSalt);
+        } else {
+            // ensure its cleared out
+            accountManager.getPwmProfiles().setGlobalSetting(AndroidGlobalSettings.MASTER_PASSWORD_HASH, "");
+            accountManager.getPwmProfiles().setGlobalSetting(AndroidGlobalSettings.MASTER_PASSWORD_SALT, "");
+        }
+        accountManager.getPwmProfiles().setGlobalSetting(AndroidGlobalSettings.STORE_MASTER_PASSWORD_HASH,
+                Boolean.toString(pwdStore));
+    }
+
+    public void loadMasterPasswordHashFromGlobalSettings() {
+        boolean pwdStore = Boolean.parseBoolean(
+                accountManager.getPwmProfiles().getGlobalSetting(AndroidGlobalSettings.STORE_MASTER_PASSWORD_HASH));
+        if ( !pwdStore ) {
+            accountManager.disablePasswordHash();
+        } else {
+            String pwdHash = accountManager.getPwmProfiles().getGlobalSetting(AndroidGlobalSettings.MASTER_PASSWORD_HASH);
+            String pwdSalt = accountManager.getPwmProfiles().getGlobalSetting(AndroidGlobalSettings.MASTER_PASSWORD_SALT);
+            accountManager.replaceCurrentPasswordHash(new SecureCharArray(pwdHash), pwdSalt);
+        }
     }
 
     public void loadSettingsOnce(Context context) {

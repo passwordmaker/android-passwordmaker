@@ -1,16 +1,15 @@
 package org.passwordmaker.android;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.*;
 import org.daveware.passwordmaker.Account;
 import org.daveware.passwordmaker.AccountManager;
@@ -249,6 +248,9 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             showImportExport();
             return true;
         }
+        if ( id == R.id.action_set_master_password_hash ) {
+            setMasterPasswordHash();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -312,12 +314,16 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         updateSelectedProfileText();
         TextView text = (TextView) findViewById(R.id.txtPassword);
         final String inputText = getInputText();
-        final String masterPassword = getInputPassword();
-        if (accountManager.matchesPasswordHash(masterPassword)) {
-            CharSequence output = accountManager.generatePassword(masterPassword, inputText);
-            text.setText(output);
-        } else {
-            text.setText("Password Hash Mismatch");
+        final SecureCharArray masterPassword = new SecureCharArray(getInputPassword());
+        try {
+            if (accountManager.matchesPasswordHash(masterPassword)) {
+                CharSequence output = accountManager.generatePassword(masterPassword, inputText);
+                text.setText(output);
+            } else {
+                text.setText("Password Hash Mismatch");
+            }
+        } finally {
+            masterPassword.erase();
         }
     }
 
@@ -352,6 +358,36 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private void showImportExport() {
         Intent intent = new Intent(this, ImportExportRdf.class);
         startActivity(intent);
+    }
+
+    private void setMasterPasswordHash() {
+        LayoutInflater inflater = getLayoutInflater();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View dialogView = inflater.inflate(R.layout.dialog_set_pwd_hash, null);
+        builder.setView(dialogView);
+
+        builder.setPositiveButton(R.string.Save,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        EditText password = (EditText)dialogView.findViewById(R.id.password);
+                        EditText confirmed = (EditText)dialogView.findViewById(R.id.confirm_password);
+                        if ( ! password.getText().toString().equals(confirmed.getText().toString())) {
+                            Toast.makeText(MainActivity.this, "Password Mismatch", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if ( password.getText().length() == 0 ) {
+                            accountManager.disablePasswordHash();
+                        } else {
+                            accountManager.setCurrentPasswordHashPassword(password.getText().toString());
+                        }
+                        PwmApplication.getInstance().updateMasterPasswordHash();
+                        updatePassword(true);
+                    }
+                });
+        builder.setNegativeButton(R.string.Cancel, null);
+        final AlertDialog alert = builder.create();
+        builder.setCancelable(true);
+        alert.show();
     }
 
     private View.OnKeyListener mUpdatePasswordKeyListener = new View.OnKeyListener() {

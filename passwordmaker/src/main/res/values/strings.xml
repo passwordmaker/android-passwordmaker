@@ -122,5 +122,8 @@
     <string name="LblUseUrl">Use Url</string>
     <string name="lblConvertBuggyAlgo">The javascript/firefox versions contains \'HMAC-SHA-256 V 1.5.1\' which was a buggy implementation of the hash algo.  The JVM does not support this, and the developer for the android version is too lazy to implement it himself.  You can try to \'convert\' to the nearest algo type, but it may not generate the same password always.</string>
     <string name="action_account_folder_add">Create Folder</string>
+    <string name="action_set_master_password_hash">Set Master Password Hash</string>
+    <string name="password">password</string>
+    <string name="confirm_password">confirm password</string>
 
 </resources>
