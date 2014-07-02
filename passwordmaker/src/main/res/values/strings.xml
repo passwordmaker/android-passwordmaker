@@ -125,5 +125,6 @@
     <string name="action_set_master_password_hash">Set Master Password Hash</string>
     <string name="password">password</string>
     <string name="confirm_password">confirm password</string>
+    <string name="lbl_domain_regex">Domain Regex</string>
 
 </resources>

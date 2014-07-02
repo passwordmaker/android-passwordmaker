@@ -83,6 +83,13 @@ public class PatternDataDetailFragment extends Fragment {
             }
         });
 
+        getDomainRegexButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDomainPattern();
+            }
+        });
+
         if ( ! twoPaneMode ) {
             getCancelButton().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -135,6 +142,10 @@ public class PatternDataDetailFragment extends Fragment {
         return (RadioButton)getView().findViewById(R.id.optWildcard);
     }
 
+    public Button getDomainRegexButton() {
+        return (Button)getView().findViewById(R.id.btnDomainRegex);
+    }
+
     @SuppressWarnings("UnusedDeclaration")
     public RadioButton getOptionRegex() {
         return (RadioButton)getView().findViewById(R.id.optRegex);
@@ -152,6 +163,11 @@ public class PatternDataDetailFragment extends Fragment {
         boolean isWildcard = type == AccountPatternType.WILDCARD;
         getOptionWildcard().setChecked(isWildcard);
         getOptionWildcard().setChecked(!isWildcard);
+    }
+
+    public void setDomainPattern() {
+        getTextPattern().setText("(.*://)?(.*\\.)?domain\\.com(/.*)?");
+        getOptionRegex().setChecked(true);
     }
 
 }

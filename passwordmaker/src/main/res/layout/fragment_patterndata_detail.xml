@@ -68,6 +68,12 @@
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/btnDomainRegex"
+                android:text="@string/lbl_domain_regex"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/Save"
                 android:id="@+id/primary"/>
 
