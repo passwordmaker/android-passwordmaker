@@ -12,6 +12,8 @@ import com.google.common.collect.ImmutableBiMap;
 import org.daveware.passwordmaker.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.NoSuchElementException;
+
 import static org.daveware.passwordmaker.Account.UrlComponents;
 
 /**
@@ -71,28 +73,6 @@ public class AccountDetailFragment extends Fragment {
         super.onPause();
         if ( lastFocusedView != null )
             lastFocusedView.getOnFocusChangeListener().onFocusChange(lastFocusedView, false);
-    }
-
-    // This function must batch the strings.xml array: HashAlgos
-    private static ImmutableBiMap<AlgorithmType, Integer> typeToNum = ImmutableBiMap.<AlgorithmType, Integer>builder()
-            .put(AlgorithmType.MD4, 0)
-            .put(AlgorithmType.MD5, 2)
-            .put(AlgorithmType.SHA1, 4)
-            .put(AlgorithmType.SHA256, 6)
-            .put(AlgorithmType.RIPEMD160, 8).build();
-
-    private static int getAlgoOrdinal(AlgorithmType type, boolean isHMac) {
-        return typeToNum.get(type) + (isHMac ? 1 : 0);
-    }
-
-    private boolean isHMac(int ordinal) {
-        return ordinal % 2 != 0;
-    }
-
-    private AlgorithmType getAlgoType(int ordinal) {
-        // odd is h
-        if ( isHMac(ordinal) ) ordinal--;
-        return typeToNum.inverse().get(ordinal);
     }
 
     private LeetType getLeetType(int ordinal) {
@@ -176,7 +156,7 @@ public class AccountDetailFragment extends Fragment {
             chkSubDomain.setChecked(mItem.getUrlComponents().contains(UrlComponents.Subdomain));
             chkDomain.setChecked(mItem.getUrlComponents().contains(UrlComponents.Domain));
             chkOthers.setChecked(mItem.getUrlComponents().contains(UrlComponents.PortPathAnchorQuery));
-            selectHashAlgos.setSelection(getAlgoOrdinal(mItem.getAlgorithm(), mItem.isHmac()));
+            selectHashAlgos.setSelection(AlgorithmSelectionValues.getFromAccount(mItem).getStringResourcePosition());
             selectLeet.setSelection(mItem.getLeetType().getOrdinal());
             selectLeetLevel.setSelection(mItem.getLeetLevel().getOrdinal());
             passwordLength.setText(Integer.toString(mItem.getLength()));
@@ -279,10 +259,13 @@ public class AccountDetailFragment extends Fragment {
             selectHashAlgos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                    AlgorithmType algorithmType = getAlgoType(position);
-                    Log.e(LOG_TAG, String.format("HashAlgo at index selected: %d with name: %s",
-                            position, algorithmType.toString()));
-                    mItem.setAlgorithm(algorithmType);
+                    try {
+                        AlgorithmSelectionValues selected = AlgorithmSelectionValues.getByPosition(position);
+                        selected.setAccountSettings(mItem);
+                    } catch (NoSuchElementException e) {
+                        Toast.makeText(getActivity(), "Failed to set account algorithm: " + e.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
 
                 public void onNothingSelected(AdapterView<?> arg0) {}

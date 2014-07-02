@@ -57,7 +57,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // You must install or update the Support Repository through the SDK manager to use this dependency.
     compile 'com.intellij:annotations:+@jar'
-    compile 'org.passwordmaker:passwordmaker-je-lib:0.9.1'
+    compile 'org.passwordmaker:passwordmaker-je-lib:0.9.2'
     compile 'com.madgag.spongycastle:core:1.50.0.0'
     compile 'com.madgag.spongycastle:prov:1.50.0.0'
     androidTestCompile 'junit:junit:4.8.1'

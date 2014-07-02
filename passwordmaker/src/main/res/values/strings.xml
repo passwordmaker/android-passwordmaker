@@ -30,12 +30,14 @@
         <item>After Generating Password</item>
         <item>Before And After Generating Password</item>
     </string-array>
-    <!-- This must match AccountDetailFragment#getAlgoOrdinal -->
+    <!-- This must match AlgorithmSelectionValues enum Position argument -->
     <string-array name="HashAlgos">
         <item>MD4</item>
         <item>HMAC MD4</item>
         <item>MD5</item>
+        <item>MD5 V 0.6</item>
         <item>HMAC MD5</item>
+        <item>HMAC MD5 V 0.6</item>
         <item>SHA 1</item>
         <item>HMAC SHA 1</item>
         <item>SHA 256</item>
