@@ -202,7 +202,7 @@ public class PatternDataListFragment extends ListFragment
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(R.string.confirm_delete)
-                .setMessage("Delete pattern '" + pattern.getDesc() + "'")
+                .setMessage(getResources().getText(R.string.delete_confirmation_text) + " '" + pattern.getDesc() + "'")
                 .setCancelable(true);
         builder.setPositiveButton(R.string.delete_button, new DialogInterface.OnClickListener() {
             @Override
