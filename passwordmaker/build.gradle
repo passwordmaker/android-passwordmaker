@@ -42,7 +42,7 @@ android {
     defaultConfig {
         minSdkVersion 15  //2014-06-15: 84.3% of android users are using Sdk Version 15+.  So lets shoot for that.
         targetSdkVersion 19
-        versionCode 19000
+        versionCode 19001
         versionName getVersionName()
     }
 
