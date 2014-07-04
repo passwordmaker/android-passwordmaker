@@ -3,19 +3,12 @@
 
     <string name="full_app_name">PasswordMaker Pro</string>
     <string name="app_name">PWMP</string>
-    <string name="action_settings">Settings</string>
     <string name="Password">Password</string>
     <string name="MasterPassword">Master Password</string>
     <string name="MasterPwdVerification">Master Password Verification Code</string>
     <string name="Input">Input Text</string>
-    <string name="CharacterSet">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</string>
     <string name="LblCharSet">Character Set</string>
     <string name="LblCopy">Copy</string>
-    <string name="NewProfile">New Profile</string>
-    <string name="NewProfileCondensed">New</string>
-    <string name="ChangeProfile">Change Profile</string>
-    <string name="EditFavorites">Edit Favorites</string>
-    <string name="ChangeProfileCondensed">Change</string>
     <string name="Save">Save</string>
     <string name="AddProfile">Create</string>
     <string name="Cancel">Cancel</string>
@@ -78,28 +71,16 @@
     <string name="LblLeetLevel">Leet Level</string>
     <string name="Lblusername">Username</string>
     <string name="LblModifier">Modifier</string>
-    <string name="AlphaNum">Alpha Num</string>
     <string name="chkDomain">Domain</string>
-    <string name="EditProfile">Edit Profile</string>
-    <string name="EditProfileCondensed">Edit</string>
-    <string name="ButtonFavorites">+</string>
-    <string name="chkPasswordHash">Store Password Hash</string>
-    <string name="lblPasswordHash">Store Password Hash</string>
     <string name="SaveInputs">Save Input</string>
     <string name="SaveInputsForMinutes">Save Inputs for (Minutes)</string>
-    <string name="EditFavAdd">Add</string>
-    <string name="EditFavRem">Remove</string>
     <string name="lblHashAlgo">Hash Algo</string>
-    <string name="password_input">Input</string>
     <string name="action_profiles">Profiles</string>
     <string name="action_favorites">Favorites</string>
     <string name="title_account_list">Accounts</string>
     <string name="title_account_detail">Account Detail</string>
     <string name="title_activity_edit_favorites">Edit Favorites</string>
     <string name="action_favs_add">Add</string>
-    <string name="action_favs_rem">Remove</string>
-    <string name="title_activity_account_pattern">Account Pattern</string>
-    <string name="hello_world">Hello world!</string>
     <string name="confirm_delete">Confirm Delete</string>
     <string name="delete_button">Delete</string>
     <string name="title_patterndata_list">PatternData</string>
@@ -127,5 +108,7 @@
     <string name="confirm_password">confirm password</string>
     <string name="lbl_domain_regex">Domain Regex</string>
     <string name="delete_confirmation_text">Delete pattern</string>
+    <string name="chkConvertBadAlgo">Convert Buggy Javascript Algo</string>
+    <string name="btnClearSelectedProfile">Clear</string>
 
 </resources>

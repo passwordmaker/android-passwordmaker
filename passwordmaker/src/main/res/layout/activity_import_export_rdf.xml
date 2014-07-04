@@ -44,7 +44,7 @@
     <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Convert Buggy Javascript Algo"
+            android:text="@string/chkConvertBadAlgo"
             android:id="@+id/chkConvertBadAlgo"
             android:layout_above="@+id/frameImportExport"
             android:layout_alignParentLeft="true"

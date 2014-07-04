@@ -5,10 +5,10 @@
         android:title="@string/action_account_add"
         android:orderInCategory="100"
         android:icon="@android:drawable/ic_menu_add"
-        android:showAsAction="always"  />
+        android:showAsAction="ifRoom"  />
     <item android:id="@+id/action_account_folder_add"
           android:title="@string/action_account_folder_add"
           android:orderInCategory="101"
           android:icon="@drawable/ic_action_av_add_to_queue"
-          android:showAsAction="always"  />
+          android:showAsAction="ifRoom"  />
 </menu>

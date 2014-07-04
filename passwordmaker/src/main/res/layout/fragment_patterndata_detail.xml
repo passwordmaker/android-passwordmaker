@@ -59,6 +59,12 @@
             android:text="@string/chkPatternEnabled"
             android:checked="true"/>
 
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnDomainRegex"
+            android:text="@string/lbl_domain_regex"/>
+
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -68,8 +74,8 @@
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnDomainRegex"
-                android:text="@string/lbl_domain_regex"/>
+                android:text="@android:string/cancel"
+                android:id="@android:id/closeButton"/>
 
         <Button
                 android:layout_width="wrap_content"
@@ -77,10 +83,5 @@
                 android:text="@string/Save"
                 android:id="@+id/primary"/>
 
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@android:string/cancel"
-                android:id="@android:id/closeButton"/>
     </LinearLayout>
 </LinearLayout>

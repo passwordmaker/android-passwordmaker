@@ -138,7 +138,7 @@ public class AccountDetailFragment extends Fragment {
             selectHashAlgos = (Spinner)rootView.findViewById(R.id.selectHashAlgos);
             selectLeet = (Spinner)rootView.findViewById(R.id.selectLeet);
             selectLeetLevel = (Spinner)rootView.findViewById(R.id.spinLeetLevel);
-            passwordLength = (EditText)rootView.findViewById(R.id.txtPasswordLen);
+            passwordLength = (EditText)rootView.findViewById(R.id.txtPswordLen);
             txtUsername = (EditText)rootView.findViewById(R.id.txtUsername);
             txtModifer = (EditText)rootView.findViewById(R.id.txtModifier);
             spinnerCharacterSet = (Spinner)rootView.findViewById(R.id.selectCharacterSet);

@@ -14,6 +14,7 @@
                   android:layout_marginLeft="10dip" android:textStyle="bold"/>
 
         <ImageButton
+                android:contentDescription="@string/btnClearSelectedProfile"
                 android:layout_width="37dp"
                 android:layout_height="32dp"
                 android:id="@+id/btnClearSelected"
@@ -47,7 +48,7 @@
               android:textAppearance="?android:attr/textAppearanceSmall" android:text="@string/Password"
               android:id="@+id/lblPassword"/>
     <EditText android:layout_width="fill_parent" android:layout_height="wrap_content"
-              android:id="@+id/txtPassword" android:editable="false" android:singleLine="true"
+              android:id="@+id/txtPassword" android:singleLine="true"
               android:inputType="textVisiblePassword"/>
     <Button android:text="@string/LblCopy" android:layout_height="wrap_content"
             android:layout_width="fill_parent" android:id="@+id/btnCopy"/>

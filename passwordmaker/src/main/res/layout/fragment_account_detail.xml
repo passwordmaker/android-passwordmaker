@@ -26,7 +26,7 @@
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:id="@+id/TextView01" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/lblHashAlgo"/>
         <Spinner android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/selectHashAlgos" android:entries="@array/HashAlgos"/>
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/lblPassLen" android:text="@string/PasswordLength"/>
-        <EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:numeric="integer" android:id="@+id/txtPasswordLen"  android:inputType="number"/>
+        <EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/txtPswordLen"  android:inputType="text|number"/>
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/lblUsername" android:text="@string/Lblusername"/>
         <EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/txtUsername" android:inputType="textNoSuggestions"/>
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/lblModifer" android:text="@string/LblModifier"/>
@@ -39,9 +39,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txtCustomCharacterSet"
                 android:textIsSelectable="true"
-                android:inputType="text"
-                android:editable="false"
-                android:capitalize="none"/>
+                android:inputType="text|textNoSuggestions"/>
 
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblPrefix" android:text="@string/LblPrefix"/>
         <EditText android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/txtPrefix" android:inputType="textNoSuggestions"/>
