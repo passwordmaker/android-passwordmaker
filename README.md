@@ -20,6 +20,20 @@ For bug reports please see the https://github.com/tasermonkey/android-passwordma
 
 Feel free to create a pull request to fix a bug or add a feature yourself!
 
+Users
+======
+Welcome to passwordmaker!  If you haven't already checkout [Passwordmaker.org](http://passwordmaker.org) to know what password maker is all about.
+
+If you have an issues or questions, with the Android version of PasswordMaker Pro, go to the (Issue Tracker)[https://github.com/tasermonkey/android-passwordmaker/issues]
+
+Have a comment, question, or issue that you want to say more privately not on the issue tracker, feel free to (email)[mailto:pwdmkrpro.android.84a75@tasermonkeys.com] me.
+
+(Developer's keybase.io account)[https://keybase.io/jstapleton] 
+
+Developers
+==========
+If you are not a developer you probably don't need to read any farther down this file.
+
 Compiling
 ==========
 * You will ofcourse need to download the (Android SDK)[http://developer.android.com/sdk/index.html#download]
@@ -94,3 +108,6 @@ Notes
     - `<major>.<minor>.<revision>` -> code: First digit is major, second two digits is minor, and last two digits are revision.
     - Example: for `2.13.4` the code would be `21304`  This way as the version number increases the code will also be a bigger number
     - This is different for the first 10 released versions which were just the release numbers.
+  * What the blank, mvn and gradle?
+    - Yeah, until I fixed up the build for the passwordmaker-je-lib more, it is using maven.
+    - And this project is using gradle, cause really, I like gradle, other than its slow to startup.  But it works well with android dev.
