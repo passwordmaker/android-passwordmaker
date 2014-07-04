@@ -24,11 +24,11 @@ Users
 ======
 Welcome to passwordmaker!  If you haven't already checkout [Passwordmaker.org](http://passwordmaker.org) to know what password maker is all about.
 
-If you have an issues or questions, with the Android version of PasswordMaker Pro, go to the (Issue Tracker)[https://github.com/tasermonkey/android-passwordmaker/issues]
+If you have an issues or questions, with the Android version of PasswordMaker Pro, go to the [Issue Tracker](https://github.com/tasermonkey/android-passwordmaker/issues)
 
-Have a comment, question, or issue that you want to say more privately not on the issue tracker, feel free to (email)[mailto:pwdmkrpro.android.84a75@tasermonkeys.com] me.
+Have a comment, question, or issue that you want to say more privately not on the issue tracker, feel free to [email](mailto:pwdmkrpro.android.84a75@tasermonkeys.com) me.
 
-(Developer's keybase.io account)[https://keybase.io/jstapleton] 
+[Developer's keybase.io account](https://keybase.io/jstapleton) 
 
 Developers
 ==========
@@ -81,7 +81,7 @@ To assemble the release mode, you run the task `assembleRelease` and to install:
 Signing
 ==========
 In order to build this project you need to setup signing.  I can't just include the signing keys in the git repo because that would mean anyone could sign as me.
-So you will need to generate your own signing keys. See (Android signing help)[http://developer.android.com/tools/publishing/app-signing.html]
+So you will need to generate your own signing keys. See [Android signing help](http://developer.android.com/tools/publishing/app-signing.html)
 
 Then from the `android-passwordmaker/passwordmaker` you need to setup your Environment by running the script: 
 
@@ -101,7 +101,7 @@ Notes
     - So the solution was to just shim out the interface, then have it use the xmlpull package that comes with Android.
   * Why did you want to move to use the java library `passwordmaker-je`?
     - This way any improvements to the core can be made to both the standard `java edition` and the android edition!
-    - See the Java library code repository here: (passwordmaker-je-lib)[http://github.com/tasermonkey/passwordmaker-je-lib]
+    - See the Java library code repository here: [passwordmaker-je-lib](http://github.com/tasermonkey/passwordmaker-je-lib)
     - The original source came from: http://code.google.com/p/passwordmaker-je/
       - Thanks to Dave Marotti for this
   * Version Code strategy:
