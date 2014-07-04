@@ -5,6 +5,7 @@ import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.google.common.base.Function;
@@ -65,6 +66,7 @@ public class AccountListFragment extends ListFragment {
          */
         public void onItemSelected(Account account);
         public void onFolderSelected(Account account);
+        public void onItemLongSelected(Account account);
     }
 
     /**
@@ -78,6 +80,11 @@ public class AccountListFragment extends ListFragment {
 
         @Override
         public void onFolderSelected(Account account) {
+
+        }
+
+        @Override
+        public void onItemLongSelected(Account account) {
 
         }
     };
@@ -112,6 +119,15 @@ public class AccountListFragment extends ListFragment {
                 && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
         }
+
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Account selected = getCurrentAccountList().getItem(position);
+                mCallbacks.onItemLongSelected(selected);
+                return true;
+            }
+        });
     }
 
     private void loadIncomingAccount() {

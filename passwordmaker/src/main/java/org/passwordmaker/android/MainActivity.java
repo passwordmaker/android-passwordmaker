@@ -30,8 +30,6 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private static final String REPO_KEY_SAVED_INPUT_UNTIL = "savedInputUnilt";
     private static final String REPO_KEY_SAVED_INPUT_PASSWORD = "savedInputPass";
     private static final String REPO_KEY_SAVED_INPUT_INPUTTEXT = "savedInputInputText";
-
-    private static final String REPO_KEY_CURRENT_PROFILES = "currentProfile";
     private static final int MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE = 8;
 
     private static String LOG_TAG = "PasswordMakerProForAndroidActivity";
@@ -43,6 +41,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private TextView lblInputTimeout;
     private EditText txtInputTimeout;
     private CheckBox chkSaveInputs;
+    private ImageButton btnClearSelectedProfile;
 
     private ArrayAdapter<String> favoritesAdapter;
     private ArrayList<String> favoritesList = new ArrayList<String>();
@@ -68,15 +67,6 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         loadAccountDatabase();
         createFavoritesList();
 
-
-        String currentProfile = getPreferences(MODE_PRIVATE).getString(
-                REPO_KEY_CURRENT_PROFILES, null);
-        try {
-            accountManager.selectAccountById(currentProfile);
-        } catch (IllegalArgumentException e) {
-            System.out.println("While loading settings: " + e.getMessage());
-        }
-
         AutoCompleteTextView inputText = (AutoCompleteTextView) findViewById(R.id.txtInput);
         if (inputText != null) {
             inputText.setOnKeyListener(mUpdatePasswordKeyListener);
@@ -92,6 +82,9 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         Button button = (Button) findViewById(R.id.btnCopy);
         if (button != null)
             button.setOnClickListener(mCopyButtonClick);
+
+        btnClearSelectedProfile = (ImageButton)findViewById(R.id.btnClearSelected);
+        btnClearSelectedProfile.setOnClickListener(mClearProfileButtonClick);
 
         loadDefaultValueForFields();
     }
@@ -261,6 +254,11 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         String value = account.getName();
         if ( accountManager.isAutoSelectingAccount() ) {
             value += " (AutoSelected)";
+            if ( btnClearSelectedProfile.getVisibility() != View.GONE )
+                btnClearSelectedProfile.setVisibility(View.GONE);
+        } else {
+            if ( btnClearSelectedProfile.getVisibility() != View.VISIBLE )
+                btnClearSelectedProfile.setVisibility(View.VISIBLE);
         }
         text.setText(value);
     }
@@ -410,6 +408,16 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         }
     };
 
+    private View.OnClickListener mClearProfileButtonClick = new View.OnClickListener() {
+
+        // This is suppressed because I still want to support older android phones
+        @SuppressWarnings("deprecation")
+        public void onClick(View v) {
+            accountManager.clearSelectedAccount();
+            updatePassword(true);
+            Toast.makeText(MainActivity.this, "Cleared manually selected account", Toast.LENGTH_SHORT).show();
+        }
+    };
     private CompoundButton.OnCheckedChangeListener onSaveInputCheckbox = new CompoundButton.OnCheckedChangeListener() {
 
         public void onCheckedChanged(CompoundButton buttonView,

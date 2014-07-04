@@ -12,6 +12,14 @@
                   android:textAppearance="?android:attr/textAppearanceSmall"
                   android:text="" android:id="@+id/lblCurrentProfile"
                   android:layout_marginLeft="10dip" android:textStyle="bold"/>
+
+        <ImageButton
+                android:layout_width="37dp"
+                android:layout_height="32dp"
+                android:id="@+id/btnClearSelected"
+                android:src="@drawable/abc_ic_clear"
+                android:visibility="gone"/>
+
     </LinearLayout>
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:textAppearance="?android:attr/textAppearanceSmall"

@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.Toast;
 import org.daveware.passwordmaker.Account;
 import org.jetbrains.annotations.NotNull;
 
@@ -197,6 +198,13 @@ public class AccountListActivity extends Activity
     @Override
     public void onFolderSelected(Account account) {
         // do anything that we need to do here
+    }
+
+    @Override
+    public void onItemLongSelected(Account account) {
+        PwmApplication.getInstance().getAccountManager().selectAccountById(account.getId());
+        NavUtils.navigateUpFromSameTask(this);
+        Toast.makeText(this, "Manually selected '" + account.getName() + "'",  Toast.LENGTH_SHORT).show();
     }
 
     private void setDisplayHomeAsUpEnabled() {
