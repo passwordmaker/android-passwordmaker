@@ -39,14 +39,14 @@ Though I heavily suggest using an IDE like Intellij or Eclipse.
 
 Step by Step Compiling in the commandline
 ===========
-h3. Step 1: get build, and install passwordmaker-je
+### Step 1: get build, and install passwordmaker-je
  
     git clone https://github.com/tasermonkey/passwordmaker-je-lib.git
     cd passwordmaker-je-lib
     git checkout 0.9.3
     mvn install
     
-h3. Step 2: get and build android passwordmaker
+### Step 2: get and build android passwordmaker
 
     # the cd .. is just to go to the same parent directory as the passwordmaker-je-lib to checkout the android code 
     cd ..
@@ -55,7 +55,7 @@ h3. Step 2: get and build android passwordmaker
     cd android-passwordmaker/passwordmaker
     ../gradlew assembleDebug
     
-h3. Step 3: apk
+### Step 3: apk
 This should have built an apk inside of the  android-passwordmaker/passwordmaker/build/apk directory: passwordmaker-debug.apk
 
 To use gradle to install this, run:
