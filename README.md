@@ -37,11 +37,45 @@ For example to run the Android Test cases, run: `./gradlew connectedAndroidTest`
 
 Though I heavily suggest using an IDE like Intellij or Eclipse.
 
-TODO: Step by step instructions on how to compile/run this project from a fresh install.
+Step by Step Compiling in the commandline
+===========
+h3. Step 1: get build, and install passwordmaker-je
+ 
+    git clone https://github.com/tasermonkey/passwordmaker-je-lib.git
+    cd passwordmaker-je-lib
+    git checkout 0.9.3
+    mvn install
+    
+h3. Step 2: get and build android passwordmaker
+
+    # the cd .. is just to go to the same parent directory as the passwordmaker-je-lib to checkout the android code 
+    cd ..
+    git clone https://github.com/tasermonkey/android-passwordmaker.git
+    git checkout release/v2.0.0
+    cd android-passwordmaker/passwordmaker
+    ../gradlew assembleDebug
+    
+h3. Step 3: apk
+This should have built an apk inside of the  android-passwordmaker/passwordmaker/build/apk directory: passwordmaker-debug.apk
+
+To use gradle to install this, run:
+
+    ../gradlew installDebug
+
+To assemble the release mode, you run the task `assembleRelease` and to install: `installRelease`.  However in order to build this you need to setup the signing.
 
 Signing
 ==========
-TODO insert help and instructions
+In order to build this project you need to setup signing.  I can't just include the signing keys in the git repo because that would mean anyone could sign as me.
+So you will need to generate your own signing keys. See (Android signing help)[http://developer.android.com/tools/publishing/app-signing.html]
+
+Then from the `android-passwordmaker/passwordmaker` you need to setup your Environment by running the script: 
+
+    source set_signing_env_vars.sh
+    
+This script is required to be 'sourced' from your shell whenever you open up a new shell, and be source because it adds 4 environment variables to your session.
+<br/>NOTE: This seems like a pretty decent way to do this, as the password will never be visible.  Also never stored on disk.  However, maybe somehow invent a gpg way of storing the password and config info.
+
 
 Notes
 ======
