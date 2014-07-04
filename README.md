@@ -39,6 +39,10 @@ Though I heavily suggest using an IDE like Intellij or Eclipse.
 
 TODO: Step by step instructions on how to compile/run this project from a fresh install.
 
+Signing
+==========
+TODO insert help and instructions
+
 Notes
 ======
   * Why does PasswordMakerPro require using `spongycastle`?

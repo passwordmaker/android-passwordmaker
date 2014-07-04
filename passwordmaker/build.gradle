@@ -45,10 +45,30 @@ android {
         versionCode 19000
         versionName getVersionName()
     }
+
+    signingConfigs {
+        release {
+            def env = System.getenv()
+            if (env['PASSWORDMAKER_KEYSTORE_FILE'] != null) {
+                storeFile file(env['PASSWORDMAKER_KEYSTORE_FILE'])
+                storePassword env['PASSWORDMAKER_KEYSTORE_PASSWORD']
+                keyAlias env['PASSWORDMAKER_KEYSTORE_KEY_ALIAS']
+                keyPassword env['PASSWORDMAKER_KEYSTORE_KEY_PASSWORD']
+            } else {
+                println ("##################")
+                println ("No keystore for release set.")
+                println ("Set PASSWORDMAKER_KEYSTORE_FILE, PASSWORDMAKER_KEYSTORE_PASSWORD,"
+                        + "PASSWORDMAKER_KEYSTORE_KEY_ALIAS and PASSWORDMAKER_KEYSTORE_KEY_PASSWORD")
+                println ("##################")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            runProguard false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            runProguard true
         }
     }
 }
