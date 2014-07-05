@@ -20,3 +20,4 @@
 -dontwarn javax.annotation.**
 -dontwarn javax.xml.stream.**
 -dontwarn sun.misc.Unsafe
+-keep class org.spongycastle.**
