@@ -6,6 +6,7 @@ import org.daveware.passwordmaker.*;
 import org.passwordmaker.AccountManagerSamples;
 
 import java.io.*;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +56,8 @@ public class PwmApplication {
 
     private PwmApplication() {
         accountManager = new AccountManager();
+        PasswordMaker.setDefaultCryptoProvider("SC");
+        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
         AccountManagerSamples.addSamples(accountManager);
     }
 
