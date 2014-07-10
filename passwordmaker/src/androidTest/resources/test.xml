@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<RDF:RDF>
+    <RDF:Seq RDF:about="http://passwordmaker.mozdev.org/accounts" xmlns:NS1="http://passwordmaker.mozdev.org/rdf#"
+             xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <RDF:li RDF:resource="http://passwordmaker.mozdev.org/defaults"/>
+        <RDF:li RDF:resource="rdf:#$da39a3ee5e6b4b0d3255bfef95601890afd80709"/>
+    </RDF:Seq>
+    <RDF:Description RDF:about="http://passwordmaker.mozdev.org/accounts" NS1:name="default" NS1:description=""
+                     NS1:whereLeetLB="off" NS1:leetLevelLB="1" NS1:hashAlgorithmLB="md5" NS1:passwordLength="8"
+                     NS1:usernameTB="username" NS1:counter=""
+                     NS1:charset='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&amp;*()_-+={}|[]\:";&apos;&lt;&gt;?,./'
+                     NS1:prefix="" NS1:suffix="" NS1:autoPopulate="false" NS1:urlToUse="http://domain.com"/>
+    <RDF:Description RDF:about="http://passwordmaker.mozdev.org/defaults" NS1:name="default" NS1:description=""
+                     NS1:whereLeetLB="off" NS1:leetLevelLB="1" NS1:hashAlgorithmLB="md5" NS1:passwordLength="8"
+                     NS1:usernameTB="" NS1:counter=""
+                     NS1:charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" NS1:prefix=""
+                     NS1:suffix="" NS1:autoPopulate="false" NS1:protocolCB="false" NS1:subdomainCB="false"
+                     NS1:domainCB="true" NS1:pathCB="false"/>
+    <RDF:Description RDF:about="rdf:#$da39a3ee5e6b4b0d3255bfef95601890afd80709" NS1:name="TestAccount"
+                     NS1:description="Test account" NS1:whereLeetLB="off" NS1:leetLevelLB="1"
+                     NS1:hashAlgorithmLB="sha256" NS1:passwordLength="12" NS1:usernameTB="" NS1:counter=""
+                     NS1:charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" NS1:prefix=""
+                     NS1:suffix="" NS1:autoPopulate="false" NS1:urlToUse="" NS1:pattern0="http*://*google.com/*"
+                     NS1:patterntype0="wildcard" NS1:patternenabled0="true" NS1:patterndesc0="allGoogle"/>
+    <RDF:Description RDF:about="http://passwordmaker.mozdev.org/globalSettings"/>
+</RDF:RDF>

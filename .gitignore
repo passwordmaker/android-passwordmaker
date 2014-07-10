@@ -9,3 +9,4 @@ out
 .idea
 *.iml
 proguard_logs
+.gradle
