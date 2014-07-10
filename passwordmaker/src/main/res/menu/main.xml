@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="org.passwordmaker.android.MainActivity" >
+    <item android:id="@+id/action_profiles"
+          android:title="@string/action_profiles"
+          android:orderInCategory="101"
+          app:showAsAction="ifRoom"
+          android:icon="@android:drawable/sym_contact_card" />
+    <item android:id="@+id/action_favorites"
+          android:title="@string/action_favorites"
+          android:orderInCategory="102"
+          app:showAsAction="ifRoom"
+          android:icon="@drawable/ic_action_collections_labels"/>
+    <item android:id="@+id/action_import_export"
+          android:title="@string/action_import_export"
+          android:orderInCategory="103"
+          app:showAsAction="ifRoom"
+          android:icon="@drawable/ic_action_content_import_export"/>
+    <item android:id="@+id/action_set_master_password_hash"
+          android:title="@string/action_set_master_password_hash"
+          android:orderInCategory="200"
+          app:showAsAction="never"/>
+</menu>

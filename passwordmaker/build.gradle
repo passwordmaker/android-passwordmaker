@@ -1,0 +1,87 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.9.+'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+
+/*
+ * Gets the version name from the latest Git tag
+ *
+ * Tag each release like: git tag -a 1.0
+ * then Rebuild for a nice version number
+ *
+ */
+def getVersionName = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--tags'
+        standardOutput = stdout
+    }
+    String output = stdout.toString()
+    if (output.startsWith('v')) output = output[1..-1]
+    output = output.trim()
+    println "Building version ${output}"
+    return output
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.1.0"
+
+    defaultConfig {
+        minSdkVersion 15  //2014-06-15: 84.3% of android users are using Sdk Version 15+.  So lets shoot for that.
+        targetSdkVersion 19
+        versionCode 19003
+        versionName getVersionName()
+    }
+
+    signingConfigs {
+        release {
+            def env = System.getenv()
+            if (env['PASSWORDMAKER_KEYSTORE_FILE'] != null) {
+                storeFile file(env['PASSWORDMAKER_KEYSTORE_FILE'])
+                storePassword env['PASSWORDMAKER_KEYSTORE_PASSWORD']
+                keyAlias env['PASSWORDMAKER_KEYSTORE_KEY_ALIAS']
+                keyPassword env['PASSWORDMAKER_KEYSTORE_KEY_PASSWORD']
+            } else {
+                println ("##################")
+                println ("No keystore for release set.")
+                println ("Set PASSWORDMAKER_KEYSTORE_FILE, PASSWORDMAKER_KEYSTORE_PASSWORD,"
+                        + "PASSWORDMAKER_KEYSTORE_KEY_ALIAS and PASSWORDMAKER_KEYSTORE_KEY_PASSWORD")
+                println ("##################")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            runProguard true
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    // You must install or update the Support Repository through the SDK manager to use this dependency.
+    compile 'com.intellij:annotations:12.0@jar'
+    compile 'org.passwordmaker:passwordmaker-je-lib:0.9.3'
+    compile 'com.madgag.spongycastle:core:1.50.0.0'
+    compile 'com.madgag.spongycastle:prov:1.50.0.0'
+    androidTestCompile 'junit:junit:4.8.1'
+    compile 'com.android.support:appcompat-v7:19.1.0'
+    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.google.guava:guava:17.0'
+}
