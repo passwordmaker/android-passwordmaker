@@ -5,4 +5,12 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="ListView" parent="@android:style/Widget.ListView">
+        <item name="android:background">@android:color/holo_blue_light</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:listSelector">@drawable/list_item_account_selector</item>
+    </style>
+
 </resources>

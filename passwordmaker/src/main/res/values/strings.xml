@@ -110,5 +110,7 @@
     <string name="delete_confirmation_text">Delete pattern</string>
     <string name="chkConvertBadAlgo">Convert Buggy Javascript Algo</string>
     <string name="btnClearSelectedProfile">Clear</string>
+    <string name="deleteAccount">Delete</string>
+    <string name="UseAccount">Use</string>
 
 </resources>
