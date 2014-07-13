@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -47,12 +47,15 @@ public class AccountListFragment extends ListFragment {
      */
     private Callbacks mCallbacks = sDummyCallbacks;
 
+    private ActionMode mActionMode;
+
+    private boolean autoActivateMode = false;
+
     /**
      * The current activated item position. Only used on tablets.
      */
     private int mActivatedPosition = ListView.INVALID_POSITION;
     private AccountManager accountManager;
-
     private Account loadedAccount;
 
     /**
@@ -119,12 +122,20 @@ public class AccountListFragment extends ListFragment {
                 && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
         }
-
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Account selected = getCurrentAccountList().getItem(position);
-                mCallbacks.onItemLongSelected(selected);
+                if (mActionMode != null) {
+                    return false;
+                }
+
+                if ( ! autoActivateMode ) {
+                    getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                }
+                getListView().setItemChecked(position, true);
+
+                // Start the CAB using the ActionMode.Callback defined above
+                mActionMode = getActivity().startActionMode(mActionModeCallback);
                 return true;
             }
         });
@@ -219,6 +230,7 @@ public class AccountListFragment extends ListFragment {
         getListView().setChoiceMode(activateOnItemClick
                 ? ListView.CHOICE_MODE_SINGLE
                 : ListView.CHOICE_MODE_NONE);
+        autoActivateMode = activateOnItemClick;
     }
 
     private void setActivatedPosition(int position) {
@@ -261,6 +273,13 @@ public class AccountListFragment extends ListFragment {
         }
     }
 
+    public void deleteAccount(Account account) {
+        accountManager.getPwmProfiles().removeAccount(account);
+        refreshList(accountStack.getCurrentAccount());
+        getCurrentAccountList().notifyDataSetChanged();
+        getListView().clearChoices();
+    }
+
 
     public void createNewFolder(String folderName) {
         try {
@@ -271,6 +290,26 @@ public class AccountListFragment extends ListFragment {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void clearAllChecked() {
+        final ListView lv = getListView();
+        getListView().clearChoices();
+        for (int i = 0; i < lv.getCount(); i++)
+            lv.setItemChecked(i, false);
+        if ( ! autoActivateMode ) {
+            lv.post(new Runnable() {
+                @Override
+                public void run() {
+                    lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
+                }
+            });
+
+        }
+        else if ( mActivatedPosition !=  ListView.INVALID_POSITION ) {
+            setActivatedPosition(mActivatedPosition);
+        }
+        getCurrentAccountList().notifyDataSetChanged();
     }
 
     private class AccountStack {
@@ -345,4 +384,59 @@ public class AccountListFragment extends ListFragment {
         }
 
     }
+
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        // Called when the action mode is created; startActionMode() was called
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.account_list_menu, menu);
+            if (getCheckedAccount().isDefault()) {
+                menu.findItem(R.id.menu_item_delete).setVisible(false);
+            } else {
+                menu.findItem(R.id.menu_item_delete).setVisible(true);
+            }
+            return true;
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false; // Return false if nothing is done
+        }
+
+        // Called when the user selects a contextual menu item
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_item_select:
+                    mCallbacks.onItemLongSelected(getCheckedAccount());
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+                case R.id.menu_item_delete:
+                    deleteAccount(getCheckedAccount());
+                    mode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        // Called when the user exits the action mode
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+            clearAllChecked();
+        }
+
+
+        public Account getCheckedAccount() {
+            return getCurrentAccountList().getItem(getListView().getCheckedItemPosition());
+        }
+    };
+
 }

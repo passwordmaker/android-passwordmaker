@@ -177,10 +177,16 @@ public class AccountDetailFragment extends Fragment {
 
             if ( mItem.isDefault() ) {
                 frameUrlParts.setVisibility(View.VISIBLE);
-                txtUseUrl.setVisibility(View.GONE);
-                lblUseUrl.setVisibility(View.GONE);
+                // for legacy imports, its possible to have the url field filled out, therefore we must show it.
+                if ( mItem.getUrl().isEmpty() ) {
+                    txtUseUrl.setVisibility(View.GONE);
+                    lblUseUrl.setVisibility(View.GONE);
+                } else {
+                    txtUseUrl.setVisibility(View.VISIBLE);
+                    lblUseUrl.setVisibility(View.VISIBLE);
+                }
             } else {
-                frameUrlParts.setVisibility(View.GONE);
+                frameUrlParts.setVisibility(View.VISIBLE);
                 txtUseUrl.setVisibility(View.VISIBLE);
                 lblUseUrl.setVisibility(View.VISIBLE);
             }

@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
 import android.util.Log;
@@ -37,6 +39,8 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
     private static final int EDIT_FAVORITE  = 0x01;
     private static final int LIST_ACCOUNTS = 0x02;
+    private static final int UPDATE_VER_CODE = 0xccaabb;
+    private static final int VER_CODE_DELAY = 600;
 
     private TextView lblInputTimeout;
     private EditText txtInputTimeout;
@@ -158,7 +162,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
                     final String savedPass = getPreferences(MODE_PRIVATE)
                             .getString(REPO_KEY_SAVED_INPUT_PASSWORD, "");
                     final String savedInputText = getDefaultInputText(true);
-                    setInputPassword(savedPass, false);
+                    setInputPassword(savedPass);
                     setInputText(savedInputText);
                     updatePassword(false);
                     return;
@@ -274,10 +278,9 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    private void setInputPassword(String value, boolean requireMinLengthForVerificationCode) {
+    private void setInputPassword(String value) {
         TextView masterPass = (TextView) findViewById(R.id.txtMasterPass);
         masterPass.setText(value);
-        updateVerificationCode(requireMinLengthForVerificationCode);
     }
 
     private String getInputText() {
@@ -308,31 +311,35 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     };
 
     private void updatePassword(boolean requireMinLength) {
-        updateVerificationCode(requireMinLength);
-        updateSelectedProfileText();
-        TextView text = (TextView) findViewById(R.id.txtPassword);
-        final String inputText = getInputText();
         final SecureCharArray masterPassword = new SecureCharArray(getInputPassword());
-        try {
-            if (accountManager.matchesPasswordHash(masterPassword)) {
-                CharSequence output = accountManager.generatePassword(masterPassword, inputText);
-                text.setText(output);
-            } else {
-                text.setText("Password Hash Mismatch");
+        final TextView outputPassword = (TextView) findViewById(R.id.txtPassword);
+        if (!requireMinLength || masterPassword.length() >= MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE ) {
+            updateVerificationCode();
+            updateSelectedProfileText();
+            final String inputText = getInputText();
+            try {
+                if (accountManager.matchesPasswordHash(masterPassword)) {
+                    CharSequence output = accountManager.generatePassword(masterPassword, inputText);
+                    outputPassword.setText(output);
+                } else {
+                    outputPassword.setText("Password Hash Mismatch");
+                }
+            } finally {
+                masterPassword.erase();
             }
-        } finally {
-            masterPassword.erase();
+        } else {
+            outputPassword.setText("");
+            setVerificationCode("");
+            // if we have one already enqueue reset so that we don't keep on updating uselessly
+            updateValidationCodeHandler.removeMessages(UPDATE_VER_CODE);
+            updateValidationCodeHandler.sendEmptyMessageDelayed(UPDATE_VER_CODE, VER_CODE_DELAY);
         }
     }
 
-    public void updateVerificationCode(boolean requireMin) {
+    public void updateVerificationCode() {
         final String masterPassword = getInputPassword();
         try {
-            if ( !requireMin || masterPassword.length() >= MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE) {
-                setVerificationCode(accountManager.getPwm().generateVerificationCode(new SecureCharArray(masterPassword)));
-            } else {
-                setVerificationCode("");
-            }
+            setVerificationCode(accountManager.getPwm().generateVerificationCode(new SecureCharArray(masterPassword)));
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error generating verification code", e);
             setVerificationCode("ERROR");
@@ -429,4 +436,17 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         }
 
     };
+
+    private Handler updateValidationCodeHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            try {
+                // don't give true here, since it will cause this handler to be called later
+                updatePassword(false);
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Error updating verification code");
+            }
+            return true;
+        }
+    });
 }
