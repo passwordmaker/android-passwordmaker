@@ -10,6 +10,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
@@ -73,14 +75,14 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
         AutoCompleteTextView inputText = (AutoCompleteTextView) findViewById(R.id.txtInput);
         if (inputText != null) {
-            inputText.setOnKeyListener(mUpdatePasswordKeyListener);
+            inputText.addTextChangedListener(createUpdatePasswordKeyListener());
             inputText.setOnFocusChangeListener(mUpdatePasswordFocusListener);
             inputText.setAdapter(favoritesAdapter);
             inputText.setThreshold(1);
         }
         TextView text = (TextView) findViewById(R.id.txtMasterPass);
         if (text != null)
-            text.setOnKeyListener(mUpdatePasswordKeyListener);
+            text.addTextChangedListener(createUpdatePasswordKeyListener());
         if (text != null)
             text.setOnFocusChangeListener(mUpdatePasswordFocusListener);
         Button button = (Button) findViewById(R.id.btnCopy);
@@ -395,12 +397,14 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         alert.show();
     }
 
-    private View.OnKeyListener mUpdatePasswordKeyListener = new View.OnKeyListener() {
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            updatePassword(true);
-            return false;
-        }
-    };
+    private TextWatcher createUpdatePasswordKeyListener() {
+        return new TextWatcherAdapter() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                updatePassword(true);
+            }
+        };
+    }
 
     private View.OnClickListener mCopyButtonClick = new View.OnClickListener() {
 
