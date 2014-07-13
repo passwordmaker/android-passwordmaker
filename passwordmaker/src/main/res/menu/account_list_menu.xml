@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:id="@+id/menu_item_select"
+          android:icon="@android:drawable/ic_input_get"
+          android:showAsAction="ifRoom|withText"
+          android:title="@string/UseAccount"
+          android:titleCondensed="@string/UseAccount" />
+    <item android:id="@+id/menu_item_delete"
+          android:icon="@android:drawable/ic_menu_delete"
+          android:showAsAction="ifRoom|withText"
+          android:title="@string/deleteAccount"
+          android:titleCondensed="@string/deleteAccount" />
+</menu>

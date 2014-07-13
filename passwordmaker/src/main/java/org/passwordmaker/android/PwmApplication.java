@@ -2,15 +2,13 @@ package org.passwordmaker.android;
 
 import android.content.Context;
 import android.util.Log;
+import com.google.common.collect.Lists;
 import org.daveware.passwordmaker.*;
 import org.passwordmaker.AccountManagerSamples;
 
 import java.io.*;
 import java.security.Security;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The page http://developer.android.com/reference/android/app/Application.html
@@ -34,6 +32,8 @@ import java.util.Set;
  *
  * The reason why this class is lazily loaded, is to ensure that we are created after the android system is setup.  Eg.
  * the first use of this should be from the Main Activity's onCreate() (or later).
+ *
+ * XXX - This class needs some refactoring already.
  *
  */
 public class PwmApplication {
@@ -88,35 +88,16 @@ public class PwmApplication {
     }
 
     public void loadSettings(Context context) {
-        File f = new File(context.getFilesDir(), PROFILE_DB_FILE);
-        if ( ! f.exists() )
-            return;
-        if ( ! f.canRead() ) {
-            Log.e(LOG_TAG, "Can not read settings file: " + f.getAbsolutePath());
-            return;
-        }
-        InputStream fis = null;
-        Database db = null;
-        try {
-            fis = context.openFileInput(PROFILE_DB_FILE);
-            db = deserializeSettings(fis, false);
-        } catch (FileNotFoundException e) {
-            Log.e(LOG_TAG, "Unable to read profile", e);
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Unable to close profile_database.rdf after reading", e);
-                }
-            }
-        }
+
+        LoadResults results = loadClassic(context);
+        if ( results == null ) results = loadFromRDF(context);
         // this only happens if we successfully loaded up the db
-        if ( db != null ) {
+        if ( results != null ) {
             Log.i(LOG_TAG, "Loaded application settings");
-            accountManager.getPwmProfiles().swapAccounts(db);
+            accountManager.getPwmProfiles().swapAccounts(results.database);
             loadFavoritesFromGlobalSettings();
             loadMasterPasswordHashFromGlobalSettings();
+            if ( results.favorites != null )  accountManager.addFavoriteUrls(results.favorites);
         }
     }
 
@@ -227,4 +208,54 @@ public class PwmApplication {
     private static boolean isNotEmpty(String s) {
         return s != null && !s.isEmpty();
     }
+
+    // This class shouldn't be required, this has bad code smell
+    private static class LoadResults {
+        Database database;
+        Collection<String> favorites;
+
+        private LoadResults(Database database, Collection<String> favorites) {
+            this.database = database;
+            this.favorites = favorites;
+        }
+    }
+
+    private LoadResults loadClassic(Context context) {
+        try {
+            Collection<String> favorites = Lists.newArrayList();
+            Database db = ClassicSettingsImporter.importIntoDatabase(context, favorites);
+            if ( db != null)
+                return new LoadResults(db, favorites);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error importing classic version database", e);
+        }
+        return null;
+    }
+
+    private LoadResults loadFromRDF(Context context) {
+        File f = new File(context.getFilesDir(), PROFILE_DB_FILE);
+        if ( ! f.exists() )
+            return null;
+        if ( ! f.canRead() ) {
+            Log.e(LOG_TAG, "Can not read settings file: " + f.getAbsolutePath());
+            return null;
+        }
+        InputStream fis = null;
+        try {
+            fis = context.openFileInput(PROFILE_DB_FILE);
+            return new LoadResults(deserializeSettings(fis, false), null);
+        } catch (FileNotFoundException e) {
+            Log.e(LOG_TAG, "Unable to read profile", e);
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Unable to close profile_database.rdf after reading", e);
+                }
+            }
+        }
+        return null;
+    }
+
 }
