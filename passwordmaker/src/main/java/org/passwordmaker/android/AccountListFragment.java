@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -134,11 +132,10 @@ public class AccountListFragment extends ListFragment {
                 if ( ! autoActivateMode ) {
                     getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 }
+                getListView().setItemChecked(position, true);
 
                 // Start the CAB using the ActionMode.Callback defined above
                 mActionMode = getActivity().startActionMode(mActionModeCallback);
-                getListView().setItemChecked(position, true);
-
                 return true;
             }
         });
@@ -397,6 +394,11 @@ public class AccountListFragment extends ListFragment {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.account_list_menu, menu);
+            if (getCheckedAccount().isDefault()) {
+                menu.findItem(R.id.menu_item_delete).setVisible(false);
+            } else {
+                menu.findItem(R.id.menu_item_delete).setVisible(true);
+            }
             return true;
         }
 
