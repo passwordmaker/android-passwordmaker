@@ -16,7 +16,7 @@ like this won't help!
 There are the same tools that you can download for many of the popular browsers, and other mobile devices.  See the
 [Passwordmaker.org](http://passwordmaker.org) website for more information.
 
-For bug reports please see the https://github.com/tasermonkey/android-passwordmaker/issues tracker.
+For bug reports please see the [issue tracker](https://github.com/passwordmaker/android-passwordmaker/issues).
 
 Feel free to create a pull request to fix a bug or add a feature yourself!
 
@@ -24,11 +24,11 @@ Users
 ======
 Welcome to passwordmaker!  If you haven't already checkout [Passwordmaker.org](http://passwordmaker.org) to know what password maker is all about.
 
-If you have an issues or questions, with the Android version of PasswordMaker Pro, go to the [Issue Tracker](https://github.com/tasermonkey/android-passwordmaker/issues)
+If you have an issues or questions, with the Android version of PasswordMaker Pro, go to the [Issue Tracker](https://github.com/passwordmaker/android-passwordmaker/issues)
 
 Have a comment, question, or issue that you want to say more privately not on the issue tracker, feel free to [email](mailto:pwdmkrpro.android.84a75@tasermonkeys.com) me.
 
-[Developer's keybase.io account](https://keybase.io/jstapleton) 
+[Developer's keybase.io account](https://keybase.io/jstapleton)
 
 Developers
 ==========
@@ -36,9 +36,9 @@ If you are not a developer you probably don't need to read any farther down this
 
 Compiling
 ==========
-* You will ofcourse need to download the (Android SDK)[http://developer.android.com/sdk/index.html#download]
-* Download and install an IDE like (IntelliJ)[http://www.jetbrains.com/idea/] with its plugin for Android.
-* Until (passwordmaker-je-lib)[https://github.com/tasermonkey/passwordmaker-je-lib] makes it into maven central, check it out and do a mvn install on it first.
+* You will ofcourse need to download the [Android SDK](http://developer.android.com/sdk/index.html#download)
+* Download and install an IDE like [IntelliJ](http://www.jetbrains.com/idea/) with its plugin for Android.
+* Until [passwordmaker-je-lib](https://github.com/passwordmaker/java-passwordmaker-lib) makes it into maven central, check it out and do a mvn install on it first.
 
 I now set this up using the gradle build process.  I use the Intellij IDE which makes the process really easy.  Just
 install the Intellij Android plugin and import this project after cloning this repository.  Use the import from external
@@ -54,21 +54,21 @@ Though I heavily suggest using an IDE like Intellij or Eclipse.
 Step by Step Compiling in the commandline
 ===========
 ### Step 1: get build, and install passwordmaker-je
- 
+
     git clone https://github.com/tasermonkey/passwordmaker-je-lib.git
     cd passwordmaker-je-lib
     git checkout 0.9.3
     mvn install
-    
+
 ### Step 2: get and build android passwordmaker
 
-    # the cd .. is just to go to the same parent directory as the passwordmaker-je-lib to checkout the android code 
+    # the cd .. is just to go to the same parent directory as the passwordmaker-je-lib to checkout the android code
     cd ..
     git clone https://github.com/tasermonkey/android-passwordmaker.git
     git checkout release/v2.0.0
     cd android-passwordmaker/passwordmaker
     ../gradlew assembleDebug
-    
+
 ### Step 3: apk
 This should have built an apk inside of the  android-passwordmaker/passwordmaker/build/apk directory: passwordmaker-debug.apk
 
@@ -83,10 +83,10 @@ Signing
 In order to build this project you need to setup signing.  I can't just include the signing keys in the git repo because that would mean anyone could sign as me.
 So you will need to generate your own signing keys. See [Android signing help](http://developer.android.com/tools/publishing/app-signing.html)
 
-Then from the `android-passwordmaker/passwordmaker` you need to setup your Environment by running the script: 
+Then from the `android-passwordmaker/passwordmaker` you need to setup your Environment by running the script:
 
     source set_signing_env_vars.sh
-    
+
 This script is required to be 'sourced' from your shell whenever you open up a new shell, and be source because it adds 4 environment variables to your session.
 <br/>NOTE: This seems like a pretty decent way to do this, as the password will never be visible.  Also never stored on disk.  However, maybe somehow invent a gpg way of storing the password and config info.
 
