@@ -1,7 +1,7 @@
 Passwordmaker Pro for Android
 ===========
 
-This is the android implementation of the Passwordmaker Pro algorithm designed by [Passwordmaker.org](http://passwordmaker.org).
+This is the android implementation of the Passwordmaker Pro algorithm designed by [Passwordmaker.org](http://passwordmaker.org). View the [Android public webpage](http://android.passwordmaker.org).
 
 How it works:
 You provide PasswordMaker two pieces of information: a "master password" -- that one, single password you like -- and
@@ -33,6 +33,10 @@ Have a comment, question, or issue that you want to say more privately not on th
 Developers
 ==========
 If you are not a developer you probably don't need to read any farther down this file.
+
+Repository layout
+==================
+This project uses the [Git Flow](http://nvie.com/posts/a-successful-git-branching-model/) layout.  You can download a helper plugin for git from https://github.com/nvie/gitflow repository.
 
 Compiling
 ==========
@@ -111,3 +115,23 @@ Notes
   * What the blank, mvn and gradle?
     - Yeah, until I fixed up the build for the passwordmaker-je-lib more, it is using maven.
     - And this project is using gradle, cause really, I like gradle, other than its slow to startup.  But it works well with android dev.
+
+Status of this project
+=======================
+
+## Upate 2014-07-17 by @tasermonkey
+
+Release [Version 2.0.1](https://github.com/passwordmaker/android-passwordmaker/releases/tag/v2.0.1)
+
+# Note on Patches/Pull Requests:
+
+* Fork the project.
+* Make your feature addition or bug fix.
+* Commit, do not mess with version in build.gradle
+  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for feature branches.
+
+Copyright
+==========
+
+Copyright (c) 2010 [James Stapleton](https://keybase.io/jstapleton) and [PasswordMaker.org](http://passwordmaker.org) . See LICENSE for details. A list of all contributors can be found at the [contributors](http://github.com/passwordmaker/android-passwordmaker/contributors) page.
