@@ -119,7 +119,7 @@ public class AccountDetailFragment extends Fragment {
         private EditText txtPrefix;
         private EditText txtSuffix;
         private Button showPatterns;
-        private TextView lblUseUrl;
+        private TextView lblUseText;
         private EditText txtUseUrl;
         private ViewGroup frameUrlParts;
 
@@ -134,7 +134,7 @@ public class AccountDetailFragment extends Fragment {
             chkDomain = (CheckBox)rootView.findViewById(R.id.chkDomain);
             chkOthers = (CheckBox)rootView.findViewById(R.id.chkOthers);
             txtUseUrl = (EditText)rootView.findViewById(R.id.txtUseUrl);
-            lblUseUrl = (TextView)rootView.findViewById(R.id.lblUseUrl);
+            lblUseText = (TextView)rootView.findViewById(R.id.lblUseText);
             selectHashAlgos = (Spinner)rootView.findViewById(R.id.selectHashAlgos);
             selectLeet = (Spinner)rootView.findViewById(R.id.selectLeet);
             selectLeetLevel = (Spinner)rootView.findViewById(R.id.spinLeetLevel);
@@ -180,15 +180,15 @@ public class AccountDetailFragment extends Fragment {
                 // for legacy imports, its possible to have the url field filled out, therefore we must show it.
                 if ( mItem.getUrl().isEmpty() ) {
                     txtUseUrl.setVisibility(View.GONE);
-                    lblUseUrl.setVisibility(View.GONE);
+                    lblUseText.setVisibility(View.GONE);
                 } else {
                     txtUseUrl.setVisibility(View.VISIBLE);
-                    lblUseUrl.setVisibility(View.VISIBLE);
+                    lblUseText.setVisibility(View.VISIBLE);
                 }
             } else {
                 frameUrlParts.setVisibility(View.VISIBLE);
                 txtUseUrl.setVisibility(View.VISIBLE);
-                lblUseUrl.setVisibility(View.VISIBLE);
+                lblUseText.setVisibility(View.VISIBLE);
             }
 
         }
