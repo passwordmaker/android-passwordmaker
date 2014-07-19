@@ -285,6 +285,18 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         masterPass.setText(value);
     }
 
+    private void setUIAccountUsernameFromAccount() {
+        TextView username = (TextView) findViewById(R.id.txtUsername);
+        Account account = accountManager.getAccountForInputText(getInputText());
+        username.setText(account.getUsername());
+    }
+
+    private void clearUIAccountUsername() {
+        TextView username = (TextView) findViewById(R.id.txtUsername);
+        username.setText("");
+    }
+
+
     private String getInputText() {
         TextView inputText = (TextView) findViewById(R.id.txtInput);
         return inputText.getText().toString();
@@ -323,8 +335,10 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
                 if (accountManager.matchesPasswordHash(masterPassword)) {
                     CharSequence output = accountManager.generatePassword(masterPassword, inputText);
                     outputPassword.setText(output);
+                    setUIAccountUsernameFromAccount();
                 } else {
                     outputPassword.setText("Password Hash Mismatch");
+                    clearUIAccountUsername();
                 }
             } finally {
                 masterPassword.erase();
@@ -332,6 +346,8 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         } else {
             outputPassword.setText("");
             setVerificationCode("");
+            clearUIAccountUsername();
+            clearUIAccountUsername();
             // if we have one already enqueue reset so that we don't keep on updating uselessly
             updateValidationCodeHandler.removeMessages(UPDATE_VER_CODE);
             updateValidationCodeHandler.sendEmptyMessageDelayed(UPDATE_VER_CODE, VER_CODE_DELAY);

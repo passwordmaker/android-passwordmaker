@@ -17,7 +17,7 @@
             </LinearLayout>
             <CheckBox android:layout_height="wrap_content" android:layout_width="fill_parent" android:text="@string/chkOthers" android:id="@+id/chkOthers"/>
         </LinearLayout>
-        <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="lblUseText" android:text="@string/LblUseText"/>
+        <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/lblUseText" android:text="@string/LblUseText"/>
         <EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/txtUseUrl" android:inputType="textNoSuggestions|textUri"/>
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/lblLeetOptions" android:text="@string/LblLeetOptions"/>
         <Spinner android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/selectLeet" android:entries="@array/LeetOptions"/>
