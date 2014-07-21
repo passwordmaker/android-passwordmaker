@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 import org.daveware.passwordmaker.Database;
 import org.daveware.passwordmaker.IncompatibleException;
 import org.daveware.passwordmaker.RDFDatabaseReader;
+import org.daveware.passwordmaker.SecureCharArray;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,7 +48,7 @@ public class ImportExportRdf extends Activity {
     @SuppressWarnings("deprecation")
     private void onExportClick() {
         try {
-            String str = PwmApplication.getInstance().serializeSettings();
+            String str = PwmApplication.getInstance().serializeSettingsWithOutMasterPassword();
             final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             clipboard.setText(str);
             Toast.makeText(this, "Exported profiles to clipboard", Toast.LENGTH_SHORT).show();

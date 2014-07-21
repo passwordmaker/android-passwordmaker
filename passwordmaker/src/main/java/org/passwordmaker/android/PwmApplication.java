@@ -114,6 +114,20 @@ public class PwmApplication {
         }
     }
 
+    public String serializeSettingsWithOutMasterPassword() {
+        SecureCharArray hash = new SecureCharArray(accountManager.getCurrentPasswordHash());
+        String salt = accountManager.getPasswordSalt();
+        try {
+            accountManager.disablePasswordHash();
+            return serializeSettings();
+        } finally {
+            try {
+                accountManager.replaceCurrentPasswordHash(hash, salt);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
     public Database deserializeSettings(InputStream is, boolean convertBuggyAlgo, List<IncompatibleException> errors) {
         RDFDatabaseReader reader = new RDFDatabaseReader();
         if ( convertBuggyAlgo ) reader.setBuggyAlgoUseAction(DatabaseReader.BuggyAlgoAction.CONVERT);
