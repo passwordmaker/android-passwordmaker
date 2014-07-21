@@ -10,6 +10,8 @@ import java.io.*;
 import java.security.Security;
 import java.util.*;
 
+import static com.google.common.base.Strings.nullToEmpty;
+
 /**
  * The page http://developer.android.com/reference/android/app/Application.html
  * suggest that we shouldn't extend from Application unless we need too, so lets give this a whirl and see how far I can
@@ -39,11 +41,11 @@ import java.util.*;
 public class PwmApplication {
 
     private static final String LOG_TAG = "PwmApplication";
-    public static final String PROFILE_DB_FILE = "profile_database.rdf";
+    private static final String PROFILE_DB_FILE = "profile_database.rdf";
 
     private static PwmApplication sInstance;
     private boolean firstTimeLoading = true;
-    private AccountManager accountManager;
+    private final AccountManager accountManager;
 
 
     public static PwmApplication getInstance() {
@@ -87,7 +89,7 @@ public class PwmApplication {
         }
     }
 
-    public void loadSettings(Context context) {
+    protected void loadSettings(Context context) {
 
         LoadResults results = loadClassic(context);
         if ( results == null ) results = loadFromRDF(context);
@@ -101,7 +103,7 @@ public class PwmApplication {
         }
     }
 
-    public String serializeSettings() {
+    protected String serializeSettings() {
         AndroidRDFDatabaseWriter writer = new AndroidRDFDatabaseWriter();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
@@ -115,8 +117,8 @@ public class PwmApplication {
     }
 
     public String serializeSettingsWithOutMasterPassword() {
-        SecureCharArray hash = new SecureCharArray(accountManager.getCurrentPasswordHash());
-        String salt = accountManager.getPasswordSalt();
+        SecureCharArray hash = cloneArray(accountManager.getCurrentPasswordHash());
+        String salt = nullToEmpty(accountManager.getPasswordSalt());
         try {
             accountManager.disablePasswordHash();
             return serializeSettings();
@@ -128,7 +130,14 @@ public class PwmApplication {
         }
     }
 
-    public Database deserializeSettings(InputStream is, boolean convertBuggyAlgo, List<IncompatibleException> errors) {
+    protected SecureCharArray cloneArray(SecureCharArray chars) {
+        if ( chars != null )
+            return new SecureCharArray(chars);
+        else
+            return new SecureCharArray();
+    }
+
+    protected Database deserializedSettings(InputStream is, boolean convertBuggyAlgo, List<IncompatibleException> errors) {
         RDFDatabaseReader reader = new RDFDatabaseReader();
         if ( convertBuggyAlgo ) reader.setBuggyAlgoUseAction(DatabaseReader.BuggyAlgoAction.CONVERT);
         try {
@@ -140,22 +149,22 @@ public class PwmApplication {
         }
     }
 
-    public Database deserializeSettings(InputStream is, boolean convertBuggyAlgo) {
-        return deserializeSettings(is, convertBuggyAlgo, new ArrayList<IncompatibleException>());
+    protected Database deserializedSettings(InputStream is, boolean convertBuggyAlgo) {
+        return deserializedSettings(is, convertBuggyAlgo, new ArrayList<IncompatibleException>());
     }
 
-    public Database deserializeSettings(String serialized, boolean convertBuggyAlgo, List<IncompatibleException> errors) {
+    public Database deserializedSettings(String serialized, boolean convertBuggyAlgo, List<IncompatibleException> errors) {
         ByteArrayInputStream is = new ByteArrayInputStream(serialized.getBytes());
-        return deserializeSettings(is, convertBuggyAlgo, errors);
+        return deserializedSettings(is, convertBuggyAlgo, errors);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public Database deserializeSettings(String serialized, boolean convertBuggyAlgo) {
+    public Database deserializedSettings(String serialized, boolean convertBuggyAlgo) {
         ByteArrayInputStream is = new ByteArrayInputStream(serialized.getBytes());
-        return deserializeSettings(is, convertBuggyAlgo);
+        return deserializedSettings(is, convertBuggyAlgo);
     }
 
-    public void updateFavoritesGlobalSettings() {
+    protected void updateFavoritesGlobalSettings() {
         String encodedUrls = accountManager.encodeFavoriteUrls();
         accountManager.getPwmProfiles().setGlobalSetting(AndroidGlobalSettings.FAVORITES, encodedUrls);
     }
@@ -165,7 +174,7 @@ public class PwmApplication {
         accountManager.decodeFavoritesUrls(encodedUrls, true);
     }
 
-    public void updateMasterPasswordHash() {
+    protected void updateMasterPasswordHash() {
         SecureCharArray pwdSCA = accountManager.getCurrentPasswordHash();
         String pwdHash = pwdSCA != null ? new String(accountManager.getCurrentPasswordHash().getData()) : "";
         String pwdSalt = accountManager.getPasswordSalt();
@@ -182,7 +191,7 @@ public class PwmApplication {
                 Boolean.toString(pwdStore));
     }
 
-    public void loadMasterPasswordHashFromGlobalSettings() {
+    protected void loadMasterPasswordHashFromGlobalSettings() {
         boolean pwdStore = Boolean.parseBoolean(
                 accountManager.getPwmProfiles().getGlobalSetting(AndroidGlobalSettings.STORE_MASTER_PASSWORD_HASH));
         if ( !pwdStore ) {
@@ -225,8 +234,8 @@ public class PwmApplication {
 
     // This class shouldn't be required, this has bad code smell
     private static class LoadResults {
-        Database database;
-        Collection<String> favorites;
+        private final Database database;
+        private final Collection<String> favorites;
 
         private LoadResults(Database database, Collection<String> favorites) {
             this.database = database;
@@ -257,7 +266,7 @@ public class PwmApplication {
         InputStream fis = null;
         try {
             fis = context.openFileInput(PROFILE_DB_FILE);
-            return new LoadResults(deserializeSettings(fis, false), null);
+            return new LoadResults(deserializedSettings(fis, false), null);
         } catch (FileNotFoundException e) {
             Log.e(LOG_TAG, "Unable to read profile", e);
         } finally {
