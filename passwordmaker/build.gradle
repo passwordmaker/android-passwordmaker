@@ -54,6 +54,7 @@ android {
                 storePassword env['PASSWORDMAKER_KEYSTORE_PASSWORD']
                 keyAlias env['PASSWORDMAKER_KEYSTORE_KEY_ALIAS']
                 keyPassword env['PASSWORDMAKER_KEYSTORE_KEY_PASSWORD']
+                println ("Using keystore file: ${file(env['PASSWORDMAKER_KEYSTORE_FILE'])}")
             } else {
                 println ("##################")
                 println ("No keystore for release set.")

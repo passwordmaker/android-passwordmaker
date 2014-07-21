@@ -32,7 +32,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private static final String REPO_KEY_SAVED_INPUT_INPUTTEXT = "savedInputInputText";
     private static final int MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE = 8;
 
-    private static String LOG_TAG = "PasswordMakerProForAndroidActivity";
+    private static final String LOG_TAG = "PasswordMakerProForAndroidActivity";
     private AccountManager accountManager;
 
     private static final int EDIT_FAVORITE  = 0x01;
@@ -43,11 +43,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private ImageButton btnClearSelectedProfile;
 
     private ArrayAdapter<String> favoritesAdapter;
-    private ArrayList<String> favoritesList = new ArrayList<String>();
-
-    private void loadOldProfiles() {
-        // load up the old profiles from the older version of the application
-    }
+    private final ArrayList<String> favoritesList = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +54,6 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         // this must be done before we do any loading of settings to make sure we get events
         accountManager.addListener(this);
 
-        loadOldProfiles();
         loadAccountDatabase();
         createFavoritesList();
 
@@ -94,11 +89,11 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     }
 
     private void refreshList() {
-        Set<String> allthings = new HashSet<String>();
-        allthings.addAll(PwmApplication.getInstance().getAccountManager().getFavoriteUrls());
-        allthings.addAll(PwmApplication.getInstance().getAllAccountsUrls());
+        Set<String> allThings = new HashSet<String>();
+        allThings.addAll(PwmApplication.getInstance().getAccountManager().getFavoriteUrls());
+        allThings.addAll(PwmApplication.getInstance().getAllAccountsUrls());
         favoritesList.clear();
-        favoritesList.addAll(allthings);
+        favoritesList.addAll(allThings);
         favoritesAdapter.notifyDataSetChanged();
     }
     private void createFavoritesList() {
@@ -227,7 +222,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         PwmApplication.getInstance().loadSettingsOnce(this);
     }
 
-    public void showProfiles() {
+    protected void showProfiles() {
         Intent intent = new Intent(this, AccountListActivity.class);
         startActivityForResult(intent, LIST_ACCOUNTS);
     }
@@ -265,9 +260,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         return super.onOptionsItemSelected(item);
     }
 
-
-
-    public void updateSelectedProfileText() {
+    protected void updateSelectedProfileText() {
         Account account = accountManager.getAccountForInputText(getInputText());
         TextView text = (TextView) findViewById(R.id.lblCurrentProfile);
         String value = account.getName();
@@ -396,7 +389,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     }
 
 
-    private View.OnFocusChangeListener mUpdatePasswordFocusListener = new View.OnFocusChangeListener() {
+    private final View.OnFocusChangeListener mUpdatePasswordFocusListener = new View.OnFocusChangeListener() {
         public void onFocusChange(View v, boolean hasFocus) {
             if (!hasFocus)
                 updatePassword(false);
@@ -437,7 +430,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         }
     }
 
-    public void updateVerificationCode() {
+    protected void updateVerificationCode() {
         final String masterPassword = getInputPassword();
         try {
             setVerificationCode(accountManager.getPwm().generateVerificationCode(new SecureCharArray(masterPassword)));
@@ -480,7 +473,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         };
     }
 
-    private View.OnClickListener mCopyButtonClick = new View.OnClickListener() {
+    private final View.OnClickListener mCopyButtonClick = new View.OnClickListener() {
 
         // This is suppressed because I still want to support older android phones
         @SuppressWarnings("deprecation")
@@ -493,7 +486,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         }
     };
 
-    private View.OnClickListener mClearProfileButtonClick = new View.OnClickListener() {
+    private final View.OnClickListener mClearProfileButtonClick = new View.OnClickListener() {
 
         // This is suppressed because I still want to support older android phones
         @SuppressWarnings("deprecation")
@@ -504,7 +497,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         }
     };
 
-    private Handler updateValidationCodeHandler = new Handler(new Handler.Callback() {
+    private final Handler updateValidationCodeHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             try {

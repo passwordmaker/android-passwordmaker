@@ -45,6 +45,8 @@ public class PatternDataListFragment extends ListFragment
     private int mActivatedPosition = ListView.INVALID_POSITION;
     @SuppressWarnings("FieldCanBeLocal")
     private Account account;
+    // We need to keep a reference to this
+    @SuppressWarnings("FieldCanBeLocal")
     private SwipeDismissListViewTouchListener touchListener;
 
     public void setAccountId(@NotNull String accountId) {
@@ -72,7 +74,7 @@ public class PatternDataListFragment extends ListFragment
      * A dummy implementation of the {@link Callbacks} interface that does
      * nothing. Used only when this fragment is not attached to an activity.
      */
-    private static Callbacks sDummyCallbacks = new Callbacks() {
+    private final static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
         public void onItemSelected(int position, AccountPatternData patternData) {
         }
@@ -83,11 +85,6 @@ public class PatternDataListFragment extends ListFragment
      * fragment (e.g. upon screen orientation changes).
      */
     public PatternDataListFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -158,8 +155,7 @@ public class PatternDataListFragment extends ListFragment
         mCallbacks.onItemSelected(position, getPatternAdapter().getItem(position));
     }
 
-
-    public ArrayAdapter<AccountPatternData> getPatternAdapter() {
+    protected ArrayAdapter<AccountPatternData> getPatternAdapter() {
 
         @SuppressWarnings("unchecked")
         ArrayAdapter<AccountPatternData> result = (ArrayAdapter<AccountPatternData>)getListAdapter();
@@ -170,12 +166,10 @@ public class PatternDataListFragment extends ListFragment
      * Turns on activate-on-click mode. When this mode is on, list items will be
      * given the 'activated' state when touched.
      */
-    public void setActivateOnItemClick(boolean activateOnItemClick) {
+    public void setActivateOnItemClick() {
         // When setting CHOICE_MODE_SINGLE, ListView will automatically
         // give items the 'activated' state when touched.
-        getListView().setChoiceMode(activateOnItemClick
-                ? ListView.CHOICE_MODE_SINGLE
-                : ListView.CHOICE_MODE_NONE);
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
@@ -190,13 +184,13 @@ public class PatternDataListFragment extends ListFragment
         confirmDelete(position);
     }
 
-    public void reallyDelete(final int position) {
+    protected void reallyDelete(final int position) {
         ArrayAdapter<AccountPatternData> patterns = getPatternAdapter();
         patterns.remove(patterns.getItem(position));
         patterns.notifyDataSetChanged();
     }
 
-    public void confirmDelete(final int position) {
+    protected void confirmDelete(final int position) {
         final ArrayAdapter<AccountPatternData> patterns = getPatternAdapter();
         AccountPatternData pattern = patterns.getItem(position);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())

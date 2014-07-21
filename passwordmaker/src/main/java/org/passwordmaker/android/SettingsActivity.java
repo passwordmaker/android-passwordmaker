@@ -7,13 +7,14 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import org.passwordmaker.android.preferences.SettingsFragment;
 
-
+// Unused is suppressed just to have a reference for preferences
+@SuppressWarnings("UnusedDeclaration")
 public class SettingsActivity extends Activity {
 
     public static final String KEY_SHOW_USERNAME = "pref_showUsername";
     public static final String KEY_SAVED_LENGTH = "pref_saveInputs";
     public static final String KEY_SHOW_PASS_STRENGTH = "pref_showPasswordStrength";
-    public static final String KEY_MASTERPASSWORD_HASH = "pref_masterPasswordHash";
+    public static final String KEY_MASTER_PASSWORD_HASH = "pref_masterPasswordHash";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

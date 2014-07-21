@@ -63,6 +63,7 @@ public class AccountListFragment extends ListFragment {
      * implement. This mechanism allows activities to be notified of item
      * selections.
      */
+    @SuppressWarnings("EmptyMethod")
     public interface Callbacks {
         /**
          * Callback for when an item has been selected.
@@ -76,7 +77,7 @@ public class AccountListFragment extends ListFragment {
      * A dummy implementation of the {@link Callbacks} interface that does
      * nothing. Used only when this fragment is not attached to an activity.
      */
-    private static Callbacks sDummyCallbacks = new Callbacks() {
+    private final static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
         public void onItemSelected(Account account) {
         }
@@ -92,7 +93,7 @@ public class AccountListFragment extends ListFragment {
         }
     };
 
-    private AccountStack accountStack = new AccountStack();
+    private final AccountStack accountStack = new AccountStack();
 
 
 
@@ -200,7 +201,7 @@ public class AccountListFragment extends ListFragment {
         }
     }
 
-    public void goIntoFolder(Account folder) {
+    protected void goIntoFolder(Account folder) {
         accountStack.pushCurrentAccount(folder);
         refreshList(folder);
         mCallbacks.onFolderSelected(folder);
@@ -224,13 +225,11 @@ public class AccountListFragment extends ListFragment {
      * Turns on activate-on-click mode. When this mode is on, list items will be
      * given the 'activated' state when touched.
      */
-    public void setActivateOnItemClick(boolean activateOnItemClick) {
+    public void setActivateOnItemClick() {
         // When setting CHOICE_MODE_SINGLE, ListView will automatically
         // give items the 'activated' state when touched.
-        getListView().setChoiceMode(activateOnItemClick
-                ? ListView.CHOICE_MODE_SINGLE
-                : ListView.CHOICE_MODE_NONE);
-        autoActivateMode = activateOnItemClick;
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        autoActivateMode = true;
     }
 
     private void setActivatedPosition(int position) {
@@ -273,7 +272,7 @@ public class AccountListFragment extends ListFragment {
         }
     }
 
-    public void deleteAccount(Account account) {
+    protected void deleteAccount(Account account) {
         accountManager.getPwmProfiles().removeAccount(account);
         refreshList(accountStack.getCurrentAccount());
         getCurrentAccountList().notifyDataSetChanged();
@@ -313,7 +312,7 @@ public class AccountListFragment extends ListFragment {
     }
 
     private class AccountStack {
-        private LinkedList<Account> accountStack = new LinkedList<Account>();
+        private final LinkedList<Account> accountStack = new LinkedList<Account>();
 
         public int size() {
             return accountStack.size();
@@ -386,7 +385,7 @@ public class AccountListFragment extends ListFragment {
     }
 
 
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+    private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
         // Called when the action mode is created; startActionMode() was called
         @Override

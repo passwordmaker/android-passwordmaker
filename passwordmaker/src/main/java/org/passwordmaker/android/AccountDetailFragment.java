@@ -79,9 +79,9 @@ public class AccountDetailFragment extends Fragment {
         return LeetType.TYPES[ordinal];
     }
 
-    public static final int CUSTOM_CHARSET_POSITION = 6;
+    private static final int CUSTOM_CHARSET_POSITION = 6;
     // This function must batch the strings.xml array: NamedCharSets
-    private static ImmutableBiMap<String, Integer> charSetToNum = ImmutableBiMap.<String, Integer>builder()
+    private final static ImmutableBiMap<String, Integer> charSetToNum = ImmutableBiMap.<String, Integer>builder()
             .put(CharacterSets.BASE_93_SET, 0)
             .put(CharacterSets.ALPHANUMERIC, 1)
             .put(CharacterSets.HEX, 2)
@@ -102,7 +102,7 @@ public class AccountDetailFragment extends Fragment {
     }
 
     public class ViewGetter {
-        private View rootView;
+        private final View rootView;
         private EditText txtName;
         private CheckBox chkProtocol;
         private CheckBox chkSubDomain;
@@ -113,7 +113,7 @@ public class AccountDetailFragment extends Fragment {
         private Spinner selectLeetLevel;
         private EditText passwordLength;
         private EditText txtUsername;
-        private EditText txtModifer;
+        private EditText tatModifier;
         private Spinner spinnerCharacterSet;
         private EditText txtCustomCharacterSet;
         private EditText txtPrefix;
@@ -141,7 +141,7 @@ public class AccountDetailFragment extends Fragment {
             selectLeetLevel = (Spinner)rootView.findViewById(R.id.spinLeetLevel);
             passwordLength = (EditText)rootView.findViewById(R.id.txtPswordLen);
             txtUsername = (EditText)rootView.findViewById(R.id.txtUsername);
-            txtModifer = (EditText)rootView.findViewById(R.id.txtModifier);
+            tatModifier = (EditText)rootView.findViewById(R.id.txtModifier);
             spinnerCharacterSet = (Spinner)rootView.findViewById(R.id.selectCharacterSet);
             txtPrefix = (EditText)rootView.findViewById(R.id.txtPrefix);
             txtSuffix = (EditText)rootView.findViewById(R.id.txtSuffix);
@@ -163,7 +163,7 @@ public class AccountDetailFragment extends Fragment {
             selectLeetLevel.setSelection(mItem.getLeetLevel().getOrdinal());
             passwordLength.setText(Integer.toString(mItem.getLength()));
             txtUsername.setText(mItem.getUsername());
-            txtModifer.setText(mItem.getModifier());
+            tatModifier.setText(mItem.getModifier());
             spinnerCharacterSet.setSelection(getCharSetOrdinal(mItem.getCharacterSet()));
             txtPrefix.setText(mItem.getPrefix());
             txtSuffix.setText(mItem.getSuffix());
@@ -339,12 +339,12 @@ public class AccountDetailFragment extends Fragment {
                         lastFocusedView = txtUsername;
                 }
             });
-            txtModifer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            tatModifier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if ( ! hasFocus )
-                        mItem.setModifier(txtModifer.getText().toString());
+                    if (!hasFocus)
+                        mItem.setModifier(tatModifier.getText().toString());
                     else
-                        lastFocusedView = txtModifer;
+                        lastFocusedView = tatModifier;
                 }
             });
             // this listener is setup elsewhere

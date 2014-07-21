@@ -1,4 +1,4 @@
-# this file must not be ran as a seperate process in order to modify your enviorment.
+# this file must not be ran as a separate process in order to modify your environment.
 # intead use this file at the CLI by doing: source set_signing_env_vars.sh
 echo -n "Keystore file: "
 read PASSWORDMAKER_KEYSTORE_FILE

@@ -18,9 +18,9 @@ import java.util.List;
 public class SubstringArrayAdapter extends ArrayAdapter<String> {
     private List<String> objects;
     private final List<String> original_objects;
-    private final SubStringFilter myfilter = new SubStringFilter();
+    private final SubStringFilter myFilter = new SubStringFilter();
 
-    public SubstringArrayAdapter(Context context, int resource, List<String> objects) {
+    public SubstringArrayAdapter(Context context, @SuppressWarnings("SameParameterValue") int resource, List<String> objects) {
         super(context, resource, objects);
         this.original_objects = this.objects = objects;
     }
@@ -33,7 +33,7 @@ public class SubstringArrayAdapter extends ArrayAdapter<String> {
 
     @Override
     public Filter getFilter() {
-        return myfilter;
+        return myFilter;
     }
 
     private class SubStringFilter extends Filter {

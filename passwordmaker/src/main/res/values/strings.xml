@@ -73,7 +73,6 @@
     <string name="LblModifier">Modifier</string>
     <string name="chkDomain">Domain</string>
     <string name="SaveInputs">Save Input</string>
-    <string name="SaveInputsForMinutes">Save Inputs for (Minutes)</string>
     <string name="lblHashAlgo">Hash Algo</string>
     <string name="action_profiles">Profiles</string>
     <string name="action_favorites">Favorites</string>
@@ -102,7 +101,6 @@
     <string name="LblUseText">Use Text</string>
     <string name="lblConvertBuggyAlgo">The javascript/firefox versions contains \'HMAC-SHA-256 V 1.5.1\' which was a buggy implementation of the hash algo.  The JVM does not support this, and the developer for the android version is too lazy to implement it himself.  You can try to \'convert\' to the nearest algo type, but it may not generate the same password always.</string>
     <string name="action_account_folder_add">Create Folder</string>
-    <string name="action_set_master_password_hash">Set Master Password Hash</string>
     <string name="password">password</string>
     <string name="confirm_password">confirm password</string>
     <string name="lbl_domain_regex">Domain Regex</string>

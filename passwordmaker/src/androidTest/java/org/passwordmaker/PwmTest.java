@@ -18,7 +18,7 @@ public class PwmTest extends junit.framework.TestCase {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
     }
 
-    public void performTest(AlgorithmType algorithmType, boolean useHMac, String expected) throws Exception {
+    protected void performTest(AlgorithmType algorithmType, boolean useHMac, String expected) throws Exception {
         Account profile = new Account();
         profile.setCharacterSet(CharacterSets.ALPHANUMERIC);
         profile.setAlgorithm(algorithmType);

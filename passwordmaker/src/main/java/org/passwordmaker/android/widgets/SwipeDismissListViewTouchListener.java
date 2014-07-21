@@ -32,6 +32,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +40,7 @@ import java.util.List;
 
 /**
  * A {@link android.view.View.OnTouchListener} that makes the list items in a {@link ListView}
- * dismissable. {@link ListView} is given special treatment because by default it handles touches
+ * dismissible. {@link ListView} is given special treatment because by default it handles touches
  * for its list items... i.e. it's in charge of drawing the pressed state (the list selector),
  * handling list item clicks, etc.
  *
@@ -72,18 +73,18 @@ import java.util.List;
  */
 public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     // Cached ViewConfiguration and system-wide constant values
-    private int mSlop;
-    private int mMinFlingVelocity;
-    private int mMaxFlingVelocity;
-    private long mAnimationTime;
+    private final int mSlop;
+    private final int mMinFlingVelocity;
+    private final int mMaxFlingVelocity;
+    private final long mAnimationTime;
 
     // Fixed properties
-    private ListView mListView;
-    private DismissCallbacks mCallbacks;
+    private final ListView mListView;
+    private final DismissCallbacks mCallbacks;
     private int mViewWidth = 1; // 1 and not 0 to prevent dividing by zero
 
     // Transient properties
-    private List<PendingDismissData> mPendingDismisses = new ArrayList<PendingDismissData>();
+    private final List<PendingDismissData> mPendingDismisses = new ArrayList<PendingDismissData>();
     private int mDismissAnimationRefCount = 0;
     private float mDownX;
     private boolean mSwiping;
@@ -96,6 +97,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
      * The callback interface used by {@link SwipeDismissListViewTouchListener} to inform its client
      * about a successful dismissal of one or more list item positions.
      */
+    @SuppressWarnings("SameReturnValue")
     public interface DismissCallbacks {
         /**
          * Called to determine whether the given position can be dismissed.
@@ -116,7 +118,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     /**
      * Constructs a new swipe-to-dismiss touch listener for the given list view.
      *
-     * @param listView  The list view whose items should be dismissable.
+     * @param listView  The list view whose items should be dismissible.
      * @param callbacks The callback to trigger when the user has indicated that she would like to
      *                  dismiss one or more list items.
      */
@@ -136,7 +138,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
      *
      * @param enabled Whether or not to watch for gestures.
      */
-    public void setEnabled(boolean enabled) {
+    protected void setEnabled(boolean enabled) {
         mPaused = !enabled;
     }
 
@@ -341,8 +343,8 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     }
 
     class PendingDismissData implements Comparable<PendingDismissData> {
-        public int position;
-        public View view;
+        public final int position;
+        public final View view;
 
         public PendingDismissData(int position, View view) {
             this.position = position;
@@ -350,7 +352,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
         }
 
         @Override
-        public int compareTo(PendingDismissData other) {
+        public int compareTo(@NotNull PendingDismissData other) {
             // Sort by descending position
             return other.position - position;
         }

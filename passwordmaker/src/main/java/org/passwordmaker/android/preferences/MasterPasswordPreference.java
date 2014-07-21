@@ -12,7 +12,7 @@ import org.passwordmaker.android.PwmApplication;
 import org.passwordmaker.android.R;
 
 public class MasterPasswordPreference extends DialogPreference {
-    View dlgView;
+    private View dlgView;
     public MasterPasswordPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         setDialogLayoutResource(R.layout.dialog_set_pwd_hash);

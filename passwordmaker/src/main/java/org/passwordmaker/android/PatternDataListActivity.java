@@ -53,7 +53,7 @@ public class PatternDataListActivity extends Activity
 
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
-            getListFragment().setActivateOnItemClick(true);
+            getListFragment().setActivateOnItemClick();
         }
     }
 
@@ -64,7 +64,7 @@ public class PatternDataListActivity extends Activity
         getListFragment().setAccountId(accountId);
     }
 
-    public PatternDataListFragment getListFragment() {
+    protected PatternDataListFragment getListFragment() {
         return ((PatternDataListFragment) getFragmentManager()
                 .findFragmentById(R.id.patterndata_list));
     }
