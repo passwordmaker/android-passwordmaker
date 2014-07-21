@@ -12,6 +12,7 @@ public class SettingsActivity extends Activity {
 
     public static final String KEY_SHOW_USERNAME = "pref_showUsername";
     public static final String KEY_SAVED_LENGTH = "pref_saveInputs";
+    public static final String KEY_SHOW_PASS_STRENGTH = "pref_showPasswordStrength";
     public static final String KEY_MASTERPASSWORD_HASH = "pref_masterPasswordHash";
 
     @Override

@@ -16,10 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import org.daveware.passwordmaker.Account;
-import org.daveware.passwordmaker.AccountManager;
-import org.daveware.passwordmaker.AccountManagerListener;
-import org.daveware.passwordmaker.SecureCharArray;
+import org.daveware.passwordmaker.*;
 import org.passwordmaker.android.adapters.SubstringArrayAdapter;
 
 import java.util.ArrayList;
@@ -89,6 +86,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if ( requestCode == SHOW_SETTINGS ) {
             showUsernameBasedOnPreference();
+            showPassStrengthBasedOnPreference();
             saveDefaultValuesForFields();
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -113,6 +111,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         super.onResume();
         loadDefaultValueForFields();
         showUsernameBasedOnPreference();
+        showPassStrengthBasedOnPreference();
         favoritesAdapter.notifyDataSetChanged();
     }
 
@@ -302,7 +301,6 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private void showUsernameBasedOnPreference() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean show = sharedPref.getBoolean(SettingsActivity.KEY_SHOW_USERNAME, false);
-        Log.i(LOG_TAG, format("SHOW USERNAME SETTING VALUE: %s", show));
         if ( show )
             showUsernameField();
         else
@@ -322,6 +320,49 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         username.setVisibility(View.GONE);
         username = (TextView)findViewById(R.id.lblUsername);
         username.setVisibility(View.GONE);
+    }
+
+    private void showPassStrengthBasedOnPreference() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean show = sharedPref.getBoolean(SettingsActivity.KEY_SHOW_PASS_STRENGTH, false);
+        if ( show )
+            showPassStrengthField();
+        else
+            hidePassStrengthField();
+    }
+
+
+    private void showPassStrengthField() {
+        View layPassStrength = findViewById(R.id.layPassStrength);
+        layPassStrength.setVisibility(View.VISIBLE);
+    }
+
+    private void hidePassStrengthField() {
+        View layPassStrength = findViewById(R.id.layPassStrength);
+        layPassStrength.setVisibility(View.GONE);
+    }
+
+    private void setPassStrengthMeter(SecureCharArray pass) {
+        View layPassStrength = findViewById(R.id.layPassStrength);
+        if ( layPassStrength.getVisibility() == View.VISIBLE ) {
+            double strength = PasswordMaker.calcPasswordStrength(pass);
+            Log.i(LOG_TAG, format("Password Strength: %.4f", strength));
+            setPassStrengthValue((int)strength);
+        }
+    }
+
+    private void setPassStrengthValue(int value) {
+        View layPassStrength = findViewById(R.id.layPassStrength);
+        if ( layPassStrength.getVisibility() == View.VISIBLE ) {
+            ProgressBar progressBar = (ProgressBar)findViewById(R.id.progPassStrength);
+            TextView txtPassStrength = (TextView)findViewById(R.id.txtPassStrength);
+            progressBar.setProgress(value);
+            txtPassStrength.setText(Integer.toString(value));
+        }
+    }
+
+    private void resetPassStrengthMeter() {
+        setPassStrengthValue(0);
     }
 
     private void setUIAccountUsernameFromAccount() {
@@ -372,12 +413,14 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             final String inputText = getInputText();
             try {
                 if (accountManager.matchesPasswordHash(masterPassword)) {
-                    CharSequence output = accountManager.generatePassword(masterPassword, inputText);
+                    SecureCharArray output = accountManager.generatePassword(masterPassword, inputText);
                     outputPassword.setText(output);
+                    setPassStrengthMeter(output);
                     setUIAccountUsernameFromAccount();
                 } else {
                     outputPassword.setText("Password Hash Mismatch");
                     clearUIAccountUsername();
+                    resetPassStrengthMeter();
                 }
             } finally {
                 masterPassword.erase();
@@ -387,6 +430,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             setVerificationCode("");
             clearUIAccountUsername();
             clearUIAccountUsername();
+            resetPassStrengthMeter();
             // if we have one already enqueue reset so that we don't keep on updating uselessly
             updateValidationCodeHandler.removeMessages(UPDATE_VER_CODE);
             updateValidationCodeHandler.sendEmptyMessageDelayed(UPDATE_VER_CODE, VER_CODE_DELAY);

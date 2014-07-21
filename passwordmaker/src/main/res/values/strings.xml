@@ -133,7 +133,9 @@
     <string name="saveInputAmountDefaultValue">99999999</string>
     <string name="MasterPasswordSummary">Set the master password hash to verify password.</string>
     <string name="showUsername">Show username for accounts</string>
+    <string name="showPasswordStrength">Show password strength</string>
     <string name="title_activity_settings">Settings</string>
     <string name="lblNotes">Notes</string>
+    <string name="defaultProgressValue">0</string>
 
 </resources>
