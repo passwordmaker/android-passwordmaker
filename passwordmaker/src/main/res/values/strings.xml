@@ -134,5 +134,6 @@
     <string name="MasterPasswordSummary">Set the master password hash to verify password.</string>
     <string name="showUsername">Show username for accounts</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="lblNotes">Notes</string>
 
 </resources>

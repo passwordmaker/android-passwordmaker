@@ -46,6 +46,22 @@
         <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/lblSuffix" android:text="@string/LblSuffix"/>
         <EditText android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/txtSuffix" android:inputType="textNoSuggestions"/>
 
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lblNotes"
+                android:id="@+id/lblNotes"
+                android:singleLine="false"/>
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:id="@+id/txtNotes"
+                android:minLines="4"
+                android:editable="false"
+                android:textIsSelectable="true"/>
         <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/btnShowPatterns" android:id="@+id/btnShowPatterns"/>
     </LinearLayout>
 </ScrollView>

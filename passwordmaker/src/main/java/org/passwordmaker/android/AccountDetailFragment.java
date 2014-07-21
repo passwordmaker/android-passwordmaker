@@ -121,6 +121,7 @@ public class AccountDetailFragment extends Fragment {
         private Button showPatterns;
         private TextView lblUseText;
         private EditText txtUseUrl;
+        private EditText txtNotes;
         private ViewGroup frameUrlParts;
 
         public ViewGetter(@NotNull View rootView) {
@@ -147,6 +148,7 @@ public class AccountDetailFragment extends Fragment {
             showPatterns = (Button)rootView.findViewById(R.id.btnShowPatterns);
             frameUrlParts = (ViewGroup)rootView.findViewById(R.id.frameUrlParts);
             txtCustomCharacterSet = (EditText)rootView.findViewById(R.id.txtCustomCharacterSet);
+            txtNotes = (EditText)rootView.findViewById(R.id.txtNotes);
 
         }
 
@@ -166,6 +168,7 @@ public class AccountDetailFragment extends Fragment {
             txtPrefix.setText(mItem.getPrefix());
             txtSuffix.setText(mItem.getSuffix());
             txtUseUrl.setText(mItem.getUrl());
+            txtNotes.setText(mItem.getDesc());
 
             if ( spinnerCharacterSet.getSelectedItemPosition() == CUSTOM_CHARSET_POSITION ) {
                 txtCustomCharacterSet.setVisibility(View.VISIBLE);
@@ -246,6 +249,15 @@ public class AccountDetailFragment extends Fragment {
                         lastFocusedView = txtUseUrl;
                 }
             });
+            txtNotes.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus)
+                        mItem.setDesc(txtNotes.getText().toString());
+                    else
+                        lastFocusedView = txtNotes;
+                }
+            });
+
             selectLeet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     LeetType sel = getLeetType(parent.getSelectedItemPosition());
