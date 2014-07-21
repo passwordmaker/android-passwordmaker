@@ -1,19 +1,20 @@
 package org.passwordmaker.android;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.*;
 import org.daveware.passwordmaker.Account;
 import org.daveware.passwordmaker.AccountManager;
@@ -26,11 +27,9 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.lang.String.format;
 
 public class MainActivity extends ActionBarActivity implements AccountManagerListener {
-
-    private static final String REPO_KEY_SAVED_INPUTS = "savedInputs";
-    private static final String REPO_KEY_SAVED_LENGTH = "savedLength";
     private static final String REPO_KEY_SAVED_INPUT_UNTIL = "savedInputUnilt";
     private static final String REPO_KEY_SAVED_INPUT_PASSWORD = "savedInputPass";
     private static final String REPO_KEY_SAVED_INPUT_INPUTTEXT = "savedInputInputText";
@@ -41,12 +40,9 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
     private static final int EDIT_FAVORITE  = 0x01;
     private static final int LIST_ACCOUNTS = 0x02;
+    private static final int SHOW_SETTINGS  = 0x04;
     private static final int UPDATE_VER_CODE = 0xccaabb;
     private static final int VER_CODE_DELAY = 600;
-
-    private TextView lblInputTimeout;
-    private EditText txtInputTimeout;
-    private CheckBox chkSaveInputs;
     private ImageButton btnClearSelectedProfile;
 
     private ArrayAdapter<String> favoritesAdapter;
@@ -65,10 +61,6 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         // this must be done before we do any loading of settings to make sure we get events
         accountManager.addListener(this);
 
-        chkSaveInputs = (CheckBox) findViewById(R.id.chkSaveInputs);
-        chkSaveInputs.setOnCheckedChangeListener(onSaveInputCheckbox);
-        txtInputTimeout = (EditText) findViewById(R.id.txtSaveInputTime);
-        lblInputTimeout = (TextView) findViewById(R.id.lblSaveForLength);
         loadOldProfiles();
         loadAccountDatabase();
         createFavoritesList();
@@ -91,9 +83,18 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
         btnClearSelectedProfile = (ImageButton)findViewById(R.id.btnClearSelected);
         btnClearSelectedProfile.setOnClickListener(mClearProfileButtonClick);
-
-        loadDefaultValueForFields();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if ( requestCode == SHOW_SETTINGS ) {
+            showUsernameBasedOnPreference();
+            saveDefaultValuesForFields();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
     private void refreshList() {
         Set<String> allthings = new HashSet<String>();
         allthings.addAll(PwmApplication.getInstance().getAccountManager().getFavoriteUrls());
@@ -111,6 +112,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     protected void onResume() {
         super.onResume();
         loadDefaultValueForFields();
+        showUsernameBasedOnPreference();
         favoritesAdapter.notifyDataSetChanged();
     }
 
@@ -124,22 +126,18 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private void saveDefaultValuesForFields() {
         final SharedPreferences.Editor prefs = getPreferences(Activity.MODE_PRIVATE).edit();
         try {
-            prefs.putBoolean(REPO_KEY_SAVED_INPUTS, chkSaveInputs.isChecked());
-            if (chkSaveInputs.isChecked()) {
-                String strMin = txtInputTimeout.getText().toString();
-                final int minutes = (strMin == null || strMin.length() < 0) ? 5
-                        : Integer.parseInt(strMin);
+            if (isSaveInputEnabled()) {
+                final int minutes = getSavedLengthInMinutes();
                 final Calendar cal = Calendar.getInstance();
                 long curTime = cal.getTimeInMillis();
                 cal.add(Calendar.MINUTE, minutes);
                 final long time = cal.getTimeInMillis();
                 Log.i(LOG_TAG, "Current time:" + Long.toString(curTime) + ", Expire Time: " + Long.toString(time));
-                prefs.putInt(REPO_KEY_SAVED_LENGTH, minutes);
                 prefs.putLong(REPO_KEY_SAVED_INPUT_UNTIL, time);
-                prefs.putString(REPO_KEY_SAVED_INPUT_PASSWORD,
-                        getInputPassword());
+                prefs.putString(REPO_KEY_SAVED_INPUT_PASSWORD, getInputPassword());
                 prefs.putString(REPO_KEY_SAVED_INPUT_INPUTTEXT, getInputText());
             } else {
+                Log.i(LOG_TAG, "Saving input disabled, removing data");
                 prefs.remove(REPO_KEY_SAVED_INPUT_UNTIL);
                 prefs.remove(REPO_KEY_SAVED_INPUT_PASSWORD);
                 prefs.remove(REPO_KEY_SAVED_INPUT_INPUTTEXT);
@@ -149,16 +147,27 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         }
     }
 
+    private boolean isSaveInputEnabled() {
+        return getSavedLengthInMinutes() > 0;
+    }
+
+    private int getSavedLengthInMinutes() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        int minutes = Integer.parseInt(sharedPref.getString(SettingsActivity.KEY_SAVED_LENGTH, "0")) / 60;
+        Log.i(LOG_TAG, format("Minutes preference set to: %d", minutes));
+        return minutes;
+
+    }
+
+    private long getTimeToSaveUntil() {
+        return getPreferences(MODE_PRIVATE).getLong(REPO_KEY_SAVED_INPUT_UNTIL, -1);
+    }
+
     private void loadDefaultValueForFields() {
         try {
-            final int minutes = getPreferences(MODE_PRIVATE).getInt(
-                    REPO_KEY_SAVED_LENGTH, 5);
-            txtInputTimeout.setText(Integer.toString(minutes));
-            chkSaveInputs.setChecked(getPreferences(MODE_PRIVATE).getBoolean(
-                    REPO_KEY_SAVED_INPUTS, false));
-            final long time = getPreferences(MODE_PRIVATE).getLong(
-                    REPO_KEY_SAVED_INPUT_UNTIL, -1);
-            if (time != -1 && chkSaveInputs.isChecked()) {
+            final int minutes = getSavedLengthInMinutes();
+            final long time = getTimeToSaveUntil();
+            if (time != -1 && minutes > 0) {
                 Calendar cal = Calendar.getInstance();
                 if (time > cal.getTimeInMillis()) {
                     final String savedPass = getPreferences(MODE_PRIVATE)
@@ -170,6 +179,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
                     return;
                 }
             }
+            Log.i(LOG_TAG, "Save time expired, removing data");
             // expired clear from preferences
             final SharedPreferences.Editor prefs = getPreferences(Activity.MODE_PRIVATE)
                     .edit();
@@ -179,11 +189,12 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             prefs.commit();
             final String savedInputText = getDefaultInputText(false);
             setInputText(savedInputText);
+            setInputPassword("");
             updatePassword(false);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Could not load default values", e);
             final SharedPreferences.Editor prefs = getPreferences(Activity.MODE_PRIVATE).edit();
-            prefs.remove(REPO_KEY_SAVED_LENGTH);
+            prefs.remove(SettingsActivity.KEY_SAVED_LENGTH);
             prefs.remove(REPO_KEY_SAVED_INPUT_UNTIL);
             prefs.remove(REPO_KEY_SAVED_INPUT_PASSWORD);
             prefs.remove(REPO_KEY_SAVED_INPUT_INPUTTEXT);
@@ -247,12 +258,15 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             showImportExport();
             return true;
         }
-        if ( id == R.id.action_set_master_password_hash ) {
-            setMasterPasswordHash();
+        if ( id == R.id.action_display_settings ) {
+            displaySettings();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     public void updateSelectedProfileText() {
         Account account = accountManager.getAccountForInputText(getInputText());
@@ -283,6 +297,31 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private void setInputPassword(String value) {
         TextView masterPass = (TextView) findViewById(R.id.txtMasterPass);
         masterPass.setText(value);
+    }
+
+    private void showUsernameBasedOnPreference() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean show = sharedPref.getBoolean(SettingsActivity.KEY_SHOW_USERNAME, false);
+        Log.i(LOG_TAG, format("SHOW USERNAME SETTING VALUE: %s", show));
+        if ( show )
+            showUsernameField();
+        else
+            hideUsernameField();
+    }
+
+    private void showUsernameField() {
+        TextView username = (TextView) findViewById(R.id.txtUsername);
+        username.setVisibility(View.VISIBLE);
+        username = (TextView)findViewById(R.id.lblUsername);
+        username.setVisibility(View.VISIBLE);
+
+    }
+
+    private void hideUsernameField() {
+        TextView username = (TextView) findViewById(R.id.txtUsername);
+        username.setVisibility(View.GONE);
+        username = (TextView)findViewById(R.id.lblUsername);
+        username.setVisibility(View.GONE);
     }
 
     private void setUIAccountUsernameFromAccount() {
@@ -383,34 +422,9 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         startActivity(intent);
     }
 
-    private void setMasterPasswordHash() {
-        LayoutInflater inflater = getLayoutInflater();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View dialogView = inflater.inflate(R.layout.dialog_set_pwd_hash, null);
-        builder.setView(dialogView);
-
-        builder.setPositiveButton(R.string.Save,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        EditText password = (EditText)dialogView.findViewById(R.id.password);
-                        EditText confirmed = (EditText)dialogView.findViewById(R.id.confirm_password);
-                        if ( ! password.getText().toString().equals(confirmed.getText().toString())) {
-                            Toast.makeText(MainActivity.this, "Password Mismatch", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        if ( password.getText().length() == 0 ) {
-                            accountManager.disablePasswordHash();
-                        } else {
-                            accountManager.setCurrentPasswordHashPassword(password.getText().toString());
-                        }
-                        PwmApplication.getInstance().updateMasterPasswordHash();
-                        updatePassword(true);
-                    }
-                });
-        builder.setNegativeButton(R.string.Cancel, null);
-        final AlertDialog alert = builder.create();
-        builder.setCancelable(true);
-        alert.show();
+    private void displaySettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivityForResult(intent, SHOW_SETTINGS);
     }
 
     private TextWatcher createUpdatePasswordKeyListener() {
@@ -444,17 +458,6 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             updatePassword(true);
             Toast.makeText(MainActivity.this, "Cleared manually selected account", Toast.LENGTH_SHORT).show();
         }
-    };
-    private CompoundButton.OnCheckedChangeListener onSaveInputCheckbox = new CompoundButton.OnCheckedChangeListener() {
-
-        public void onCheckedChanged(CompoundButton buttonView,
-                                     boolean isChecked) {
-            final int visibility = isChecked ? View.VISIBLE : View.GONE;
-            txtInputTimeout.setVisibility(visibility);
-            lblInputTimeout.setVisibility(visibility);
-            saveDefaultValuesForFields();
-        }
-
     };
 
     private Handler updateValidationCodeHandler = new Handler(new Handler.Callback() {

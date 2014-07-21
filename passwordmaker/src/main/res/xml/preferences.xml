@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+            android:key="pref_saveInputs"
+            android:title="@string/SaveInputs"
+            android:dialogTitle="@string/SaveInputs"
+            android:entries="@array/saveInputAmount"
+            android:entryValues="@array/saveInputAmountValues"
+
+            android:defaultValue="@string/saveInputAmountDefaultValue" />
+    <org.passwordmaker.android.preferences.MasterPasswordPreference
+            android:key="pref_masterPasswordHash"
+            android:title="@string/MasterPassword"
+            android:summary="@string/MasterPasswordSummary" />
+    <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_showUsername"
+            android:title="@string/showUsername" />
+</PreferenceScreen>

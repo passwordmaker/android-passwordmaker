@@ -95,8 +95,7 @@
     <string name="BtnRdfImport">Import</string>
     <string name="BtnRdfExport">Export</string>
     <string name="lblImportInstructions">The import process is destructive.  It will replace any account already in Passwordmaker.  To import first copy the RDF document to your clipboard.  Then click the Import button below.
-      To Export, click the export button. It will then copy the RDF document to the clipboard.
-    </string>
+      To Export, click the export button. It will then copy the RDF document to the clipboard.</string>
     <string name="action_import_export">Import/Export</string>
     <string name="action_account_add">add</string>
     <string name="action_pattern_add">Add</string>
@@ -112,5 +111,28 @@
     <string name="btnClearSelectedProfile">Clear</string>
     <string name="deleteAccount">Delete</string>
     <string name="UseAccount">Use</string>
+
+    <string-array name="saveInputAmount">
+        <item>Never</item>
+        <item>1 minute</item>
+        <item>5 minute</item>
+        <item>10 minutes</item>
+        <item>15 minutes</item>
+        <item>Forever</item>
+    </string-array>
+    <string-array name="saveInputAmountValues">
+        <item>0</item>
+        <item>30</item>
+        <item>60</item>
+        <item>300</item>
+        <item>600</item>
+        <item>900</item>
+        <item>31557600</item>
+    </string-array>
+
+    <string name="saveInputAmountDefaultValue">99999999</string>
+    <string name="MasterPasswordSummary">Set the master password hash to verify password.</string>
+    <string name="showUsername">Show username for accounts</string>
+    <string name="title_activity_settings">Settings</string>
 
 </resources>
