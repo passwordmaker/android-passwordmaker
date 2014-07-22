@@ -103,7 +103,7 @@ public class PatternDataDetailFragment extends Fragment {
         }
     }
 
-    public void setPatternData(@NotNull AccountPatternData pd) {
+    protected void setPatternData(@NotNull AccountPatternData pd) {
         patternData = pd;
         getTextDescription().setText(pd.getDesc());
         getTextPattern().setText(pd.getPattern());
@@ -111,47 +111,47 @@ public class PatternDataDetailFragment extends Fragment {
         getCheckEnabled().setChecked(pd.isEnabled());
     }
 
-    public void savePatternData() {
+    protected void savePatternData() {
         patternData.setDesc(getTextDescription().getText().toString());
         patternData.setPattern(getTextPattern().getText().toString());
         patternData.setType(getPatternType());
         patternData.setEnabled(getCheckEnabled().isChecked());
     }
 
-    public TextView getTextDescription() {
+    protected TextView getTextDescription() {
         return (TextView)getView().findViewById(R.id.txtPatternDesc);
     }
 
-    public TextView getTextPattern() {
+    protected TextView getTextPattern() {
         return (TextView)getView().findViewById(R.id.txtPatternExpression);
     }
 
-    public CheckBox getCheckEnabled() {
+    protected CheckBox getCheckEnabled() {
         return (CheckBox)getView().findViewById(R.id.chkEnabled);
     }
 
-    public Button getPrimaryButton() {
+    protected Button getPrimaryButton() {
         return (Button)getView().findViewById(R.id.primary);
     }
 
-    public Button getCancelButton() {
+    protected Button getCancelButton() {
         return (Button)getView().findViewById(android.R.id.closeButton);
     }
 
-    public RadioButton getOptionWildcard() {
+    protected RadioButton getOptionWildcard() {
         return (RadioButton)getView().findViewById(R.id.optWildcard);
     }
 
-    public Button getDomainRegexButton() {
+    protected Button getDomainRegexButton() {
         return (Button)getView().findViewById(R.id.btnDomainRegex);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public RadioButton getOptionRegex() {
+    protected RadioButton getOptionRegex() {
         return (RadioButton)getView().findViewById(R.id.optRegex);
     }
 
-    public AccountPatternType getPatternType() {
+    protected AccountPatternType getPatternType() {
         if ( getOptionWildcard().isChecked() ) {
             return AccountPatternType.WILDCARD;
         } else {
@@ -159,13 +159,13 @@ public class PatternDataDetailFragment extends Fragment {
         }
     }
 
-    public void setPatternType(AccountPatternType type) {
+    protected void setPatternType(AccountPatternType type) {
         boolean isWildcard = type == AccountPatternType.WILDCARD;
         getOptionWildcard().setChecked(isWildcard);
         getOptionWildcard().setChecked(!isWildcard);
     }
 
-    public void setDomainPattern() {
+    protected void setDomainPattern() {
         getTextPattern().setText("(.*://)?(.*\\.)?domain\\.com(/.*)?");
         getOptionRegex().setChecked(true);
     }

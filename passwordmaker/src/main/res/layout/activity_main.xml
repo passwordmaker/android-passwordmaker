@@ -44,15 +44,52 @@
               android:textAppearance="?android:attr/textAppearanceSmall"
               android:text="" android:id="@+id/lblVerificationCode"
               android:textStyle="bold"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/lblUsername"
+            android:text="@string/Lblusername"/>
+
+    <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtUsername"
+            android:singleLine="true"
+            android:inputType="text|none"/>
+
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:textAppearance="?android:attr/textAppearanceSmall" android:text="@string/Password"
               android:id="@+id/lblPassword"/>
     <EditText android:layout_width="fill_parent" android:layout_height="wrap_content"
               android:id="@+id/txtPassword" android:singleLine="true"
               android:inputType="textVisiblePassword"/>
+
+    <LinearLayout
+            android:id="@+id/layPassStrength"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtPassStrength"
+                android:text="@string/defaultProgressValue"
+                android:minWidth="30dp"
+                android:gravity="center"/>
+
+        <ProgressBar
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/progPassStrength"
+                android:max="100"
+                />
+    </LinearLayout>
+
     <Button android:text="@string/LblCopy" android:layout_height="wrap_content"
             android:layout_width="fill_parent" android:id="@+id/btnCopy"/>
-    <CheckBox android:id="@+id/chkSaveInputs" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/SaveInputs" android:checked="true"/>
-    <TextView android:layout_height="wrap_content" android:id="@+id/lblSaveForLength" android:layout_width="wrap_content" android:text="@string/SaveInputsForMinutes"/>
-    <EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:inputType="number" android:id="@+id/txtSaveInputTime"/>
+
 </LinearLayout>

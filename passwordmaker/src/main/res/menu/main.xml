@@ -17,8 +17,8 @@
           android:orderInCategory="103"
           app:showAsAction="ifRoom"
           android:icon="@drawable/ic_action_content_import_export"/>
-    <item android:id="@+id/action_set_master_password_hash"
-          android:title="@string/action_set_master_password_hash"
+    <item android:id="@+id/action_display_settings"
+          android:title="@string/title_activity_settings"
           android:orderInCategory="200"
           app:showAsAction="never"/>
 </menu>

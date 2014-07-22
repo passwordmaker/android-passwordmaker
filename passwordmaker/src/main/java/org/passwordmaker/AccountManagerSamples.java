@@ -3,6 +3,7 @@ package org.passwordmaker;
 import com.google.common.collect.ImmutableList;
 import org.daveware.passwordmaker.*;
 
+@SuppressWarnings({"EmptyMethod", "UnusedParameters"})
 public class AccountManagerSamples {
 
     public static void addSamples(AccountManager accountManager) {

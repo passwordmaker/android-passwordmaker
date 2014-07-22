@@ -16,15 +16,15 @@ import java.util.*;
 import static com.google.common.io.Closeables.closeQuietly;
 
 public class ClassicSettingsImporter {
-    private Database database = new Database();
-    private Set<String> favorites = Sets.newHashSet();
-    private Gson gson = new Gson();
-    public static final String REPO_PROFILES_FILENAME = "profiles.pss";
-    public static final String UPGRADED_MARKER = "profiles.upgrademarker";
-    public static final String LOG_TAG = "PWM/CSI";
+    private final  Database database = new Database();
+    private final Set<String> favorites = Sets.newHashSet();
+    private final Gson gson = new Gson();
+    private static final String REPO_PROFILES_FILENAME = "profiles.pss";
+    private static final String UPGRADED_MARKER = "profiles.upgrademarker";
+    private static final String LOG_TAG = "PWM/CSI";
 
 
-    public ClassicSettingsImporter(Reader reader) throws IOException {
+    private ClassicSettingsImporter(Reader reader) throws IOException {
         readFromReader(reader);
     }
 
@@ -35,11 +35,11 @@ public class ClassicSettingsImporter {
         parseAccountList(database.getRootAccount(), obj);
     }
 
-    public Database toDatabase() {
+    protected Database toDatabase() {
         return database;
     }
 
-    public Collection<String> getFavorites() {
+    protected Collection<String> getFavorites() {
         return favorites;
     }
 
@@ -73,20 +73,20 @@ public class ClassicSettingsImporter {
             closeQuietly(fis);
         }
         // only will get here if we didn't throw before
-        FileOutputStream toucher = null;
+        FileOutputStream touchFile = null;
         try {
-            toucher = new FileOutputStream(upgradedMarker);
-            toucher.write(new Date().toString().getBytes());
+            touchFile = new FileOutputStream(upgradedMarker);
+            touchFile.write(new Date().toString().getBytes());
         } catch (IOException ignored) {
         } finally {
             try {
-                if ( toucher != null ) toucher.close();
+                if ( touchFile != null ) touchFile.close();
             } catch (IOException ignore) {}
         }
         return db;
     }
 
-    public void parseAccountList(Account parent, JsonObject accounts) throws IOException {
+    protected void parseAccountList(Account parent, JsonObject accounts) throws IOException {
         for (Map.Entry<String, JsonElement> x : accounts.entrySet()) {
             try {
                 database.addAccount(parent, parseAccount((JsonObject)x.getValue()) );
@@ -96,7 +96,7 @@ public class ClassicSettingsImporter {
         }
     }
 
-    private Account parseAccount(JsonObject jsonAccount) throws IOException {
+    private Account parseAccount(JsonObject jsonAccount) {
         Account account = new Account(jsonAccount.get("name").getAsString(), "", jsonAccount.get("username").getAsString());
         account.setId(Account.createId());
         account.setCharacterSet(jsonAccount.get("characters").getAsString());
@@ -146,9 +146,9 @@ public class ClassicSettingsImporter {
     }
 
     private Set<Account.UrlComponents> parseUrlParts(JsonElement urlSetElement) {
-        List<String> urlCompondents = gson.fromJson( urlSetElement, new TypeToken<List<String>>() {}.getType());
+        List<String> urlComponents = gson.fromJson( urlSetElement, new TypeToken<List<String>>() {}.getType());
         Set<Account.UrlComponents> esUrls = EnumSet.noneOf(Account.UrlComponents.class);
-        for (String urlComp : urlCompondents) {
+        for (String urlComp : urlComponents) {
             esUrls.add(OldUrlComponents.valueOf(urlComp).urlComponent);
         }
         return esUrls;

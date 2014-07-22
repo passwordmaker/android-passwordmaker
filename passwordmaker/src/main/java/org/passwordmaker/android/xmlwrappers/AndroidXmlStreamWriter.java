@@ -11,9 +11,8 @@ import java.io.Writer;
 import java.util.LinkedList;
 
 public class AndroidXmlStreamWriter implements XmlStreamWriter {
-    XmlPullParserFactory factory = null;
-    XmlSerializer serializer;
-    Writer writer;
+    private XmlSerializer serializer;
+    private Writer writer;
 
     private static class Tag {
         final String name;
@@ -25,13 +24,13 @@ public class AndroidXmlStreamWriter implements XmlStreamWriter {
         }
     }
 
-    protected Tag rootTag = null;
+    private Tag rootTag = null;
 
-    protected LinkedList<Tag> tagStack = new LinkedList<Tag>();
+    private final LinkedList<Tag> tagStack = new LinkedList<Tag>();
 
-    protected Tag addTagToStack(String name, String namespace) throws IOException {
+    protected Tag addTagToStack(String name, @SuppressWarnings("SameParameterValue") String namespace) throws IOException {
         Tag ret = new Tag(name, namespace);
-        // Stupid XmlSerilizer from xmlpull does this in the different order as the javax.xml.stream does.
+        // Stupid XmlSerializer from xml pull does this in the different order as the javax.xml.stream does.
         // For namespace declarations, they must happen before the tag is added to the serializer.
         if ( tagStack.isEmpty() ) {
             if ( rootTag == null ) {
@@ -65,7 +64,7 @@ public class AndroidXmlStreamWriter implements XmlStreamWriter {
     public AndroidXmlStreamWriter(Writer writer) throws XmlIOException {
         try {
             this.writer = writer;
-            factory = XmlPullParserFactory.newInstance(
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance(
                     System.getProperty(XmlPullParserFactory.PROPERTY_NAME), null);
             if ( factory == null ) throw new XmlIOException("Can not create an XmlPullFactory");
             serializer = factory.newSerializer();
@@ -116,11 +115,11 @@ public class AndroidXmlStreamWriter implements XmlStreamWriter {
     }
 
     @Override
-    public void writeAttribute(String localname, String value) throws XmlIOException {
+    public void writeAttribute(String localName, String value) throws XmlIOException {
         try {
             // alright, if we are asking to write to an attribute we must be done with writing any namespaces.
             flushRootIfNeeded();
-            serializer.attribute("", localname, value);
+            serializer.attribute("", localName, value);
         } catch (IOException e) {
             throw new XmlIOException(e);
         }

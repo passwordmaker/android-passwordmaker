@@ -61,13 +61,13 @@ public class AccountListActivity extends Activity
 
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
-            getAccountListFragment().setActivateOnItemClick(true);
+            getAccountListFragment().setActivateOnItemClick();
         }
         // TODO: If exposing deep links into your app, handle intents here.
 
     }
 
-    public AccountListFragment getAccountListFragment() {
+    protected AccountListFragment getAccountListFragment() {
         return ((AccountListFragment) getFragmentManager().findFragmentById(R.id.account_list));
     }
 
@@ -214,11 +214,6 @@ public class AccountListActivity extends Activity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     protected void onSaveInstanceState(@NotNull Bundle outState) {
         Log.i(LOG_TAG, "onSaveInstanceState");
         super.onSaveInstanceState(outState);
@@ -229,11 +224,4 @@ public class AccountListActivity extends Activity
         Log.i(LOG_TAG, "onRestoreInstanceState");
         super.onRestoreInstanceState(savedInstanceState);
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-
 }

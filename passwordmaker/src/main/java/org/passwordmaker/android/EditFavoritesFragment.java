@@ -8,8 +8,10 @@ import org.passwordmaker.android.widgets.SwipeDismissListViewTouchListener;
 
 public class EditFavoritesFragment extends ListFragment implements SwipeDismissListViewTouchListener.DismissCallbacks {
 
-    ArrayAdapter<String> favorites;
-    SwipeDismissListViewTouchListener touchListener;
+    private ArrayAdapter<String> favorites;
+    // We require to keep a reference for the listener
+    @SuppressWarnings("FieldCanBeLocal")
+    private SwipeDismissListViewTouchListener touchListener;
 
 
     @Override

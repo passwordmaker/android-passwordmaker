@@ -79,9 +79,9 @@ public class AccountDetailFragment extends Fragment {
         return LeetType.TYPES[ordinal];
     }
 
-    public static final int CUSTOM_CHARSET_POSITION = 6;
+    private static final int CUSTOM_CHARSET_POSITION = 6;
     // This function must batch the strings.xml array: NamedCharSets
-    private static ImmutableBiMap<String, Integer> charSetToNum = ImmutableBiMap.<String, Integer>builder()
+    private final static ImmutableBiMap<String, Integer> charSetToNum = ImmutableBiMap.<String, Integer>builder()
             .put(CharacterSets.BASE_93_SET, 0)
             .put(CharacterSets.ALPHANUMERIC, 1)
             .put(CharacterSets.HEX, 2)
@@ -102,7 +102,7 @@ public class AccountDetailFragment extends Fragment {
     }
 
     public class ViewGetter {
-        private View rootView;
+        private final View rootView;
         private EditText txtName;
         private CheckBox chkProtocol;
         private CheckBox chkSubDomain;
@@ -113,14 +113,15 @@ public class AccountDetailFragment extends Fragment {
         private Spinner selectLeetLevel;
         private EditText passwordLength;
         private EditText txtUsername;
-        private EditText txtModifer;
+        private EditText tatModifier;
         private Spinner spinnerCharacterSet;
         private EditText txtCustomCharacterSet;
         private EditText txtPrefix;
         private EditText txtSuffix;
         private Button showPatterns;
-        private TextView lblUseUrl;
+        private TextView lblUseText;
         private EditText txtUseUrl;
+        private EditText txtNotes;
         private ViewGroup frameUrlParts;
 
         public ViewGetter(@NotNull View rootView) {
@@ -134,19 +135,20 @@ public class AccountDetailFragment extends Fragment {
             chkDomain = (CheckBox)rootView.findViewById(R.id.chkDomain);
             chkOthers = (CheckBox)rootView.findViewById(R.id.chkOthers);
             txtUseUrl = (EditText)rootView.findViewById(R.id.txtUseUrl);
-            lblUseUrl = (TextView)rootView.findViewById(R.id.lblUseUrl);
+            lblUseText = (TextView)rootView.findViewById(R.id.lblUseText);
             selectHashAlgos = (Spinner)rootView.findViewById(R.id.selectHashAlgos);
             selectLeet = (Spinner)rootView.findViewById(R.id.selectLeet);
             selectLeetLevel = (Spinner)rootView.findViewById(R.id.spinLeetLevel);
             passwordLength = (EditText)rootView.findViewById(R.id.txtPswordLen);
             txtUsername = (EditText)rootView.findViewById(R.id.txtUsername);
-            txtModifer = (EditText)rootView.findViewById(R.id.txtModifier);
+            tatModifier = (EditText)rootView.findViewById(R.id.txtModifier);
             spinnerCharacterSet = (Spinner)rootView.findViewById(R.id.selectCharacterSet);
             txtPrefix = (EditText)rootView.findViewById(R.id.txtPrefix);
             txtSuffix = (EditText)rootView.findViewById(R.id.txtSuffix);
             showPatterns = (Button)rootView.findViewById(R.id.btnShowPatterns);
             frameUrlParts = (ViewGroup)rootView.findViewById(R.id.frameUrlParts);
             txtCustomCharacterSet = (EditText)rootView.findViewById(R.id.txtCustomCharacterSet);
+            txtNotes = (EditText)rootView.findViewById(R.id.txtNotes);
 
         }
 
@@ -161,11 +163,12 @@ public class AccountDetailFragment extends Fragment {
             selectLeetLevel.setSelection(mItem.getLeetLevel().getOrdinal());
             passwordLength.setText(Integer.toString(mItem.getLength()));
             txtUsername.setText(mItem.getUsername());
-            txtModifer.setText(mItem.getModifier());
+            tatModifier.setText(mItem.getModifier());
             spinnerCharacterSet.setSelection(getCharSetOrdinal(mItem.getCharacterSet()));
             txtPrefix.setText(mItem.getPrefix());
             txtSuffix.setText(mItem.getSuffix());
             txtUseUrl.setText(mItem.getUrl());
+            txtNotes.setText(mItem.getDesc());
 
             if ( spinnerCharacterSet.getSelectedItemPosition() == CUSTOM_CHARSET_POSITION ) {
                 txtCustomCharacterSet.setVisibility(View.VISIBLE);
@@ -180,15 +183,15 @@ public class AccountDetailFragment extends Fragment {
                 // for legacy imports, its possible to have the url field filled out, therefore we must show it.
                 if ( mItem.getUrl().isEmpty() ) {
                     txtUseUrl.setVisibility(View.GONE);
-                    lblUseUrl.setVisibility(View.GONE);
+                    lblUseText.setVisibility(View.GONE);
                 } else {
                     txtUseUrl.setVisibility(View.VISIBLE);
-                    lblUseUrl.setVisibility(View.VISIBLE);
+                    lblUseText.setVisibility(View.VISIBLE);
                 }
             } else {
                 frameUrlParts.setVisibility(View.VISIBLE);
                 txtUseUrl.setVisibility(View.VISIBLE);
-                lblUseUrl.setVisibility(View.VISIBLE);
+                lblUseText.setVisibility(View.VISIBLE);
             }
 
         }
@@ -246,6 +249,15 @@ public class AccountDetailFragment extends Fragment {
                         lastFocusedView = txtUseUrl;
                 }
             });
+            txtNotes.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus)
+                        mItem.setDesc(txtNotes.getText().toString());
+                    else
+                        lastFocusedView = txtNotes;
+                }
+            });
+
             selectLeet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     LeetType sel = getLeetType(parent.getSelectedItemPosition());
@@ -327,12 +339,12 @@ public class AccountDetailFragment extends Fragment {
                         lastFocusedView = txtUsername;
                 }
             });
-            txtModifer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            tatModifier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if ( ! hasFocus )
-                        mItem.setModifier(txtModifer.getText().toString());
+                    if (!hasFocus)
+                        mItem.setModifier(tatModifier.getText().toString());
                     else
-                        lastFocusedView = txtModifer;
+                        lastFocusedView = tatModifier;
                 }
             });
             // this listener is setup elsewhere

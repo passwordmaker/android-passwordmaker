@@ -22,7 +22,7 @@ repositories {
  * then Rebuild for a nice version number
  *
  */
-def getVersionName = { ->
+def generateVersionName = { ->
     def stdout = new ByteArrayOutputStream()
     exec {
         commandLine 'git', 'describe', '--tags'
@@ -31,8 +31,21 @@ def getVersionName = { ->
     String output = stdout.toString()
     if (output.startsWith('v')) output = output[1..-1]
     output = output.trim()
-    println "Building version ${output}"
     return output
+}
+
+def generateVersionCode = { ->
+    def versions = generateVersionName().split("-", 3)
+    def code = versions[0].replaceAll("-.*", "")
+    .split("\\.").collect {
+        it.padLeft(2, "0")
+    }.join("")
+    if ( versions.size() >= 2 ){
+        code += versions[1].padLeft(2, "0")
+    } else {
+        code += "00"
+    }
+    return code.toInteger()
 }
 
 android {
@@ -42,8 +55,9 @@ android {
     defaultConfig {
         minSdkVersion 15  //2014-06-15: 84.3% of android users are using Sdk Version 15+.  So lets shoot for that.
         targetSdkVersion 19
-        versionCode 20002
-        versionName getVersionName()
+        versionCode generateVersionCode()
+        versionName generateVersionName()
+        println "Building version ${getVersionName()} (${getVersionCode()})"
     }
 
     signingConfigs {
@@ -54,6 +68,7 @@ android {
                 storePassword env['PASSWORDMAKER_KEYSTORE_PASSWORD']
                 keyAlias env['PASSWORDMAKER_KEYSTORE_KEY_ALIAS']
                 keyPassword env['PASSWORDMAKER_KEYSTORE_KEY_PASSWORD']
+                println ("Using keystore file: ${file(env['PASSWORDMAKER_KEYSTORE_FILE'])}")
             } else {
                 println ("##################")
                 println ("No keystore for release set.")
@@ -69,15 +84,20 @@ android {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             runProguard true
+            applicationVariants.all { variant ->
+                def file = variant.outputFile
+                variant.outputFile = new File(file.parent, "android-" + file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk"))
+            }
         }
     }
+
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // You must install or update the Support Repository through the SDK manager to use this dependency.
     compile 'com.intellij:annotations:12.0@jar'
-    compile 'org.passwordmaker:passwordmaker-je-lib:0.9.5'
+    compile 'org.passwordmaker:passwordmaker-je-lib:0.9.6'
     compile 'com.madgag.spongycastle:core:1.50.0.0'
     compile 'com.madgag.spongycastle:prov:1.50.0.0'
     androidTestCompile 'junit:junit:4.8.1'

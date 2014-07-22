@@ -1,13 +1,11 @@
 package org.passwordmaker.android;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.MenuItem;
-import org.daveware.passwordmaker.Account;
 
 import java.util.ArrayList;
 
@@ -22,6 +20,7 @@ import java.util.ArrayList;
  * more than a {@link AccountDetailFragment}.
  */
 public class AccountDetailActivity extends Activity {
+    @SuppressWarnings("UnusedDeclaration")
     private static String LOG_TAG = "ADA";
 
     @Override

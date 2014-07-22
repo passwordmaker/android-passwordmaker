@@ -64,6 +64,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="AccountListActivity" />
         </activity>
+        <activity
+            android:name="org.passwordmaker.android.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="org.passwordmaker.android.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
     </application>
 
 </manifest>
