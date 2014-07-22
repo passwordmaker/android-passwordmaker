@@ -1,11 +1,28 @@
 # this file must not be ran as a separate process in order to modify your environment.
 # intead use this file at the CLI by doing: source set_signing_env_vars.sh
 echo -n "Keystore file: "
-read PASSWORDMAKER_KEYSTORE_FILE
+if [ -n "$PASSWORDMAKER_KEYSTORE_FILE" ]; then
+  echo -n "($PASSWORDMAKER_KEYSTORE_FILE) "
+fi
+read PASSWORDMAKER_KEYSTORE_FILE_TMP
+if [ -n "$PASSWORDMAKER_KEYSTORE_FILE_TMP" ]; then
+  PASSWORDMAKER_KEYSTORE_FILE=$PASSWORDMAKER_KEYSTORE_FILE_TMP
+  unset PASSWORDMAKER_KEYSTORE_FILE_TMP
+fi
+echo "File set to: $PASSWORDMAKER_KEYSTORE_FILE"
 echo -n "Keystore password: "
 read -s PASSWORDMAKER_KEYSTORE_PASSWORD
 echo -n "\nKey alias: "
-read PASSWORDMAKER_KEYSTORE_KEY_ALIAS
+
+if [ -n "$PASSWORDMAKER_KEYSTORE_KEY_ALIAS" ]; then
+  echo -n "($PASSWORDMAKER_KEYSTORE_KEY_ALIAS) "
+fi
+read PASSWORDMAKER_KEYSTORE_KEY_ALIAS_TMP
+if [ -n "$PASSWORDMAKER_KEYSTORE_KEY_ALIAS_TMP" ]; then
+  PASSWORDMAKER_KEYSTORE_KEY_ALIAS=$PASSWORDMAKER_KEYSTORE_KEY_ALIAS_TMP
+  unset PASSWORDMAKER_KEYSTORE_KEY_ALIAS_TMP
+fi
+echo "Key alias set to: $PASSWORDMAKER_KEYSTORE_KEY_ALIAS"
 echo -n "Key password: "
 read -s PASSWORDMAKER_KEYSTORE_KEY_PASSWORD
 echo
