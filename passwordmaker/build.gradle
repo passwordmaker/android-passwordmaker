@@ -35,13 +35,15 @@ def generateVersionName = { ->
 }
 
 def generateVersionCode = { ->
-    def versions = generateVersionName().split("-", 3)
+    def versions = generateVersionName().split("-", 4)
     def code = versions[0].replaceAll("-.*", "")
     .split("\\.").collect {
         it.padLeft(2, "0")
     }.join("")
-    if ( versions.size() >= 2 ){
+    if ( versions.size() >= 2 && versions[1].isNumber() ) {
         code += versions[1].padLeft(2, "0")
+    } else if ( versions.size() >= 3 && versions[2].isNumber() ) {
+        code += versions[2].padLeft(2, "0")
     } else {
         code += "00"
     }
