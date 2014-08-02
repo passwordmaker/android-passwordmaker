@@ -18,7 +18,7 @@ repositories {
 /*
  * Gets the version name from the latest Git tag
  *
- * Tag each release like: git tag -a 1.0
+ * Tag each release like: git tag -a v1.0
  * then Rebuild for a nice version number
  *
  */
@@ -41,11 +41,19 @@ def generateVersionCode = { ->
         it.padLeft(2, "0")
     }.join("")
     if ( versions.size() >= 2 && versions[1].isNumber() ) {
+        // This is off of a release tag: '2.0.5' but has a couple of commits since: 2.0.5-4-g6af5805 we want the code to have '04' in this case.
         code += versions[1].padLeft(2, "0")
     } else if ( versions.size() >= 3 && versions[2].isNumber() ) {
+        // This has a '-qualifier-##' e.g. '2.0.5-SNAPSHOT-1-g6af5805' we want the code to have '01' appended in this case.
         code += versions[2].padLeft(2, "0")
-    } else {
+    } else if ( versions[-1] == "SNAPSHOT") {
+        // The first snapshot
         code += "00"
+    } else {
+        // This is if we are on the release tag itself, lets force this to be the end of the revisions
+        // example: '2.0.5' as the tag, we want to add 99 to the end, so that any revisions handed out during testing will be
+        // less than this revision.
+        code += "99"
     }
     return code.toInteger()
 }

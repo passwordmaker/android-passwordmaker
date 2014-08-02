@@ -108,6 +108,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         showUsernameBasedOnPreference();
         showPassStrengthBasedOnPreference();
         favoritesAdapter.notifyDataSetChanged();
+        updateSelectedProfileText();
     }
 
     @Override
@@ -272,6 +273,8 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             if ( btnClearSelectedProfile.getVisibility() != View.VISIBLE )
                 btnClearSelectedProfile.setVisibility(View.VISIBLE);
         }
+        if ( ! text.getText().toString().equals(value) )
+            Log.i(LOG_TAG, "Updated selected profile to be: \"" + value + "\"");
         text.setText(value);
     }
 
