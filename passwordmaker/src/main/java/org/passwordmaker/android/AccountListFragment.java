@@ -48,6 +48,7 @@ public class AccountListFragment extends ListFragment {
     private Callbacks mCallbacks = sDummyCallbacks;
 
     private ActionMode mActionMode;
+    private Menu mActionMenu;
 
     private boolean autoActivateMode = false;
 
@@ -68,9 +69,9 @@ public class AccountListFragment extends ListFragment {
         /**
          * Callback for when an item has been selected.
          */
-        public void onItemSelected(Account account);
+        public void onItemView(Account account);
         public void onFolderSelected(Account account);
-        public void onItemLongSelected(Account account);
+        public void onItemManuallySelected(Account account);
     }
 
     /**
@@ -79,7 +80,7 @@ public class AccountListFragment extends ListFragment {
      */
     private final static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(Account account) {
+        public void onItemView(Account account) {
         }
 
         @Override
@@ -88,7 +89,7 @@ public class AccountListFragment extends ListFragment {
         }
 
         @Override
-        public void onItemLongSelected(Account account) {
+        public void onItemManuallySelected(Account account) {
 
         }
     };
@@ -123,23 +124,6 @@ public class AccountListFragment extends ListFragment {
                 && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
         }
-        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mActionMode != null) {
-                    return false;
-                }
-
-                if ( ! autoActivateMode ) {
-                    getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                }
-                getListView().setItemChecked(position, true);
-
-                // Start the CAB using the ActionMode.Callback defined above
-                mActionMode = getActivity().startActionMode(mActionModeCallback);
-                return true;
-            }
-        });
     }
 
     private void loadIncomingAccount() {
@@ -175,7 +159,7 @@ public class AccountListFragment extends ListFragment {
         if ( loadedAccount != null ) {
             Account acc = loadedAccount;
             loadedAccount = null;
-            mCallbacks.onItemSelected(acc);
+            mCallbacks.onItemView(acc);
         }
 
     }
@@ -197,7 +181,23 @@ public class AccountListFragment extends ListFragment {
         if ( selected.hasChildren() ) {
             goIntoFolder(selected);
         } else {
-            mCallbacks.onItemSelected(selected);
+            if (mActionMode != null ) {
+                if (mActionMenu != null) {
+                    if (getCheckedAccount().isDefault()) {
+                        mActionMenu.findItem(R.id.menu_item_delete).setVisible(false);
+                    } else {
+                        mActionMenu.findItem(R.id.menu_item_delete).setVisible(true);
+                    }
+                }
+                return;
+            }
+            if ( ! autoActivateMode ) {
+                getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            }
+            getListView().setItemChecked(position, true);
+
+            // Start the CAB using the ActionMode.Callback defined above
+            mActionMode = getActivity().startActionMode(mActionModeCallback);
         }
     }
 
@@ -266,7 +266,7 @@ public class AccountListFragment extends ListFragment {
             account.getPatterns().clear();
             accountManager.getPwmProfiles().addAccount(accountStack.getCurrentAccount(), account);
             getCurrentAccountList().notifyDataSetChanged();
-            mCallbacks.onItemSelected(account);
+            mCallbacks.onItemView(account);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -398,6 +398,7 @@ public class AccountListFragment extends ListFragment {
             } else {
                 menu.findItem(R.id.menu_item_delete).setVisible(true);
             }
+            mActionMenu = menu;
             return true;
         }
 
@@ -413,11 +414,15 @@ public class AccountListFragment extends ListFragment {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.menu_item_select:
-                    mCallbacks.onItemLongSelected(getCheckedAccount());
+                    mCallbacks.onItemManuallySelected(getCheckedAccount());
                     mode.finish(); // Action picked, so close the CAB
                     return true;
                 case R.id.menu_item_delete:
                     deleteAccount(getCheckedAccount());
+                    mode.finish();
+                    return true;
+                case R.id.menu_item_view:
+                    mCallbacks.onItemView(getCheckedAccount());
                     mode.finish();
                     return true;
                 default:
@@ -429,13 +434,14 @@ public class AccountListFragment extends ListFragment {
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             mActionMode = null;
+            mActionMenu = null;
             clearAllChecked();
-        }
-
-
-        public Account getCheckedAccount() {
-            return getCurrentAccountList().getItem(getListView().getCheckedItemPosition());
         }
     };
 
+
+
+    public Account getCheckedAccount() {
+        return getCurrentAccountList().getItem(getListView().getCheckedItemPosition());
+    }
 }

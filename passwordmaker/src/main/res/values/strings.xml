@@ -135,5 +135,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="lblNotes">Notes</string>
     <string name="defaultProgressValue">0</string>
+    <string name="ViewAccount">View Account</string>
+    <string name="ViewAccountShort">View</string>
 
 </resources>

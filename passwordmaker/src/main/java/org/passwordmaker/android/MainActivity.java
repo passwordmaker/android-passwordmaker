@@ -16,13 +16,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import org.daveware.passwordmaker.*;
 import org.passwordmaker.android.adapters.SubstringArrayAdapter;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -41,6 +43,8 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private static final int UPDATE_VER_CODE = 0xccaabb;
     private static final int VER_CODE_DELAY = 600;
     private ImageButton btnClearSelectedProfile;
+    private Spinner spinAccount;
+    private List<Account> accounts = new ArrayList<Account>();
 
     private ArrayAdapter<String> favoritesAdapter;
     private final ArrayList<String> favoritesList = new ArrayList<String>();
@@ -48,6 +52,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         accountManager = PwmApplication.getInstance().getAccountManager();
         setContentView(R.layout.activity_main);
 
@@ -69,12 +74,16 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             text.addTextChangedListener(createUpdatePasswordKeyListener());
         if (text != null)
             text.setOnFocusChangeListener(mUpdatePasswordFocusListener);
-        Button button = (Button) findViewById(R.id.btnCopy);
+            ImageButton button = (ImageButton) findViewById(R.id.btnCopy);
         if (button != null)
             button.setOnClickListener(mCopyButtonClick);
 
         btnClearSelectedProfile = (ImageButton)findViewById(R.id.btnClearSelected);
         btnClearSelectedProfile.setOnClickListener(mClearProfileButtonClick);
+
+
+        spinAccount = (Spinner)findViewById(R.id.spinProfile);
+        spinAccount.setOnItemSelectedListener(mSpinAccountOnProfileSelect);
     }
 
     @Override
@@ -105,10 +114,40 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     protected void onResume() {
         super.onResume();
         loadDefaultValueForFields();
+        updateProfileDropDown();
         showUsernameBasedOnPreference();
         showPassStrengthBasedOnPreference();
         favoritesAdapter.notifyDataSetChanged();
         updateSelectedProfileText();
+    }
+
+    private void updateProfileDropDown() {
+        accounts = accountManager.getPwmProfiles().getAllAccounts();
+        List<String> names = ImmutableList.<String>builder().add("Auto-select").addAll(FluentIterable.from(accounts)
+                .transform(new Function<Account, String>() {
+                    @Override
+                    public String apply(Account input) {
+                        return input.getName();
+                    }
+                })).build();
+        spinAccount.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names));
+
+        setProfileDropdownBySelectedAccount();
+    }
+
+    private void setProfileDropdownBySelectedAccount() {
+        final Account selected = PwmApplication.getInstance().getAccountManager().getSelectedProfile();
+        if ( selected == null ) {
+            spinAccount.setSelection(0);
+        } else {
+            int index = Iterables.indexOf(accounts, new Predicate<Account>() {
+                @Override
+                public boolean apply(Account input) {
+                    return selected.getId().equals(input.getId());
+                }
+            }) + 1;
+            spinAccount.setSelection(index);
+        }
     }
 
     @Override
@@ -280,6 +319,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
     @SuppressWarnings("UnusedDeclaration")
     public void setCurrentProfile(String profileId) {
+        Log.i(LOG_TAG, "scp: " + profileId);
         accountManager.selectAccountById(profileId);
     }
 
@@ -389,6 +429,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     public void onSelectedProfileChange(Account newProfile) {
         TextView text = (TextView) findViewById(R.id.lblCurrentProfile);
         text.setText(newProfile.getName());
+        updatePassword(false);
     }
 
 
@@ -495,6 +536,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         @SuppressWarnings("deprecation")
         public void onClick(View v) {
             accountManager.clearSelectedAccount();
+            setProfileDropdownBySelectedAccount();
             updatePassword(true);
             Toast.makeText(MainActivity.this, "Cleared manually selected account", Toast.LENGTH_SHORT).show();
         }
@@ -512,4 +554,23 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             return true;
         }
     });
+
+    private final AdapterView.OnItemSelectedListener mSpinAccountOnProfileSelect = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if ( position == 0 ) {
+                accountManager.clearSelectedAccount();
+                updatePassword(false);
+            } else {
+                Account account = accounts.get(position - 1);
+                accountManager.selectAccountById(account.getId());
+                onSelectedProfileChange(account);
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
 }

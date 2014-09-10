@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<!-- menu_item_view -->
 
+    <item android:id="@+id/menu_item_view"
+          android:icon="@android:drawable/ic_menu_view"
+          android:showAsAction="ifRoom|withText"
+          android:title="@string/ViewAccount"
+          android:titleCondensed="@string/ViewAccountShort" />
     <item android:id="@+id/menu_item_select"
           android:icon="@android:drawable/ic_input_get"
           android:showAsAction="ifRoom|withText"

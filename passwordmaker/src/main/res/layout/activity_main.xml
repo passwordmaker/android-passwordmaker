@@ -22,6 +22,14 @@
                 android:visibility="gone"/>
 
     </LinearLayout>
+
+    <Spinner
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/spinProfile"
+            android:entries="@array/HashAlgos"
+            />
+
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:textAppearance="?android:attr/textAppearanceSmall"
               android:text="@string/Input" android:id="@+id/lblInputText"/>
@@ -62,10 +70,30 @@
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:textAppearance="?android:attr/textAppearanceSmall" android:text="@string/Password"
               android:id="@+id/lblPassword"/>
+    <LinearLayout
+            android:id="@+id/layPassfield"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
     <EditText android:layout_width="fill_parent" android:layout_height="wrap_content"
               android:id="@+id/txtPassword" android:singleLine="true"
-              android:inputType="textVisiblePassword"/>
+              android:inputType="textVisiblePassword"
+              android:layout_gravity="left"
+              android:layout_weight="1"
+            />
 
+    <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:id="@+id/btnCopy"
+                android:src="@drawable/ic_menu_copy_holo_light"
+                android:contentDescription="@string/LblCopy"
+                android:layout_weight="1"
+                android:minWidth="82dp"
+                android:baselineAlignBottom="false"
+            />
+    </LinearLayout>
     <LinearLayout
             android:id="@+id/layPassStrength"
             android:orientation="horizontal"
@@ -88,8 +116,5 @@
                 android:max="100"
                 />
     </LinearLayout>
-
-    <Button android:text="@string/LblCopy" android:layout_height="wrap_content"
-            android:layout_width="fill_parent" android:id="@+id/btnCopy"/>
 
 </LinearLayout>

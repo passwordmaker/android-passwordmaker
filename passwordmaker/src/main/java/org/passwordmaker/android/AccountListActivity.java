@@ -172,7 +172,7 @@ public class AccountListActivity extends Activity
      * indicating that the item with the given ID was selected.
      */
     @Override
-    public void onItemSelected(Account account) {
+    public void onItemView(Account account) {
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
@@ -201,7 +201,7 @@ public class AccountListActivity extends Activity
     }
 
     @Override
-    public void onItemLongSelected(Account account) {
+    public void onItemManuallySelected(Account account) {
         PwmApplication.getInstance().getAccountManager().selectAccountById(account.getId());
         NavUtils.navigateUpFromSameTask(this);
         Toast.makeText(this, "Manually selected '" + account.getName() + "'",  Toast.LENGTH_SHORT).show();
