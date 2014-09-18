@@ -42,6 +42,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private static final int SHOW_SETTINGS  = 0x04;
     private static final int UPDATE_VER_CODE = 0xccaabb;
     private static final int VER_CODE_DELAY = 600;
+    private TextView txtUsername;
     private ImageButton btnClearSelectedProfile;
     private Spinner spinAccount;
     private List<Account> accounts = new ArrayList<Account>();
@@ -84,6 +85,9 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
         spinAccount = (Spinner)findViewById(R.id.spinProfile);
         spinAccount.setOnItemSelectedListener(mSpinAccountOnProfileSelect);
+        txtUsername = (TextView) findViewById(R.id.txtUsername);
+        txtUsername.addTextChangedListener(createUpdatePasswordKeyListener());
+        txtUsername.setOnFocusChangeListener(mUpdatePasswordFocusListener);
     }
 
     @Override
@@ -300,7 +304,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         return super.onOptionsItemSelected(item);
     }
 
-    protected void updateSelectedProfileText() {
+    protected boolean updateSelectedProfileText() {
         Account account = accountManager.getAccountForInputText(getInputText());
         TextView text = (TextView) findViewById(R.id.lblCurrentProfile);
         String value = account.getName();
@@ -312,9 +316,12 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             if ( btnClearSelectedProfile.getVisibility() != View.VISIBLE )
                 btnClearSelectedProfile.setVisibility(View.VISIBLE);
         }
-        if ( ! text.getText().toString().equals(value) )
+        boolean changed = ! text.getText().toString().equals(value);
+        if ( changed )
             Log.i(LOG_TAG, "Updated selected profile to be: \"" + value + "\"");
+        if ( changed ) setUIAccountUsernameFromAccount();
         text.setText(value);
+        return changed;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -344,18 +351,20 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     }
 
     private void showUsernameField() {
-        TextView username = (TextView) findViewById(R.id.txtUsername);
-        username.setVisibility(View.VISIBLE);
-        username = (TextView)findViewById(R.id.lblUsername);
-        username.setVisibility(View.VISIBLE);
+        txtUsername.setVisibility(View.VISIBLE);
+        TextView lblUsername = (TextView)findViewById(R.id.lblUsername);
+        lblUsername.setVisibility(View.VISIBLE);
 
     }
 
     private void hideUsernameField() {
-        TextView username = (TextView) findViewById(R.id.txtUsername);
-        username.setVisibility(View.GONE);
-        username = (TextView)findViewById(R.id.lblUsername);
-        username.setVisibility(View.GONE);
+        txtUsername.setVisibility(View.GONE);
+        TextView lblUsername = (TextView)findViewById(R.id.lblUsername);
+        lblUsername.setVisibility(View.GONE);
+    }
+
+    private boolean isUsernameVisibible() {
+        return txtUsername.getVisibility() == View.VISIBLE;
     }
 
     private void showPassStrengthBasedOnPreference() {
@@ -402,14 +411,17 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     }
 
     private void setUIAccountUsernameFromAccount() {
-        TextView username = (TextView) findViewById(R.id.txtUsername);
         Account account = accountManager.getAccountForInputText(getInputText());
-        username.setText(account.getUsername());
+        txtUsername.setText(account.getUsername());
+    }
+
+    private String getUIAccountUsername() {
+        if (!isUsernameVisibible()) return null;
+        return txtUsername.getText().toString();
     }
 
     private void clearUIAccountUsername() {
-        TextView username = (TextView) findViewById(R.id.txtUsername);
-        username.setText("");
+        txtUsername.setText("");
     }
 
 
@@ -429,6 +441,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     public void onSelectedProfileChange(Account newProfile) {
         TextView text = (TextView) findViewById(R.id.lblCurrentProfile);
         text.setText(newProfile.getName());
+        setUIAccountUsernameFromAccount();
         updatePassword(false);
     }
 
@@ -448,15 +461,14 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             updateVerificationCode();
             updateSelectedProfileText();
             final String inputText = getInputText();
+            final String username = getUIAccountUsername();
             try {
                 if (accountManager.matchesPasswordHash(masterPassword)) {
-                    SecureCharArray output = accountManager.generatePassword(masterPassword, inputText);
+                    SecureCharArray output = accountManager.generatePassword(masterPassword, inputText, username);
                     outputPassword.setText(output);
                     setPassStrengthMeter(output);
-                    setUIAccountUsernameFromAccount();
                 } else {
                     outputPassword.setText("Password Hash Mismatch");
-                    clearUIAccountUsername();
                     resetPassStrengthMeter();
                 }
             } finally {
@@ -465,8 +477,6 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         } else {
             outputPassword.setText("");
             setVerificationCode("");
-            clearUIAccountUsername();
-            clearUIAccountUsername();
             resetPassStrengthMeter();
             // if we have one already enqueue reset so that we don't keep on updating uselessly
             updateValidationCodeHandler.removeMessages(UPDATE_VER_CODE);
@@ -537,6 +547,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         public void onClick(View v) {
             accountManager.clearSelectedAccount();
             setProfileDropdownBySelectedAccount();
+            setUIAccountUsernameFromAccount();
             updatePassword(true);
             Toast.makeText(MainActivity.this, "Cleared manually selected account", Toast.LENGTH_SHORT).show();
         }
