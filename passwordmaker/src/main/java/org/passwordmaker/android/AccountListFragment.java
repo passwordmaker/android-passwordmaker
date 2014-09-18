@@ -40,7 +40,7 @@ public class AccountListFragment extends ListFragment {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
     public static final String STATE_ACCOUNT_STACK = "activated_account_stack";
     @SuppressWarnings("UnusedDeclaration")
-    private static final String LOG_TAG = "ALF";
+    private static final String LOG_TAG = Logtags.ACCOUNT_LIST_FRAGMENT.getTag();
     /**
      * The fragment's current callback object, which is notified of list item
      * clicks.

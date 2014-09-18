@@ -29,7 +29,7 @@ import org.daveware.passwordmaker.AccountPatternData;
 public class PatternDataListActivity extends Activity
         implements PatternDataListFragment.Callbacks {
     @SuppressWarnings("UnusedDeclaration")
-    private static final String LOG_TAG = "PDLA";
+    private static final String LOG_TAG = Logtags.PATTERN_DATA_LIST_ACTIVITY.getTag();
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.

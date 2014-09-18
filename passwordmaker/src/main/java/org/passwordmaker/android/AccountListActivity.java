@@ -38,7 +38,7 @@ public class AccountListActivity extends Activity
         implements AccountListFragment.Callbacks {
 
 
-    private static final String LOG_TAG = "ALA";
+    private static final String LOG_TAG = Logtags.ACCOUNT_LIST_ACTIVITY.getTag();
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.

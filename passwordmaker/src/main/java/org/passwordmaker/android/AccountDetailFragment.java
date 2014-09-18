@@ -23,7 +23,7 @@ import static org.daveware.passwordmaker.Account.UrlComponents;
  * on handsets.
  */
 public class AccountDetailFragment extends Fragment {
-    private static final String LOG_TAG = "ADF";
+    private static final String LOG_TAG = Logtags.ACCOUNT_DETAIL_FRAGMENT.getTag();
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.

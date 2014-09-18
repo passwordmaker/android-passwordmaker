@@ -34,7 +34,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private static final String REPO_KEY_SAVED_INPUT_INPUTTEXT = "savedInputInputText";
     private static final int MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE = 8;
 
-    private static final String LOG_TAG = "PasswordMakerProForAndroidActivity";
+    private static final String LOG_TAG = Logtags.MAIN_ACTIVITY.getTag();
     private AccountManager accountManager;
 
     private static final int EDIT_FAVORITE  = 0x01;
