@@ -21,4 +21,8 @@
             android:defaultValue="false"
             android:key="pref_showPasswordStrength"
             android:title="@string/showPasswordStrength" />
+    <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_AutoAddTextToFavorites"
+            android:title="@string/autoAddTextToFavs" />
 </PreferenceScreen>

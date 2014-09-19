@@ -15,6 +15,7 @@ public class SettingsActivity extends Activity {
     public static final String KEY_SAVED_LENGTH = "pref_saveInputs";
     public static final String KEY_SHOW_PASS_STRENGTH = "pref_showPasswordStrength";
     public static final String KEY_MASTER_PASSWORD_HASH = "pref_masterPasswordHash";
+    public static final String KEY_AUTO_ADD_INPUT_FAVS = "pref_AutoAddTextToFavorites";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

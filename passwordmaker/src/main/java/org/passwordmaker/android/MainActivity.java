@@ -367,6 +367,11 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         return txtUsername.getVisibility() == View.VISIBLE;
     }
 
+    private boolean shouldAutoAddInputIntoFavorites() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getBoolean(SettingsActivity.KEY_AUTO_ADD_INPUT_FAVS, true);
+    }
+
     private void showPassStrengthBasedOnPreference() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean show = sharedPref.getBoolean(SettingsActivity.KEY_SHOW_PASS_STRENGTH, false);
@@ -419,11 +424,6 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         if (!isUsernameVisibible()) return null;
         return txtUsername.getText().toString();
     }
-
-    private void clearUIAccountUsername() {
-        txtUsername.setText("");
-    }
-
 
     private String getInputText() {
         TextView inputText = (TextView) findViewById(R.id.txtInput);
@@ -536,7 +536,19 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             TextView text = (TextView) findViewById(R.id.txtPassword);
             clipboard.setText(text.getText());
-            Toast.makeText(MainActivity.this, "Copied password to the clipboard", Toast.LENGTH_SHORT).show();
+            String inputText = getInputText();
+
+            final boolean shouldAdd = shouldAutoAddInputIntoFavorites() &&
+                    !containsIgnoreCase(accountManager.getFavoriteUrls(), inputText);
+            if (shouldAdd) {
+                accountManager.getFavoriteUrls().add(inputText);
+                favoritesList.add(inputText); // local view for favorites
+            }
+
+            String toastText = "Copied password to the clipboard";
+            if (shouldAdd)
+                toastText += " (Favorite added)";
+            Toast.makeText(MainActivity.this, toastText, Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -584,4 +596,12 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
         }
     };
+
+
+    public static boolean containsIgnoreCase(Collection<String> col, String str) {
+        for ( String i : col ) {
+            if ( i.equalsIgnoreCase(str) ) return true;
+        }
+        return false;
+    }
 }
