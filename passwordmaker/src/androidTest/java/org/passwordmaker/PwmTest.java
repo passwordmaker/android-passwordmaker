@@ -27,7 +27,7 @@ public class PwmTest extends junit.framework.TestCase {
         profile.clearUrlComponents();
         profile.addUrlComponent(Account.UrlComponents.Domain);
 
-        SecureCharArray masterPassword = new SecureCharArray("happy");
+        SecureUTF8String masterPassword = new SecureUTF8String("happy");
 
         PasswordMaker pwm = new PasswordMaker();
         assertEquals(expected, saToString(pwm.makePassword(masterPassword, profile, "google.com")));

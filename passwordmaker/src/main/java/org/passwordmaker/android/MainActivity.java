@@ -455,7 +455,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     };
 
     private void updatePassword(boolean requireMinLength) {
-        final SecureCharArray masterPassword = new SecureCharArray(getInputPassword());
+        final SecureUTF8String masterPassword = new SecureUTF8String(getInputPassword());
         final TextView outputPassword = (TextView) findViewById(R.id.txtPassword);
         if (!requireMinLength || masterPassword.length() >= MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE ) {
             updateVerificationCode();
@@ -487,14 +487,14 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     protected void updateVerificationCode() {
         final String masterPassword = getInputPassword();
         try {
-            setVerificationCode(accountManager.getPwm().generateVerificationCode(new SecureCharArray(masterPassword)));
+            setVerificationCode(accountManager.getPwm().generateVerificationCode(new SecureUTF8String(masterPassword)));
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error generating verification code", e);
             setVerificationCode("ERROR");
         }
     }
 
-    private void setVerificationCode(SecureCharArray code) {
+    private void setVerificationCode(SecureUTF8String code) {
         setVerificationCode(new String(code.getData()));
     }
 
