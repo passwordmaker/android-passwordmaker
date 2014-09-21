@@ -21,7 +21,7 @@ public class ClassicSettingsImporter {
     private final Gson gson = new Gson();
     private static final String REPO_PROFILES_FILENAME = "profiles.pss";
     private static final String UPGRADED_MARKER = "profiles.upgrademarker";
-    private static final String LOG_TAG = "PWM/CSI";
+    private static final String LOG_TAG = Logtags.CLASSIC_SETTINGS_IMPORTER.getTag();
 
 
     private ClassicSettingsImporter(Reader reader) throws IOException {

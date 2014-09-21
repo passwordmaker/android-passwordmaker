@@ -20,7 +20,7 @@ import java.util.List;
 
 
 public class ImportExportRdf extends Activity {
-    private static final String LOG_TAG = "ImpExPort";
+    private static final String LOG_TAG = Logtags.IMPORT_EXPORT_RDF.getTag();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

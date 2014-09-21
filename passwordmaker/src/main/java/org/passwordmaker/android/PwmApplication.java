@@ -40,7 +40,7 @@ import static com.google.common.base.Strings.nullToEmpty;
  */
 public class PwmApplication {
 
-    private static final String LOG_TAG = "PwmApplication";
+    private static final String LOG_TAG = Logtags.PWM_APPLICATION.getTag();
     private static final String PROFILE_DB_FILE = "profile_database.rdf";
 
     private static PwmApplication sInstance;

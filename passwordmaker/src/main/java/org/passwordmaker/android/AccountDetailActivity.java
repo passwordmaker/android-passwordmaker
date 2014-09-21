@@ -21,7 +21,7 @@ import java.util.ArrayList;
  */
 public class AccountDetailActivity extends Activity {
     @SuppressWarnings("UnusedDeclaration")
-    private static String LOG_TAG = "ADA";
+    private static String LOG_TAG = Logtags.ACCOUNT_DETAIL_ACTIVITY.getTag();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

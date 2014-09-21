@@ -137,5 +137,6 @@
     <string name="defaultProgressValue">0</string>
     <string name="ViewAccount">View Account</string>
     <string name="ViewAccountShort">View</string>
+    <string name="autoAddTextToFavs">Auto Add Input to Favorites</string>
 
 </resources>

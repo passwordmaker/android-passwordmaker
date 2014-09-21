@@ -34,7 +34,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private static final String REPO_KEY_SAVED_INPUT_INPUTTEXT = "savedInputInputText";
     private static final int MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE = 8;
 
-    private static final String LOG_TAG = "PasswordMakerProForAndroidActivity";
+    private static final String LOG_TAG = Logtags.MAIN_ACTIVITY.getTag();
     private AccountManager accountManager;
 
     private static final int EDIT_FAVORITE  = 0x01;
@@ -42,6 +42,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     private static final int SHOW_SETTINGS  = 0x04;
     private static final int UPDATE_VER_CODE = 0xccaabb;
     private static final int VER_CODE_DELAY = 600;
+    private TextView txtUsername;
     private ImageButton btnClearSelectedProfile;
     private Spinner spinAccount;
     private List<Account> accounts = new ArrayList<Account>();
@@ -84,6 +85,9 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
         spinAccount = (Spinner)findViewById(R.id.spinProfile);
         spinAccount.setOnItemSelectedListener(mSpinAccountOnProfileSelect);
+        txtUsername = (TextView) findViewById(R.id.txtUsername);
+        txtUsername.addTextChangedListener(createUpdatePasswordKeyListener());
+        txtUsername.setOnFocusChangeListener(mUpdatePasswordFocusListener);
     }
 
     @Override
@@ -300,7 +304,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         return super.onOptionsItemSelected(item);
     }
 
-    protected void updateSelectedProfileText() {
+    protected boolean updateSelectedProfileText() {
         Account account = accountManager.getAccountForInputText(getInputText());
         TextView text = (TextView) findViewById(R.id.lblCurrentProfile);
         String value = account.getName();
@@ -312,9 +316,12 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             if ( btnClearSelectedProfile.getVisibility() != View.VISIBLE )
                 btnClearSelectedProfile.setVisibility(View.VISIBLE);
         }
-        if ( ! text.getText().toString().equals(value) )
+        boolean changed = ! text.getText().toString().equals(value);
+        if ( changed )
             Log.i(LOG_TAG, "Updated selected profile to be: \"" + value + "\"");
+        if ( changed ) setUIAccountUsernameFromAccount();
         text.setText(value);
+        return changed;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -344,18 +351,25 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     }
 
     private void showUsernameField() {
-        TextView username = (TextView) findViewById(R.id.txtUsername);
-        username.setVisibility(View.VISIBLE);
-        username = (TextView)findViewById(R.id.lblUsername);
-        username.setVisibility(View.VISIBLE);
+        txtUsername.setVisibility(View.VISIBLE);
+        TextView lblUsername = (TextView)findViewById(R.id.lblUsername);
+        lblUsername.setVisibility(View.VISIBLE);
 
     }
 
     private void hideUsernameField() {
-        TextView username = (TextView) findViewById(R.id.txtUsername);
-        username.setVisibility(View.GONE);
-        username = (TextView)findViewById(R.id.lblUsername);
-        username.setVisibility(View.GONE);
+        txtUsername.setVisibility(View.GONE);
+        TextView lblUsername = (TextView)findViewById(R.id.lblUsername);
+        lblUsername.setVisibility(View.GONE);
+    }
+
+    private boolean isUsernameVisibible() {
+        return txtUsername.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean shouldAutoAddInputIntoFavorites() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getBoolean(SettingsActivity.KEY_AUTO_ADD_INPUT_FAVS, true);
     }
 
     private void showPassStrengthBasedOnPreference() {
@@ -402,16 +416,14 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     }
 
     private void setUIAccountUsernameFromAccount() {
-        TextView username = (TextView) findViewById(R.id.txtUsername);
         Account account = accountManager.getAccountForInputText(getInputText());
-        username.setText(account.getUsername());
+        txtUsername.setText(account.getUsername());
     }
 
-    private void clearUIAccountUsername() {
-        TextView username = (TextView) findViewById(R.id.txtUsername);
-        username.setText("");
+    private String getUIAccountUsername() {
+        if (!isUsernameVisibible()) return null;
+        return txtUsername.getText().toString();
     }
-
 
     private String getInputText() {
         TextView inputText = (TextView) findViewById(R.id.txtInput);
@@ -429,6 +441,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     public void onSelectedProfileChange(Account newProfile) {
         TextView text = (TextView) findViewById(R.id.lblCurrentProfile);
         text.setText(newProfile.getName());
+        setUIAccountUsernameFromAccount();
         updatePassword(false);
     }
 
@@ -442,21 +455,20 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     };
 
     private void updatePassword(boolean requireMinLength) {
-        final SecureCharArray masterPassword = new SecureCharArray(getInputPassword());
+        final SecureUTF8String masterPassword = new SecureUTF8String(getInputPassword());
         final TextView outputPassword = (TextView) findViewById(R.id.txtPassword);
         if (!requireMinLength || masterPassword.length() >= MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE ) {
             updateVerificationCode();
             updateSelectedProfileText();
             final String inputText = getInputText();
+            final String username = getUIAccountUsername();
             try {
                 if (accountManager.matchesPasswordHash(masterPassword)) {
-                    SecureCharArray output = accountManager.generatePassword(masterPassword, inputText);
+                    SecureCharArray output = accountManager.generatePassword(masterPassword, inputText, username);
                     outputPassword.setText(output);
                     setPassStrengthMeter(output);
-                    setUIAccountUsernameFromAccount();
                 } else {
                     outputPassword.setText("Password Hash Mismatch");
-                    clearUIAccountUsername();
                     resetPassStrengthMeter();
                 }
             } finally {
@@ -465,8 +477,6 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         } else {
             outputPassword.setText("");
             setVerificationCode("");
-            clearUIAccountUsername();
-            clearUIAccountUsername();
             resetPassStrengthMeter();
             // if we have one already enqueue reset so that we don't keep on updating uselessly
             updateValidationCodeHandler.removeMessages(UPDATE_VER_CODE);
@@ -477,14 +487,14 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     protected void updateVerificationCode() {
         final String masterPassword = getInputPassword();
         try {
-            setVerificationCode(accountManager.getPwm().generateVerificationCode(new SecureCharArray(masterPassword)));
+            setVerificationCode(accountManager.getPwm().generateVerificationCode(new SecureUTF8String(masterPassword)));
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error generating verification code", e);
             setVerificationCode("ERROR");
         }
     }
 
-    private void setVerificationCode(SecureCharArray code) {
+    private void setVerificationCode(SecureUTF8String code) {
         setVerificationCode(new String(code.getData()));
     }
 
@@ -526,7 +536,19 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             TextView text = (TextView) findViewById(R.id.txtPassword);
             clipboard.setText(text.getText());
-            Toast.makeText(MainActivity.this, "Copied password to the clipboard", Toast.LENGTH_SHORT).show();
+            String inputText = getInputText();
+
+            final boolean shouldAdd = shouldAutoAddInputIntoFavorites() &&
+                    !containsIgnoreCase(accountManager.getFavoriteUrls(), inputText);
+            if (shouldAdd) {
+                accountManager.getFavoriteUrls().add(inputText);
+                favoritesList.add(inputText); // local view for favorites
+            }
+
+            String toastText = "Copied password to the clipboard";
+            if (shouldAdd)
+                toastText += " (Favorite added)";
+            Toast.makeText(MainActivity.this, toastText, Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -537,6 +559,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         public void onClick(View v) {
             accountManager.clearSelectedAccount();
             setProfileDropdownBySelectedAccount();
+            setUIAccountUsernameFromAccount();
             updatePassword(true);
             Toast.makeText(MainActivity.this, "Cleared manually selected account", Toast.LENGTH_SHORT).show();
         }
@@ -573,4 +596,12 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
 
         }
     };
+
+
+    public static boolean containsIgnoreCase(Collection<String> col, String str) {
+        for ( String i : col ) {
+            if ( i.equalsIgnoreCase(str) ) return true;
+        }
+        return false;
+    }
 }

@@ -1,0 +1,25 @@
+#Title
+PasswordMaker Pro
+
+#Short Description
+PasswordMaker creates unique, secure passwords that are not needed to be saved.
+
+#Full Description
+ONE PASSWORD TO RULE THEM ALL
+
+PasswordMaker creates unique, secure passwords that are very easy for you to retrieve but no one else. Nothing is stored anywhere, anytime, so there's nothing to be hacked, lost, or stolen.
+
+You provide PasswordMaker two pieces of information: a "master password" -- that one, single password you like -- and the URL of the website requiring a password. PasswordMaker will then generate a unique password using a one-way hash, which will protect your master password.
+
+Compatible with the other versions of Passwordmaker for other devices and computers.
+
+See http://android.passwordmaker.org/ for more information on PasswordMaker.
+
+If you have questions, comments or concerns please post them on them on the github issue tracker by following the link above.  I do not monitor the ratings and comments here. Also go to the page: http://passwordmaker.org to find other versions for other platforms like the chrome or firefox versions of passwordmaker.
+
+# Categorization
+Application Type: Applications
+Category: Tools
+Content rating: Everyone
+Website: http://android.passwordmaker.org
+Email: pwmp.for.android@gmail.com
