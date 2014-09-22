@@ -454,7 +454,24 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         }
     };
 
+
+    boolean alreadyUpdatingPassword = false;
+
+    /**
+     * Update password must only be called from the gui thread.
+     * @param requireMinLength - the min length required before updating the output password.
+     */
     private void updatePassword(boolean requireMinLength) {
+        if (alreadyUpdatingPassword) return;
+        alreadyUpdatingPassword = true;
+        try {
+            updatePasswordOnce(requireMinLength);
+        }  finally {
+            alreadyUpdatingPassword = false;
+        }
+    }
+
+    private void updatePasswordOnce(boolean requireMinLength) {
         final SecureUTF8String masterPassword = new SecureUTF8String(getInputPassword());
         final TextView outputPassword = (TextView) findViewById(R.id.txtPassword);
         if (!requireMinLength || masterPassword.length() >= MIN_PASSWORD_LEN_FOR_VERIFICATION_CODE ) {
