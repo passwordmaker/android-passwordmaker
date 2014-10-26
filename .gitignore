@@ -10,3 +10,4 @@ out
 *.iml
 proguard_logs
 .gradle
+/build/
