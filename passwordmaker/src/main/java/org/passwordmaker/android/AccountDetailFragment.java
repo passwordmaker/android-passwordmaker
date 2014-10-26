@@ -269,7 +269,7 @@ public class AccountDetailFragment extends Fragment {
             });
             selectLeetLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    LeetLevel lvl = LeetLevel.fromInt(parent.getSelectedItemPosition());
+                    LeetLevel lvl = LeetLevel.fromInt(parent.getSelectedItemPosition() + 1);
                     mItem.setLeetLevel(lvl);
                 }
                 public void onNothingSelected(AdapterView<?> arg0) {}
