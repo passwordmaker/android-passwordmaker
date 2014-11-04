@@ -53,6 +53,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PwmApplication.getInstance().setFontIfNeeded(this);
 
         accountManager = PwmApplication.getInstance().getAccountManager();
         setContentView(R.layout.activity_main);
@@ -69,10 +70,13 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
             inputText.setOnFocusChangeListener(mUpdatePasswordFocusListener);
             inputText.setAdapter(favoritesAdapter);
             inputText.setThreshold(1);
+            inputText.setTypeface(PwmApplication.getInstance().getNormalFont());
         }
         TextView text = (TextView) findViewById(R.id.txtMasterPass);
-        if (text != null)
+        if (text != null) {
             text.addTextChangedListener(createUpdatePasswordKeyListener());
+            text.setTypeface(PwmApplication.getInstance().getNormalFont());
+        }
         if (text != null)
             text.setOnFocusChangeListener(mUpdatePasswordFocusListener);
             ImageButton button = (ImageButton) findViewById(R.id.btnCopy);
@@ -88,6 +92,7 @@ public class MainActivity extends ActionBarActivity implements AccountManagerLis
         txtUsername = (TextView) findViewById(R.id.txtUsername);
         txtUsername.addTextChangedListener(createUpdatePasswordKeyListener());
         txtUsername.setOnFocusChangeListener(mUpdatePasswordFocusListener);
+        txtUsername.setTypeface(PwmApplication.getInstance().getNormalFont());
     }
 
     @Override

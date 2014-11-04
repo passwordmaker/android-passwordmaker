@@ -1,6 +1,7 @@
 package org.passwordmaker.android;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.Log;
 import com.google.common.collect.Lists;
 import org.daveware.passwordmaker.*;
@@ -46,6 +47,7 @@ public class PwmApplication {
     private static PwmApplication sInstance;
     private boolean firstTimeLoading = true;
     private final AccountManager accountManager;
+    private Typeface normalFont;
 
 
     public static PwmApplication getInstance() {
@@ -61,6 +63,14 @@ public class PwmApplication {
         PasswordMaker.setDefaultCryptoProvider("SC");
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
         AccountManagerSamples.addSamples(accountManager);
+    }
+
+    public void setFontIfNeeded(Context context) {
+        normalFont = Typeface.createFromAsset(context.getAssets(),"fonts/SourceCodePro-Regular.ttf");
+    }
+
+    public Typeface getNormalFont() {
+        return normalFont;
     }
 
     public AccountManager getAccountManager() {
