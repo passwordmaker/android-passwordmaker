@@ -262,7 +262,7 @@ public class AccountListFragment extends ListFragment {
             account.setName(accountName);
             account.setIsFolder(false);
             account.clearUrlComponents();
-            account.setUrl(accountName);
+            account.addUrlComponent(Account.UrlComponents.Domain);
             account.getPatterns().clear();
             accountManager.getPwmProfiles().addAccount(accountStack.getCurrentAccount(), account);
             getCurrentAccountList().notifyDataSetChanged();
