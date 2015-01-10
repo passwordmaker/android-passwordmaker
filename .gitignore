@@ -1,6 +1,7 @@
 gen
 bin
 out
+build/
 .classpath
 .settings
 .project
