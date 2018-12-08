@@ -11,3 +11,5 @@ build/
 *.iml
 proguard_logs
 .gradle
+local.properties
+release/

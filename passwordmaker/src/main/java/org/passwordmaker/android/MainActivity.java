@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,7 +28,7 @@ import java.util.*;
 
 import static java.lang.String.format;
 
-public class MainActivity extends ActionBarActivity implements AccountManagerListener {
+public class MainActivity extends AppCompatActivity implements AccountManagerListener {
     private static final String REPO_KEY_SAVED_INPUT_UNTIL = "savedInputUnilt";
     private static final String REPO_KEY_SAVED_INPUT_PASSWORD = "savedInputPass";
     private static final String REPO_KEY_SAVED_INPUT_INPUTTEXT = "savedInputInputText";
