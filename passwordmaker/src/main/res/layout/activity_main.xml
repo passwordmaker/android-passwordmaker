@@ -18,7 +18,6 @@
                 android:layout_width="37dp"
                 android:layout_height="32dp"
                 android:id="@+id/btnClearSelected"
-                android:src="@drawable/abc_ic_clear"
                 android:visibility="gone"/>
 
     </LinearLayout>

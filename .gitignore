@@ -12,3 +12,4 @@ build/
 proguard_logs
 .gradle
 local.properties
+release/
