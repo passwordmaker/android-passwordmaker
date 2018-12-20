@@ -116,6 +116,24 @@ Notes
     - Yeah, until I fixed up the build for the passwordmaker-je-lib more, it is using maven.
     - And this project is using gradle, cause really, I like gradle, other than its slow to startup.  But it works well with android dev.
 
+Deploying using the android developer webpage and Android Studio
+=======================
+1. In Android Studio go to action: `Generate Signed Bundled`
+1. Choose `Android App Bundle`
+1. Locate keystore, select alias `passwordmakerproforandroid` and type in the correct password.
+1. Select destination folder and use build type `releases`
+1. Locate the release bundle (Android Studio should prompt for it): something named `passwordmaker.aab`
+1. Log into Android developer Play console: https://play.google.com/apps/publish
+1. Within the application for passwordmaker go to the `Release management` / `App Releases`
+1. Select `Manage` from the `Production` track
+1. Click on the button `Create Release`
+1. Give it the signed bundle generated.
+1. Ensure the internal version is reasonable.
+1. give a short description on what changed
+1. Click Save, followed by 'Review'
+1. Let it get deployed.
+
+
 Status of this project
 =======================
 
