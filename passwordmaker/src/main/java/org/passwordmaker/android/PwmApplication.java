@@ -57,9 +57,9 @@ public class PwmApplication {
     }
 
     private PwmApplication() {
-        accountManager = new AccountManager();
         PasswordMaker.setDefaultCryptoProvider("SC");
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
+        accountManager = new AccountManager();
         AccountManagerSamples.addSamples(accountManager);
     }
 
