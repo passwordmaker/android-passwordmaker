@@ -1,10 +1,20 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/edit_favorites"
-    android:name="org.passwordmaker.android.EditFavoritesFragment"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    tools:context="org.passwordmaker.android.EditFavoritesActivity"
-    tools:layout="@android:layout/list_content" />
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar" />
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/edit_favorites"
+        android:name="org.passwordmaker.android.EditFavoritesFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        tools:context="org.passwordmaker.android.EditFavoritesActivity"
+        tools:layout="@android:layout/list_content" />
+</LinearLayout>
