@@ -1,11 +1,12 @@
 package org.passwordmaker.android;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,12 +14,13 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 
-public class EditFavoritesActivity extends Activity {
+public class EditFavoritesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_favorites);
+        setSupportActionBar((Toolbar)findViewById(R.id.main_toolbar));
         // Show the Up button in the action bar.
         setDisplayHomeAsUpEnabled();
     }
@@ -93,8 +95,7 @@ public class EditFavoritesActivity extends Activity {
     }
 
     private void setDisplayHomeAsUpEnabled() {
-        // prevent the possible nullpointer if getActionBar returns null.
-        ActionBar actionBar = getActionBar();
-        if ( actionBar != null ) actionBar.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
     }
 }

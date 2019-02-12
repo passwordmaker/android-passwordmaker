@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -56,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements AccountManagerLis
 
         accountManager = PwmApplication.getInstance().getAccountManager();
         setContentView(R.layout.activity_main);
+
+        setSupportActionBar( (Toolbar)findViewById(R.id.main_toolbar));
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) actionBar.setIcon(R.drawable.ic_launcher);
 
         // this must be done before we do any loading of settings to make sure we get events
         accountManager.addListener(this);

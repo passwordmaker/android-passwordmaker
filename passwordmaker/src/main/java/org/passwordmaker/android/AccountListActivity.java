@@ -1,12 +1,13 @@
 package org.passwordmaker.android;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import org.daveware.passwordmaker.Account;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
  * {@link AccountListFragment.Callbacks} interface
  * to listen for item selections.
  */
-public class AccountListActivity extends Activity
+public class AccountListActivity extends AppCompatActivity
         implements AccountListFragment.Callbacks {
 
 
@@ -49,7 +51,7 @@ public class AccountListActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_list);
-        // Show the Up button in the action bar.
+        setSupportActionBar((Toolbar)findViewById(R.id.main_toolbar));
         setDisplayHomeAsUpEnabled();
 
         if (findViewById(R.id.account_detail_container) != null) {
@@ -64,11 +66,10 @@ public class AccountListActivity extends Activity
             getAccountListFragment().setActivateOnItemClick();
         }
         // TODO: If exposing deep links into your app, handle intents here.
-
     }
 
     protected AccountListFragment getAccountListFragment() {
-        return ((AccountListFragment) getFragmentManager().findFragmentById(R.id.account_list));
+        return ((AccountListFragment) getFragmentManager().findFragmentById(R.id.fragment_account_list));
     }
 
     @Override
@@ -208,9 +209,8 @@ public class AccountListActivity extends Activity
     }
 
     private void setDisplayHomeAsUpEnabled() {
-        // prevent the possible nullpointer if getActionBar returns null.
-        ActionBar actionBar = getActionBar();
-        if ( actionBar != null ) actionBar.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

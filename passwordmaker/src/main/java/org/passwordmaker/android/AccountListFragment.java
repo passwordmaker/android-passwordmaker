@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.AdapterView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.google.common.base.Function;
@@ -197,7 +201,7 @@ public class AccountListFragment extends ListFragment {
             getListView().setItemChecked(position, true);
 
             // Start the CAB using the ActionMode.Callback defined above
-            mActionMode = getActivity().startActionMode(mActionModeCallback);
+            mActionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(mActionModeCallback);
         }
     }
 

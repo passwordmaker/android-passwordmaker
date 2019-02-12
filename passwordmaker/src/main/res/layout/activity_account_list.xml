@@ -1,11 +1,18 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/account_list"
-    android:name="org.passwordmaker.android.AccountListFragment"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    tools:context="org.passwordmaker.android.AccountListActivity"
-    tools:layout="@android:layout/list_content"
-    android:longClickable="true" />
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar" />
+
+    <fragment
+        android:id="@id/fragment_account_list"
+        android:name="org.passwordmaker.android.AccountListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:layout="@android:layout/list_content" />
+
+</LinearLayout>

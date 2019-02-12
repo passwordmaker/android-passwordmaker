@@ -76,8 +76,8 @@
     <string name="lblHashAlgo">Hash Algo</string>
     <string name="action_profiles">Profiles</string>
     <string name="action_favorites">Favorites</string>
-    <string name="title_account_list">Accounts</string>
-    <string name="title_account_detail">Account Detail</string>
+    <string name="title_account_list">Profiles</string>
+    <string name="title_account_detail">Profile Detail</string>
     <string name="title_activity_edit_favorites">Edit Favorites</string>
     <string name="action_favs_add">Add</string>
     <string name="confirm_delete">Confirm Delete</string>
