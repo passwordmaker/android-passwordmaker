@@ -137,7 +137,7 @@ Deploying using the android developer webpage and Android Studio
 Status of this project
 =======================
 
-## Upate 2014-07-17 by @tasermonkey
+## Update 2014-07-17 by @tasermonkey
 
 Release [Version 2.0.1](https://github.com/passwordmaker/android-passwordmaker/releases/tag/v2.0.1)
 
