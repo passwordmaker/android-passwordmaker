@@ -133,6 +133,20 @@ Deploying using the android developer webpage and Android Studio
 1. Click Save, followed by 'Review'
 1. Let it get deployed.
 
+Adding the built artifacts to releases in Github
+=======================
+- As a place to keep all of the versions of the software, its nice to use the releases section of github.
+- Should now release both the aab and the apk.
+- In Android studio go to build/'Generate signed bundled/apk'
+- We will do both options, one at a time (Android App Bundle and then APK)
+- If you followed the instructions to upload to the Play Store, you already did the signed app bundled.
+- So just go throught the Build signed 'APK' option
+- Locate keystore, select alias `passwordmakerproforandroid` and type in the correct password.
+- Select destination folder and use build type `releases`
+    - Ensure both v1 and v2 `Signature Versions` are selected.
+- Click finished.
+- Find the files in the 'releases' directory and upload it as the release for the new tagged version.
+
 
 Status of this project
 =======================
